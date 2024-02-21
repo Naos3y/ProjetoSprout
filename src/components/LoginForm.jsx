@@ -8,14 +8,14 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
 
   return (
-    <div className="rounded-lg sm:rounded-none sm:rounded-r-lg bg-gray-100 p-6 shadow-md sm:w-full md:w-96">
-      <h1 class="text-5xl font-black text-center text-green-600 mb-10">
+    <div className="rounded-lg sm:rounded-none sm:rounded-r-lg bg-white p-6 shadow-md sm:w-full md:w-96">
+      <h1 class="text-5xl font-black text-center text-green-700 mb-10 mt-6 font-tara">
         Sprout
       </h1>
 
       <form>
-        <div className="flex items-center mb-10">
-          <label className="mr-2 font-bold text-black text-xl">👤</label>
+        <div className="mb-6 text-left ml-2">
+          <label className="font-bold text-gray-500 mb-10 ">Email</label>
           <input
             type="email"
             className="w-full px-3 py-2 border border-black rounded-md text-black"
@@ -23,21 +23,30 @@ const LoginForm = () => {
           />
         </div>
 
-        <div className="flex items-center mb-10">
-          <label className="mr-2 font-bold text-black text-xl">🔐</label>
+        <div className="mb-6 text-left ml-2">
+          <label className="font-bold text-gray-500  mb-10">Password</label>
           <input
             type="password"
             className="w-full px-3 py-2 border border-black rounded-md text-black "
             placeholder="Write your Password"
           />
         </div>
-
-        <button
-          type="submit"
-          className="w-full bg-green-500 font-black text-center text-black py-2 px-4 rounded-md hover:bg-green-300 transition-colors duration-300 mb-10"
-        >
-          Login
-        </button>
+        <div className="mb-8 text-center">
+          <a
+            href="#"
+            class="text-black transition-colors hover:text-gray-500 duration-300 font-bold"
+          >
+            Forgot the Password ?
+          </a>
+        </div>
+        <div className="text-center">
+          <button
+            type="submit"
+            className="w-1/2 bg-green-700 font-black text-center text-white py-2 px-4 rounded-md hover:bg-green-400 hover:text-black transition-colors duration-300 mb-10"
+          >
+            Login
+          </button>
+        </div>
       </form>
     </div>
   );

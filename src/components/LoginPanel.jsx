@@ -3,13 +3,13 @@ import LoginForm from "./LoginForm";
 
 const LoginPanel = () => {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="max-w-screen flex">
+    <div className="flex justify-center items-center h-screen shadow-2xl">
+      <div className="max-w-screen flex ">
         {/* Figura  */}
         <img
-          src="https://img.freepik.com/free-photo/new-life-sprouts-from-seedling-dirt-generative-ai_188544-31816.jpg"
+          src="https://tse3.mm.bing.net/th?id=OIP.74gDxvdhJkPEH_kHkvGj8gHaFj&pid=15.1"
           alt="Image of a Sprout"
-          className="hidden sm:block object-cover w-1/2 h-auto"
+          className="hidden sm:block object-cover w-1/2 h-auto rounded-l-lg shadow-lg"
         />
         {/* Formulário */}
         <div className="w-full sm:w-1/2 h-1/2">

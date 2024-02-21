@@ -18,7 +18,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: radial-gradient(circle at center, #2c4037, #d3d3d3);
+  background: linear-gradient(to top, #e6b06b, #92da92);
 }
 
 @layer utilities {
