@@ -1,5 +1,6 @@
 import React from "react";
 import LoginForm from "./LoginForm";
+import { Redirect } from "next";
 
 const LoginPanel = () => {
   return (
