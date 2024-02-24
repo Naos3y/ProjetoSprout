@@ -20,7 +20,6 @@ export default async function LoginForm() {
         action={async (email, password) => {
           "use server";
           await Login(email, password);
-          redirect("/");
         }}
       >
         <div className="mb-6 text-left ml-2">

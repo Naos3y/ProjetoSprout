@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { SignJWT, jwtVerify } from "jose";
 
-const secretKey = "SECRETKEY";
+const secretKey = process.env.SECRETKEY;
 const key = new TextEncoder().encode(secretKey);
 
 export async function encrypt(payload) {
@@ -21,11 +21,25 @@ export async function decrypt(input): Promise<any> {
 }
 
 export async function Login(email, password) {
-  console.log(email, password);
-  const user = { data: email };
+  const id = 1;
+  const permission = 4;
+  const name = "Sam";
+
+  // Falta fazer a consulta à base de dados
+  const user = { id: id, name: name, email: email, permission: permission };
   const expires = new Date(Date.now() + 30 * 60 * 1000);
   const session = await encrypt({ user, expires });
-  cookies().set("session", session, { expires, httpOnly: true });
+
+  //permissions :
+  // 0 -> admin root
+  // 1 -> admin supreme
+  // 2 -> admin light
+  // 3 -> manager
+  // 4 -> sprout
+
+  cookies().set("session", session, { expires });
+
+  return session;
 }
 
 export async function getSession() {
