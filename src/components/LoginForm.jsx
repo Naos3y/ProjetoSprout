@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import React from "react";
-import { getSession, Login, Logout } from "@/auth/auth";
+import { getSession, Login, Logout } from "@/auth/session";
 
 export default async function LoginForm() {
   const session = await getSession();
