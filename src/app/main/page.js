@@ -62,7 +62,7 @@ export default function Main() {
             ? "Loading"
             : control === 1
             ? `Welcome ${username}`
-            : "Ocorreu um erro"}
+            : "An unexpected error has occurred !"}
         </h2>
         <div className="max-w-screen">
           {linkComponent && (
