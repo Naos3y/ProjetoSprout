@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import cookies from "js-cookie";
-import { decrypt } from "@/auth/encryption";
+import { decrypt } from "@/auth/cookie";
 import Link from "next/link";
 
 export default function Main() {

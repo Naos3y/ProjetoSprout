@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { encrypt, decrypt } from "./encryption";
+import { encrypt, decrypt } from "./cookie";
 const secretKey = "toni";
 const key = new TextEncoder().encode(secretKey);
 
@@ -26,24 +26,25 @@ export async function Login(email, password) {
   return session;
 }
 
-export async function getSession() {
-  const session = cookies().get("session")?.value;
-  if (!session) return null;
-  return await decrypt(session);
-}
-
 export async function updateSession(request) {
   const session = request.cookies.get("session")?.value;
   if (!session) return;
 
-  const parsed = await decrypt(session);
-  parsed.expires = new Date(Date.now() + 30 * 1000);
+  const decryptedSession = await decrypt(session);
+  decryptedSession.expires = new Date(Date.now() + 30 * 60 * 1000);
+
   const res = NextResponse.next();
   res.cookies.set({
     name: "session",
-    value: await encrypt(parsed),
-    httpOnly: true,
-    expires: parsed.expires,
+    value: await encrypt(decryptedSession),
+    expires: decryptedSession.expires,
   });
+
   return res;
+}
+
+export async function getSession() {
+  const session = cookies().get("session")?.value;
+  if (!session) return null;
+  return await decrypt(session);
 }

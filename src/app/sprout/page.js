@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import cookies from "js-cookie";
-import { decrypt } from "@/auth/encryption";
+import { decrypt } from "@/auth/cookie";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);
