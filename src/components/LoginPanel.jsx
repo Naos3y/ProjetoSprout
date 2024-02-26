@@ -2,7 +2,7 @@ import React from "react";
 import LoginForm from "./LoginForm";
 import { Redirect } from "next";
 
-const LoginPanel = () => {
+const LoginPanel = (props) => {
   return (
     <div className="flex justify-center items-center h-screen shadow-2xl">
       <div className="max-w-screen flex ">
@@ -14,7 +14,7 @@ const LoginPanel = () => {
         />
         {/* Formulário */}
         <div className="w-full sm:w-1/2 h-1/2">
-          <LoginForm />
+          <LoginForm error={props.error} />
         </div>
       </div>
     </div>
