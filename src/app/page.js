@@ -9,7 +9,7 @@ export default async function Home() {
   if (!error) {
     if (!session) return <LoginPanel error={false} />;
     else {
-      return <meta http-equiv="refresh" content="0; url=main" />;
+      return <meta http-equiv="refresh" content="0; url=validation" />;
     }
   } else {
     return <LoginPanel error={true} />;

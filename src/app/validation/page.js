@@ -4,7 +4,7 @@ import cookies from "js-cookie";
 import { decrypt } from "@/auth/cookie";
 import Link from "next/link";
 
-export default function Main() {
+export default function Validation() {
   const [linkComponent, setLinkComponent] = useState(null);
   const [username, setUsername] = useState(null);
   const [control, setControl] = useState(-1);
@@ -59,9 +59,9 @@ export default function Main() {
       <div className="rounded-lg bg-white p-6 shadow-md w-full md:w-96">
         <h2 className="text-2xl text-gray-600 font-bold mb-4 text-center">
           {control === -1
-            ? "Loading"
+            ? "Validating your session... please wait ..."
             : control === 1
-            ? `Welcome ${username}`
+            ? `Welcome ${username} 🌱`
             : "An unexpected error has occurred !"}
         </h2>
         <div className="max-w-screen">
