@@ -4,22 +4,33 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "dependencies": {
+    "@prisma/client": "^5.10.2",
+    "fs": "^0.0.1-security",
     "jose": "^5.2.2",
     "js-cookie": "^3.0.5",
     "next": "14.1.0",
     "next-auth": "^4.24.6",
+    "next-connect": "^1.0.0",
     "nookies": "^2.5.2",
+    "pg": "^8.11.3",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "vite": "^5.1.4"
   },
   "devDependencies": {
+    "@types/react": "18.2.60",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1"
+    "prisma": "^5.10.2",
+    "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2"
   }
 }

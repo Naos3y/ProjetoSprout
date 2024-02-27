@@ -3,7 +3,7 @@ import { SignJWT, jwtVerify } from "jose";
 const secretKey = "toni";
 const key = new TextEncoder().encode(secretKey);
 
-export async function decrypt(input): Promise<any> {
+export async function decrypt(input) {
   const { payload } = await jwtVerify(input, key, {
     algorithms: ["HS256"],
   });
