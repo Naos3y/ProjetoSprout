@@ -1,12 +1,11 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
-import Home from "@/app/admin/home/page";
 
 const admin = () => {
   return (
     <div>
-      <Navbar />
-      <Home />
+      <Navbar activeRoute="/admin" />
+      <div>Admin home page - Colocar aqui tudo o que está na home do admin</div>
     </div>
   );
 };

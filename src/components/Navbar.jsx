@@ -1,10 +1,10 @@
 "use client";
 
 import styles from "../Styles/styles.css";
-
+import Link from "next/link";
 import { useState } from "react";
 
-const Navbar = () => {
+const Navbar = ({ activeRoute }) => {
   const [toggleState, setToggleState] = useState(0);
 
   const toggleTab = (index) => {
@@ -14,30 +14,42 @@ const Navbar = () => {
   return (
     <div className="mainNav">
       <div className="block-tabs">
-        <div
-          className={toggleState === 0 ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(0)}
-        >
-          Home
-        </div>
-        <div
-          className={toggleState === 1 ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(1)}
-        >
-          My Trainigs
-        </div>
-        <div
-          className={toggleState === 2 ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(2)}
-        >
-          My Team
-        </div>
-        <div
-          className={toggleState === 3 ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(3)}
-        >
-          Admin Hub
-        </div>
+        <Link href="/admin">
+          <div
+            className={activeRoute === "/admin" ? "tabs active-tabs" : "tabs"}
+            onClick={() => toggleTab(0)}
+          >
+            Home
+          </div>
+        </Link>
+        <Link href="/admin/mytrainings">
+          <div
+            className={
+              activeRoute === "/admin/mytrainings" ? "tabs active-tabs" : "tabs"
+            }
+            onClick={() => toggleTab(1)}
+          >
+            My Trainigs
+          </div>
+        </Link>
+        <Link href="/admin/myteam">
+          <div
+            className={
+              activeRoute === "/admin/myteam" ? "tabs active-tabs" : "tabs"
+            }
+          >
+            My Team
+          </div>
+        </Link>
+        <Link href="/admin/adminhub">
+          <div
+            className={
+              activeRoute === "/admin/adminhub" ? "tabs active-tabs" : "tabs"
+            }
+          >
+            Admin Hub
+          </div>
+        </Link>
       </div>
     </div>
   );
