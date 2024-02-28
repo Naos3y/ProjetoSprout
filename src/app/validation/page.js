@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import cookies from "js-cookie";
-import { decrypt } from "@/auth/cookie";
+import { decrypt } from "@/cookies/cookie";
 import Link from "next/link";
 
 export default function Validation() {

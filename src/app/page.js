@@ -1,5 +1,5 @@
 import LoginPanel from "../components/LoginPanel";
-import { getSession, getError } from "../auth/session";
+import { getSession, getError } from "../cookies/session";
 
 export default async function Home() {
   const session = await getSession();
