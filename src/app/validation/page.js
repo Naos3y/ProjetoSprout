@@ -15,7 +15,7 @@ export default function Validation() {
       if (sessionCookie) {
         try {
           const decryptedSession = await decrypt(sessionCookie);
-          setUsername(decryptedSession.user.name);
+          setUsername(decryptedSession.user.email);
           console.log(decryptedSession);
 
           console.log(username);
@@ -43,12 +43,11 @@ export default function Validation() {
         } catch (error) {
           setControl(0);
           cookies.remove("nomeDoCookie");
-          setLinkComponent(<Link href="/">Retry</Link>);
+          setLinkComponent(<Link href="/">Go back</Link>);
         }
       } else {
-        console.log("Cookie não encontrado");
         setControl(0);
-        setLinkComponent(<Link href="/">Retry</Link>);
+        setLinkComponent(<Link href="/">Go back</Link>);
       }
     };
     getSession();

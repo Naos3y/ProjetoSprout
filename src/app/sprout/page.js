@@ -5,26 +5,6 @@ import { decrypt } from "@/cookies/cookie";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch("/api", {
-        headers: {
-          Accept: "application/json",
-          method: "GET",
-        },
-      });
-      if (response) {
-        const data = await response.json();
-        console.log(data);
-      }
-    } catch (error) {
-      console.table(error);
-    } finally {
-    }
-  };
-  fetchData();
 
   useEffect(() => {
     const getSession = async () => {
