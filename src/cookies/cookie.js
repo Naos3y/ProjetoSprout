@@ -1,7 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
-
-const secretKey = "toni";
-const key = new TextEncoder().encode(secretKey);
+const key = new TextEncoder().encode("sxpxrsxcrxt");
 
 export async function decrypt(input) {
   const { payload } = await jwtVerify(input, key, {
