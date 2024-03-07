@@ -1,0 +1,12 @@
+ALTER TABLE "User" 
+ADD COLUMN "U_permission" INT,
+ADD COLUMN "U_Type" TEXT,
+ADD COLUMN "U_EmployeeNumber" TEXT,
+ADD COLUMN "U_Foto" TEXT,
+ADD COLUMN "U_DirectReports" TEXT,
+ADD COLUMN "U_StartingDate" TEXT,
+ADD COLUMN "U_Pais" TEXT,
+ADD COLUMN "U_Cidade" TEXT,
+ADD COLUMN "U_Role" TEXT,
+ADD COLUMN "U_Seniority" TEXT,
+ADD COLUMN "U_group" TEXT;

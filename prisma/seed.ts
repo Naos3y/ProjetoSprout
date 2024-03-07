@@ -9,6 +9,18 @@ async function main() {
     create: {
       email: "root@root.com",
       password: "supersecretpassword",
+      perm: "sadas",
+      utype: "type",
+      uemployeenumber: "employeeNumber",
+      uname: "Name",
+      ufoto: "path/to/photo.jpg",
+      udirectreports: "directReports",
+      ustartingdate: "13-04-2023",
+      upais: "Country",
+      ucidade: "City",
+      urole: "role",
+      useniority: "seniority",
+      ugroup: "group",
     },
   });
   console.log({ user });

@@ -16,9 +16,17 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
   email String @unique
-  password String
-}
-
-model User_info{
-  
+  password String?
+  perm String?
+  utype String?
+  uemployeenumber String?
+  uname String?
+  ufoto String?
+  udirectreports String?
+  ustartingdate String?
+  upais String?
+  ucidade String?
+  urole String?
+  useniority String?
+  ugroup String?
 }

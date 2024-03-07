@@ -9,6 +9,7 @@ const Formulario = () => {
   const [employeeNumber, setEmployeeNumber] = useState('');
   const [role, setRole] = useState('');
   const [completeName, setCompleteName] = useState('');
+  const [seniority, setSeniority] = useState('');
   const [photo, setPhoto] = useState('');
   const [email, setEmail] = useState('');
   const [team, setTeam] = useState('');
@@ -41,10 +42,11 @@ const Formulario = () => {
     console.log('Month:', month);
     console.log('Year:', year);
     console.log('Associate Training Plans?', associateTraining);
+    console.log('seniority:', seniority);
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+  return ( 
+    <form  className="space-y-8">
       <div className="grid grid-cols-4 gap-4">
         <div className="flex items-center">
           <Icon icon="wpf:add-user" width="19" height="19" className="text-green-500" />
@@ -57,6 +59,7 @@ const Formulario = () => {
             User Type
           </label>
           <select
+            name='userType'
             id="userType"
             value={userType}
             onChange={(e) => setUserType(e.target.value)}
@@ -73,6 +76,7 @@ const Formulario = () => {
             Admin Rights
           </label>
           <input
+          name='adminRights'
             id="adminRights"
             type="text"
             value={adminRights}
@@ -85,6 +89,7 @@ const Formulario = () => {
             Employee Number
           </label>
           <input
+          name='employeeNumber'
             id="employeeNumber"
             type="text"
             value={employeeNumber}
@@ -97,6 +102,7 @@ const Formulario = () => {
             Role
           </label>
           <input
+          name='role'
             id="role"
             type="text"
             value={role}
@@ -107,13 +113,14 @@ const Formulario = () => {
       </div>
       <div className="grid grid-cols-4 gap-4">
         <div>
-          <label htmlFor="userType" className="font-semibold">
+          <label htmlFor="seniority" className="font-semibold">
             Seniority
           </label>
           <select
-            id="userType"
+          name='seniority'
+            id="seniority"
             value={userType}
-            onChange={(e) => setUserType(e.target.value)}
+            onChange={(e) => setSeniority(e.target.value)}
             className="block w-50 mt-2 focus:border-green-500 focus:outline-none rounded-md"
           >
             <option value="">Selecione o tipo de utilizador</option>
@@ -128,6 +135,7 @@ const Formulario = () => {
             Complete Name
           </label>
           <input
+          name='completeName'
             id="completeName"
             type="text"
             value={completeName}
@@ -140,6 +148,7 @@ const Formulario = () => {
             Photo
           </label>
           <input
+          name='photo'
             id="photo"
             type="file"
             accept="image/*"
@@ -154,6 +163,7 @@ const Formulario = () => {
             Email
           </label>
           <input
+          name='email'
             id="email"
             type="text"
             value={email}
@@ -168,6 +178,7 @@ const Formulario = () => {
             Team
           </label>
           <input
+          name='team'
             id="team"
             type="text"
             value={team}
@@ -180,6 +191,7 @@ const Formulario = () => {
             Leader
           </label>
           <input
+          name='leader'
             id="leader"
             type="text"
             value={leader}
@@ -192,6 +204,7 @@ const Formulario = () => {
             Department
           </label>
           <input
+          name='department'
             id="department"
             type="text"
             value={department}
@@ -204,6 +217,7 @@ const Formulario = () => {
             Groups
           </label>
           <input
+          name='groups'
             id="groups"
             type="text"
             value={groups}
@@ -218,6 +232,7 @@ const Formulario = () => {
             Country
           </label>
           <input
+          name='country'
             id="country"
             type="text"
             value={country}
@@ -230,6 +245,7 @@ const Formulario = () => {
             City
           </label>
           <input
+          name='city'
             id="city"
             type="text"
             value={city}
