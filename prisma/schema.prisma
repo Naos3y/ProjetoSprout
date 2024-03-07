@@ -13,8 +13,24 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-model User {
-  id Int @id @default(autoincrement())
+model Login {
+  lid Int @id @default(autoincrement())
   email String @unique
   password String
+}
+
+model User {
+  uid Int @id @default(autoincrement())
+  perm String?
+  utype String?
+  uemployeenumber String?
+  uname String?
+  ufoto String?
+  udirectreports String?
+  ustartingdate String?
+  upais String?
+  ucidade String?
+  urole String?
+  useniority String?
+  ugroup String?
 }

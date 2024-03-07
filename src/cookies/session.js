@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { encrypt, decrypt } from "./cookie";
 
-async function fazerLogin(email, password) {
+async function tryLogin(email, password) {
   try {
     const response = await fetch("http://localhost:3000/api/login", {
       method: "POST",
@@ -16,13 +16,13 @@ async function fazerLogin(email, password) {
     });
 
     if (!response.ok) {
-      throw new Error("Erro ao fazer login");
+      throw new Error("Something went wrong");
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Erro:", error);
+    console.error("Error:", error);
     throw error;
   }
 }
@@ -39,7 +39,7 @@ export async function Login(credentials) {
   const password = credentials.get("password");
 
   try {
-    const response = await fazerLogin(email, password);
+    const response = await tryLogin(email, password);
     if (response.code == 200) {
       const user = { email: email, permission: permission };
       const expires = new Date(Date.now() + 30 * 60 * 1000);
