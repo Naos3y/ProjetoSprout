@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import cookies from "js-cookie";
-import { decrypt } from "@/cookies/cookie";
+import { decrypt } from "@/session/client/crypt";
+import { getPermission } from "@/session/client/getPermission";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);
@@ -9,11 +10,18 @@ export default function Sprout() {
   useEffect(() => {
     const getSession = async () => {
       const sessionCookie = cookies.get("session");
-
       if (sessionCookie) {
         try {
           const decryptedSession = await decrypt(sessionCookie);
-          setControl(1);
+          if (decryptedSession) {
+            const response = await getPermission();
+            console.log(response);
+            if (response == 4) {
+              setControl(1);
+            } else {
+              setControl(0);
+            }
+          }
         } catch (error) {
           setControl(0);
         }
@@ -30,7 +38,7 @@ export default function Sprout() {
         <div className="flex justify-center items-center h-screen">
           <div className="rounded-lg bg-white p-6 shadow-md w-full md:w-96">
             <h2 className="text-2xl text-gray-600 font-bold text-center">
-              Loading
+              Loading...
             </h2>
           </div>
         </div>
