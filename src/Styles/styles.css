@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .mainNav {
   background-color: #cee5c7;
   display: flex;
