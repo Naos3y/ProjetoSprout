@@ -6,6 +6,7 @@ import Dropdown from "@/components/Dropdown";
 const AddTrainingPlan = () => {
   const [trainingType, setTrainingType] = useState(null);
   const [trainingArea, setTrainingArea] = useState(null);
+  const [eventType, setEventType] = useState(null);
 
   return (
     <div>
@@ -37,6 +38,20 @@ const AddTrainingPlan = () => {
               message="Select One"
               onSelect={setTrainingArea}
             />
+
+            <Dropdown
+              label="Event Type"
+              options={[
+                { value: "offline", label: "Offline" },
+                { value: "onsite", label: "On Site" },
+                { value: "virtual", label: "Virtual" },
+                { value: "virtualonsite", label: "Virtual or Onsite" },
+              ]}
+              message="Select One"
+              onSelect={setEventType}
+            />
+
+            {/* Fazer componenet multisect */}
           </form>
         </div>
       </div>
