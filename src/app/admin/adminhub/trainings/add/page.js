@@ -3,17 +3,20 @@ import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Dropdown from "@/components/Dropdown";
 import Multiselect from "@/components/Multiselect";
+import Counter from "@/components/Counter";
 
 const AddTrainingPlan = () => {
   const [trainingType, setTrainingType] = useState(null);
   const [trainingArea, setTrainingArea] = useState(null);
   const [eventType, setEventType] = useState(null);
   const [oponFor, setOpenFor] = useState([]);
+  const [numMin, setNumMin] = useState(0);
 
-  const handleOpenForChange = (selectedOptions) => {
-    setOpenFor(selectedOptions);
-    console.log("OpenFor:", selectedOptions); // Adicionando o console.log aqui
-  };
+  console.log("trainingType:", trainingType);
+  console.log("trainingArea:", trainingArea);
+  console.log("eventType:", eventType);
+  console.log("oponFor:", oponFor);
+  console.log("numMin:", numMin);
 
   return (
     <div>
@@ -68,8 +71,10 @@ const AddTrainingPlan = () => {
                 { value: "people", label: "People" },
               ]}
               message="Select One / Multi"
-              onSelect={handleOpenForChange}
+              onSelect={setOpenFor}
             />
+
+            <Counter label="Duration (Minutes)" number={setNumMin} />
           </form>
         </div>
       </div>
