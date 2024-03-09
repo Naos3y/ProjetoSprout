@@ -13,8 +13,8 @@ const Dropdown = ({ label, options, message, onSelect }) => {
   };
 
   return (
-    <div className="relative">
-      <label>{label}</label>
+    <div className="relative px-3 py-3 space-x-3">
+      <label className="px-3">{label}</label>
       <button
         type="button"
         className="border border-gray-300 border-1 px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-[200px] bg-white shadow-sm"

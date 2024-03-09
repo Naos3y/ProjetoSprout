@@ -2,11 +2,18 @@
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Dropdown from "@/components/Dropdown";
+import Multiselect from "@/components/Multiselect";
 
 const AddTrainingPlan = () => {
   const [trainingType, setTrainingType] = useState(null);
   const [trainingArea, setTrainingArea] = useState(null);
   const [eventType, setEventType] = useState(null);
+  const [oponFor, setOpenFor] = useState([]);
+
+  const handleOpenForChange = (selectedOptions) => {
+    setOpenFor(selectedOptions);
+    console.log("OpenFor:", selectedOptions); // Adicionando o console.log aqui
+  };
 
   return (
     <div>
@@ -16,7 +23,7 @@ const AddTrainingPlan = () => {
           barra lateral
         </div>
         <div>
-          <form className="flex px-3 py-3 space-x-8">
+          <form className="flex flex-wrap">
             <Dropdown
               label="Training Type"
               options={[
@@ -51,7 +58,18 @@ const AddTrainingPlan = () => {
               onSelect={setEventType}
             />
 
-            {/* Fazer componenet multisect */}
+            <Multiselect
+              label="Enrolement Open For"
+              options={[
+                { value: "all", label: "All" },
+                { value: "department", label: "Department" },
+                { value: "groups", label: "Groups" },
+                { value: "teams", label: "Teams" },
+                { value: "people", label: "People" },
+              ]}
+              message="Select One / Multi"
+              onSelect={handleOpenForChange}
+            />
           </form>
         </div>
       </div>
