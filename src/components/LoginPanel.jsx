@@ -2,7 +2,7 @@ import React from "react";
 import LoginForm from "./LoginForm";
 import { Redirect } from "next";
 
-const LoginPanel = (props) => {
+export default function LoginPanel(props) {
   return (
     <div className="flex justify-center items-center h-screen shadow-2xl">
       <div className="max-w-screen flex ">
@@ -19,6 +19,4 @@ const LoginPanel = (props) => {
       </div>
     </div>
   );
-};
-
-export default LoginPanel;
+}

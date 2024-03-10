@@ -41,7 +41,7 @@ export default async function LoginForm(props) {
             href="#"
             className="text-black transition-colors hover:text-gray-500 duration-300 font-bold"
           >
-            Forgot the Password ?
+            Forgot the Password?
           </a>
         </div>
         <div className="text-center">
@@ -55,11 +55,11 @@ export default async function LoginForm(props) {
         <div className="text-center">
           {props.error == true ? (
             <p className=" text-sm transition-colors text-red-400 duration-300 font-bold">
-              Incorrect Login or Password !
+              Incorrect Login or Password!
             </p>
           ) : (
-            <p className=" text-sm transition-colors text-gray-500 duration-300 font-bold">
-              Insert your credentials !
+            <p className=" text-sm transition-colors text-white duration-300 font-bold">
+              sprout
             </p>
           )}
         </div>
