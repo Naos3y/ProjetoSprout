@@ -24,9 +24,9 @@ const Counter = ({ label, returned }) => {
   };
 
   return (
-    <div className="relative px-3 py-3 space-x-3">
+    <div className="relative px-5 py-5 space-x-5">
       <div className="flex flex-col items-center">
-        <label className="px-3">{label}</label>
+        <label className="px-5">{label}</label>
         <div className="flex items-center">
           <button
             onClick={handleDecrement}

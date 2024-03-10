@@ -10,8 +10,8 @@ const BigInput = ({ label, returned }) => {
   };
 
   return (
-    <div className="relative px-3 py-3 space-x-3">
-      <label className="px-3">{label}</label>
+    <div className="relative px-5 py-5 space-x-5">
+      <label className="px-5">{label}</label>
       <textarea
         value={text}
         onChange={handleChange}

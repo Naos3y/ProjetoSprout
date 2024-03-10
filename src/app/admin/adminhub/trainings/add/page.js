@@ -17,6 +17,10 @@ const AddTrainingPlan = () => {
   const [text, setText] = useState(null);
   const [bigText, setBigText] = useState(null);
   const [date, setDate] = useState(null);
+  const [trainers, setTrainers] = useState([]);
+  const [minParticipants, setMinParticipants] = useState(null);
+  const [maxParticipants, setMaxParticipants] = useState(null);
+  const [trainingName, setTrainingName] = useState(null);
 
   /* console.log("trainingType:", trainingType);
   console.log("trainingArea:", trainingArea);
@@ -31,12 +35,12 @@ const AddTrainingPlan = () => {
     <div>
       <Navbar activeRoute="/admin/adminhub" />
       <div className="flex">
-        <div className="w-60 bg-gray-200 h-screen p-4 border-r border-gray-400">
+        <div className="w-80 bg-gray-200 h-screen p-4 border-r border-gray-400">
           barra lateral
         </div>
-        <div>
+        <div className="mx-auto max-w-6xl my-4 space-y-4">
           <form className="flex flex-wrap">
-            {/* <Dropdown
+            <Dropdown
               label="Training Type"
               options={[
                 { value: "internal", label: "Internal" },
@@ -53,10 +57,15 @@ const AddTrainingPlan = () => {
                 { value: "itdevelopment", label: "IT Development" },
                 { value: "sales", label: "Sales" },
                 { value: "languages", label: "Languages" },
+                { value: "product", label: "Product" },
+                { value: "interpersonalskills", label: "Interpersonal Skills" },
+                { value: "leadership", label: "Leadership" },
+                { value: "h&s", label: "Health and Safety" },
+                { value: "businesspracticess", label: "Business Practices" },
               ]}
               message="Select One"
               onSelect={setTrainingArea}
-            /> */}
+            />
 
             <Dropdown
               label="Event Type"
@@ -68,6 +77,22 @@ const AddTrainingPlan = () => {
               ]}
               message="Select One"
               returned={setEventType}
+            />
+
+            <Multiselect
+              label="Trainers"
+              options={[
+                { value: "internal", label: "José Silva" },
+                { value: "internal", label: "António Lopes" },
+                { value: "internal", label: "Joana Marques" },
+                { value: "internal", label: "Bruno Lopes" },
+                { value: "internal", label: "Daniela Pinto" },
+                { value: "internal", label: "Tatiana Rorigues" },
+                { value: "external", label: "ISTQB" },
+                { value: "external", label: "HGD" },
+              ]}
+              message="Select One / Multi"
+              returned={setTrainers}
             />
 
             <Multiselect
@@ -83,16 +108,28 @@ const AddTrainingPlan = () => {
               returned={setOpenFor}
             />
 
+            <TextInput label={"Enroll"} returned={setText} />
+
             <Counter label="Duration (Minutes)" returned={setNumMin} />
 
-            <TextInput label={"Cenas"} returned={setText} />
+            <Counter
+              label="Min Nº of Participants"
+              returned={setMinParticipants}
+            />
+
+            <Counter
+              label="Max Nº of Participants"
+              returned={setMaxParticipants}
+            />
+
+            <TextInput label={"Training Name"} returned={setTrainingName} />
 
             <BigInput
               label={"Event | Training Description"}
               returned={setBigText}
             />
 
-            <DatePicker label={"Date"} returned={setDate} />
+            {/* <DatePicker label={"Date"} returned={setDate} /> */}
           </form>
         </div>
       </div>
