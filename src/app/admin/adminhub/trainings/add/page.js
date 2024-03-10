@@ -4,6 +4,9 @@ import Navbar from "@/components/Navbar";
 import Dropdown from "@/components/Dropdown";
 import Multiselect from "@/components/Multiselect";
 import Counter from "@/components/Counter";
+import TextInput from "@/components/TextInput";
+import BigInput from "@/components/BigInput";
+import DatePicker from "@/components/DatePicker";
 
 const AddTrainingPlan = () => {
   const [trainingType, setTrainingType] = useState(null);
@@ -11,12 +14,18 @@ const AddTrainingPlan = () => {
   const [eventType, setEventType] = useState(null);
   const [oponFor, setOpenFor] = useState([]);
   const [numMin, setNumMin] = useState(0);
+  const [text, setText] = useState(null);
+  const [bigText, setBigText] = useState(null);
+  const [date, setDate] = useState(null);
 
-  console.log("trainingType:", trainingType);
+  /* console.log("trainingType:", trainingType);
   console.log("trainingArea:", trainingArea);
   console.log("eventType:", eventType);
   console.log("oponFor:", oponFor);
   console.log("numMin:", numMin);
+  console.log("text:", text);
+  console.log("Big text:", bigText); */
+  console.log("Date:", date);
 
   return (
     <div>
@@ -27,7 +36,7 @@ const AddTrainingPlan = () => {
         </div>
         <div>
           <form className="flex flex-wrap">
-            <Dropdown
+            {/* <Dropdown
               label="Training Type"
               options={[
                 { value: "internal", label: "Internal" },
@@ -47,7 +56,7 @@ const AddTrainingPlan = () => {
               ]}
               message="Select One"
               onSelect={setTrainingArea}
-            />
+            /> */}
 
             <Dropdown
               label="Event Type"
@@ -58,7 +67,7 @@ const AddTrainingPlan = () => {
                 { value: "virtualonsite", label: "Virtual or Onsite" },
               ]}
               message="Select One"
-              onSelect={setEventType}
+              returned={setEventType}
             />
 
             <Multiselect
@@ -71,10 +80,19 @@ const AddTrainingPlan = () => {
                 { value: "people", label: "People" },
               ]}
               message="Select One / Multi"
-              onSelect={setOpenFor}
+              returned={setOpenFor}
             />
 
-            <Counter label="Duration (Minutes)" number={setNumMin} />
+            <Counter label="Duration (Minutes)" returned={setNumMin} />
+
+            <TextInput label={"Cenas"} returned={setText} />
+
+            <BigInput
+              label={"Event | Training Description"}
+              returned={setBigText}
+            />
+
+            <DatePicker label={"Date"} returned={setDate} />
           </form>
         </div>
       </div>

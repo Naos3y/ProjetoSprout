@@ -1,26 +1,26 @@
 import React, { useState } from "react";
 
-const Counter = ({ label, number }) => {
+const Counter = ({ label, returned }) => {
   const [count, setCount] = useState(0);
 
   const handleChange = (event) => {
     const value = parseInt(event.target.value);
     if (!isNaN(value)) {
       setCount(value);
-      number(value);
+      returned(value);
     }
   };
 
   const handleIncrement = () => {
     const newValue = count + 1;
     setCount(newValue);
-    number(newValue);
+    returned(newValue);
   };
 
   const handleDecrement = () => {
     const newValue = Math.max(count - 1, 0);
     setCount(newValue);
-    number(newValue);
+    returned(newValue);
   };
 
   return (
@@ -54,7 +54,7 @@ const Counter = ({ label, number }) => {
             type="text"
             value={count}
             onChange={handleChange}
-            className="border p-2 w-12 text-center"
+            className="border focus:border-green-500 focus:outline-none border-gray-300 p-2 w-12 text-center rounded-md"
             inputMode="numeric"
           />
           <button

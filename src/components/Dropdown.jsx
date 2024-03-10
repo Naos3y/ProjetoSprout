@@ -2,13 +2,13 @@
 
 import React, { useState } from "react";
 
-const Dropdown = ({ label, options, message, onSelect }) => {
+const Dropdown = ({ label, options, message, returned }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleSelect = (option) => {
     setSelectedOption(option);
-    onSelect(option);
+    returned(option);
     setIsOpen(false);
   };
 
@@ -17,7 +17,7 @@ const Dropdown = ({ label, options, message, onSelect }) => {
       <label className="px-3">{label}</label>
       <button
         type="button"
-        className="border border-gray-300 border-1 px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-[200px] bg-white shadow-sm"
+        className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-[200px] bg-white shadow-sm"
         onClick={() => setIsOpen(!isOpen)}
         // para ficar sobreposto
         style={{ zIndex: 1000 }}
