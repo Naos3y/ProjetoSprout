@@ -17,7 +17,7 @@ const Dropdown = ({ label, options, message, returned }) => {
       <label className="px-5">{label}</label>
       <button
         type="button"
-        className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-[200px] bg-white shadow-sm"
+        className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-[200px] bg-white shadow-sm mt-2"
         onClick={() => setIsOpen(!isOpen)}
         // para ficar sobreposto
         style={{ zIndex: 1000 }}

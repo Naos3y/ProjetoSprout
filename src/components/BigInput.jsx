@@ -15,7 +15,7 @@ const BigInput = ({ label, returned }) => {
       <textarea
         value={text}
         onChange={handleChange}
-        className="border p-2 w-full rounded-md border-gray-300 focus:outline-none focus:border-green-500 resize-none"
+        className="border p-2 w-full rounded-md border-gray-300 focus:outline-none focus:border-green-500 resize-none  mt-2"
         rows={4}
       />
     </div>

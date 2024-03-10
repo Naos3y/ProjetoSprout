@@ -16,20 +16,20 @@ const AddTrainingPlan = () => {
   const [numMin, setNumMin] = useState(0);
   const [text, setText] = useState(null);
   const [bigText, setBigText] = useState(null);
-  const [date, setDate] = useState(null);
+  //const [date, setDate] = useState(null);
   const [trainers, setTrainers] = useState([]);
   const [minParticipants, setMinParticipants] = useState(null);
   const [maxParticipants, setMaxParticipants] = useState(null);
   const [trainingName, setTrainingName] = useState(null);
 
-  /* console.log("trainingType:", trainingType);
+  /*   console.log("trainingType:", trainingType);
   console.log("trainingArea:", trainingArea);
   console.log("eventType:", eventType);
   console.log("oponFor:", oponFor);
   console.log("numMin:", numMin);
   console.log("text:", text);
-  console.log("Big text:", bigText); */
-  console.log("Date:", date);
+  console.log("Big text:", bigText);
+  console.log("Date:", date); */
 
   return (
     <div>
@@ -39,7 +39,7 @@ const AddTrainingPlan = () => {
           barra lateral
         </div>
         <div className="mx-auto max-w-6xl my-4 space-y-4">
-          <form className="flex flex-wrap">
+          <div className="flex flex-wrap">
             <Dropdown
               label="Training Type"
               options={[
@@ -82,14 +82,14 @@ const AddTrainingPlan = () => {
             <Multiselect
               label="Trainers"
               options={[
-                { value: "internal", label: "José Silva" },
-                { value: "internal", label: "António Lopes" },
-                { value: "internal", label: "Joana Marques" },
-                { value: "internal", label: "Bruno Lopes" },
-                { value: "internal", label: "Daniela Pinto" },
-                { value: "internal", label: "Tatiana Rorigues" },
-                { value: "external", label: "ISTQB" },
-                { value: "external", label: "HGD" },
+                { value: "i1", label: "José Silva" },
+                { value: "i2", label: "António Lopes" },
+                { value: "i3", label: "Joana Marques" },
+                { value: "i4", label: "Bruno Lopes" },
+                { value: "i5", label: "Daniela Pinto" },
+                { value: "i6", label: "Tatiana Rorigues" },
+                { value: "e1", label: "ISTQB" },
+                { value: "e2", label: "HGD" },
               ]}
               message="Select One / Multi"
               returned={setTrainers}
@@ -130,7 +130,16 @@ const AddTrainingPlan = () => {
             />
 
             {/* <DatePicker label={"Date"} returned={setDate} /> */}
-          </form>
+          </div>
+
+          <div className="flex justify-center">
+            <button className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700">
+              Add Training
+            </button>
+            <button className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700">
+              Initiate Training
+            </button>
+          </div>
         </div>
       </div>
     </div>
