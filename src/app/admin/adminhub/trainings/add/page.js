@@ -108,8 +108,6 @@ const AddTrainingPlan = () => {
               returned={setOpenFor}
             />
 
-            <TextInput label={"Enroll"} returned={setText} />
-
             <Counter label="Duration (Minutes)" returned={setNumMin} />
 
             <Counter
@@ -121,6 +119,8 @@ const AddTrainingPlan = () => {
               label="Max Nº of Participants"
               returned={setMaxParticipants}
             />
+
+            <TextInput label={"Enroll"} returned={setText} />
 
             <TextInput label={"Training Name"} returned={setTrainingName} />
 
