@@ -7,6 +7,7 @@ import Counter from "@/components/Counter";
 import TextInput from "@/components/TextInput";
 import BigInput from "@/components/BigInput";
 import DatePicker from "@/components/DatePicker";
+import { Toaster, toast } from "sonner";
 
 const AddTrainingPlan = () => {
   const [trainingType, setTrainingType] = useState(null);
@@ -16,7 +17,7 @@ const AddTrainingPlan = () => {
   const [numMin, setNumMin] = useState(0);
   const [text, setText] = useState(null);
   const [bigText, setBigText] = useState(null);
-  //const [date, setDate] = useState(null);
+  const [date, setDate] = useState(null);
   const [trainers, setTrainers] = useState([]);
   const [minParticipants, setMinParticipants] = useState(null);
   const [maxParticipants, setMaxParticipants] = useState(null);
@@ -47,7 +48,7 @@ const AddTrainingPlan = () => {
                 { value: "external", label: "External" },
               ]}
               message="Select One"
-              onSelect={setTrainingType}
+              returned={setTrainingType}
             />
 
             <Dropdown
@@ -64,7 +65,7 @@ const AddTrainingPlan = () => {
                 { value: "businesspracticess", label: "Business Practices" },
               ]}
               message="Select One"
-              onSelect={setTrainingArea}
+              returned={setTrainingArea}
             />
 
             <Dropdown
@@ -133,10 +134,21 @@ const AddTrainingPlan = () => {
           </div>
 
           <div className="flex justify-center">
-            <button className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700">
+            <Toaster richColors position="bottom-center" />
+            <button
+              className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+              onClick={() => toast.success("Training Added")}
+            >
               Add Training
             </button>
-            <button className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700">
+            <button
+              className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+              onClick={() =>
+                toast.error(
+                  "It Wasnt Possible to Add the Training. Please Try Again"
+                )
+              }
+            >
               Initiate Training
             </button>
           </div>

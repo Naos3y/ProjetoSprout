@@ -2,22 +2,14 @@
 
 import styles from "../Styles/styles.css";
 import Link from "next/link";
-import { useState } from "react";
 
 const Navbar = ({ activeRoute }) => {
-  const [toggleState, setToggleState] = useState(0);
-
-  const toggleTab = (index) => {
-    setToggleState(index);
-  };
-
   return (
     <div className="mainNav">
       <div className="block-tabs">
         <Link href="/admin">
           <div
             className={activeRoute === "/admin" ? "tabs active-tabs" : "tabs"}
-            onClick={() => toggleTab(0)}
           >
             Home
           </div>
@@ -27,7 +19,6 @@ const Navbar = ({ activeRoute }) => {
             className={
               activeRoute === "/admin/mytrainings" ? "tabs active-tabs" : "tabs"
             }
-            onClick={() => toggleTab(1)}
           >
             My Trainigs
           </div>
