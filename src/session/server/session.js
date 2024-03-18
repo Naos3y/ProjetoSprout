@@ -42,7 +42,7 @@ export async function Login(credentials) {
     if (email == "sam@root.pt") {
       // const response = await tryLogin(email, password);
       // if (response.code == 200) {
-      const user = { email: email, permission: permission };
+      const user = { name: "sam", email: email, permission: permission };
       const expires = new Date(Date.now() + 30 * 60 * 1000);
       const session = await encrypt({ user, expires });
       cookies().set("session", session, { expires });

@@ -7,28 +7,20 @@ export default function Sprout() {
   const [control, setControl] = useState(-1);
 
   useEffect(() => {
+    let flag = true;
     const getSession = async () => {
-      const sessionCookie = cookies.get("session");
-
-      if (sessionCookie) {
-        try {
-          const decryptedSession = await decrypt(sessionCookie);
-          if (decryptedSession) {
-            const perm = await getPermission();
-            if (perm == 3) {
-              setControl(1);
-            } else {
-              setControl(0);
-            }
-          }
-        } catch (error) {
-          setControl(0);
-        }
-      } else {
-        setControl(0);
+      if (!flag) {
+        const sessionStatus = await sessionExpired();
+        setControl(sessionStatus);
+      } else if (flag) {
+        const sessionStatus = await validSession(3);
+        setControl(sessionStatus);
+        flag = !flag;
       }
     };
     getSession();
+    const intervalId = setInterval(getSession, 5000);
+    return () => clearInterval(intervalId);
   }, []);
 
   return (

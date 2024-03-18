@@ -16,6 +16,7 @@ export default function LoginPanel(props) {
         <div className="w-full sm:w-1/2 h-1/2">
           <LoginForm error={props.error} />
         </div>
+        {/* Informação das cookies*/}
       </div>
     </div>
   );
