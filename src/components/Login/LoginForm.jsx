@@ -1,5 +1,5 @@
 import React from "react";
-import { getSession, Login, Logout } from "../session/server/session";
+import { getSession, Login, Logout } from "../../session/server/session";
 
 export default async function LoginForm(props) {
   return (

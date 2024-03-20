@@ -30,6 +30,6 @@ export async function validSession(p1, p2 = p1, p3 = p1) {
 
 export async function sessionExpired() {
   const sessionCookie = cookies.get("session");
-  if (sessionCookie) return 1;
-  return 2;
+  if (sessionCookie) return 0;
+  return 1;
 }

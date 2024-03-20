@@ -1,4 +1,4 @@
-import LoginPanel from "../components/LoginPanel";
+import LoginPanel from "../components/Login/LoginPanel";
 import { getSession } from "../session/server/session";
 import { getError } from "../session/server/session";
 export default async function Home() {

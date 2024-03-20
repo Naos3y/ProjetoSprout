@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.mainNav {
+  background-color: #87b421;
+  display: flex;
+  justify-content: space-between;
+  /* flex-direction: column;
+  align-items: start; */
+  padding-top: 10px;
+}
+
+.block-tabs {
+  display: flex;
+  padding-left: 1em;
+}
+
+.tabs {
+  cursor: pointer;
+  padding: 10px;
+  color: white;
+  flex-grow: 1;
+  margin-right: 20px;
+}
+
+.active-tabs {
+  background-color: white;
+  color: #87b421;
+  font-weight: bold;
+}
+
+.content {
+  display: none;
+}
+
+.active-content {
+  display: block;
+}
+
+@media only screen and (min-width: 768px) {
+  .tabs {
+    margin-right: 7em;
+  }
+}
+
+a {
+  text-decoration: none;
+  cursor: default;
+}
