@@ -131,7 +131,7 @@ const Navbar = ({ activeRoute, privilege }) => {
           </Link>
         </div>
       )}
-      <UserOptions />
+      <UserOptions active={(activeRoute = "/profile" ? 1 : 0)} />
     </div>
   );
 };

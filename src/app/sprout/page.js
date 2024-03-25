@@ -1,22 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
-import cookies from "js-cookie";
-import { decrypt } from "@/session/client/crypt";
-import {
-  getPermission,
-  sessionExpired,
-  validSession,
-} from "@/session/sessionUtils";
+import { sessionExpired, validSession } from "@/session/sessionUtils";
 import Navbar from "@/components/Navbar";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
+import SessionExpired from "@/components/Misc/SessionExpired";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);
   const [showExpired, setShowExpired] = useState(false);
 
-  //control meaning
+  //control
   // -1 Verificar a sessão
   //  0 Acesso negado
   //  1 Sessão verificada
@@ -77,20 +70,7 @@ export default function Sprout() {
           </div>
         </div>
       )}
-      {showExpired && (
-        <div
-          className="n fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-200 rounded-md shadow-md p-4 flex flex-col items-center w-full md:w-auto md:max-w-lg px-8 py-8 text-lg
-        "
-        >
-          <p className="text-gray-700 text-center font-bold">
-            Your session has expired!
-          </p>
-
-          <button className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            <Link href="/">Logout </Link>
-          </button>
-        </div>
-      )}
+      {showExpired && <SessionExpired />}
     </div>
   );
 }
