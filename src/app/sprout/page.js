@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { sessionExpired, validSession } from "@/session/sessionUtils";
 import Navbar from "@/components/Navbar";
-import Link from "next/link";
-import SessionExpired from "@/components/Misc/SessionExpired";
+import SessionExpired from "@/components/Session/SessionExpired";
+import Layout from "@/components/Sprout/Layout";
+import Footer from "@/components/Footer";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);
@@ -56,10 +57,9 @@ export default function Sprout() {
           </div>
         </div>
       ) : control === 1 ? (
-        <div className="flex justify-center items-center h-screen">
-          <div className="rounded-lg bg-white p-6 shadow-md w-full md:w-96">
-            <h2 className="text-2xl text-gray-600 font-bold text-center">OK</h2>
-          </div>
+        <div className="flex mt-5 ml-20 mb-5">
+          {/* <h2 className="text-2xl text-gray-600 font-bold text-center">OK</h2> */}
+          <Layout />
         </div>
       ) : (
         <div className="flex justify-center items-center h-screen">
@@ -71,6 +71,7 @@ export default function Sprout() {
         </div>
       )}
       {showExpired && <SessionExpired />}
+      <Footer />
     </div>
   );
 }

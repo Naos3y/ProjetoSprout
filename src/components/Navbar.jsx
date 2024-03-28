@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import styles from "../Styles/styles.css";
-import UserOptions from "./UserOptionsNavBar";
+import UserOptions from "./Static/UserOptionsNavBar";
 
 const Navbar = ({ activeRoute, privilege }) => {
   return (

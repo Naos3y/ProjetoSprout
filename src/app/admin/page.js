@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/client/crypt";
+import { decrypt } from "@/session/crypt";
 import {
   getPermission,
   sessionExpired,

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { encrypt, decrypt } from "../client/crypt";
+import { encrypt, decrypt } from "../crypt";
 
 async function tryLogin(email, password) {
   try {

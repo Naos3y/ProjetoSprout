@@ -1,4 +1,4 @@
-import { encrypt, decrypt } from "./client/crypt";
+import { encrypt, decrypt } from "./crypt";
 import cookies from "js-cookie";
 
 export async function getPermission() {
