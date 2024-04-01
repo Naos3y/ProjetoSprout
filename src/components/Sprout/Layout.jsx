@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 
 export default function Layout() {
   const getTrainings = () => {
@@ -72,33 +72,44 @@ export default function Layout() {
     },
   ];
 
+  //           src="https://tse3.mm.bing.net/th?id=OIP.74gDxvdhJkPEH_kHkvGj8gHaFj&pid=15.1"
+
   return (
-    <div className="overflow-y-auto w-flex border max-h-screen rounded">
+    <div className="overflow-y-auto w-flex border max-h-screen mas-w-screen rounded">
       <div></div>
-      <div className="rounded-lg bg-white p-6 shadow-md w-full md:w-96">
+      <div className="rounded-lg bg-white p-6 shadow-md w-full h-full">
         {formacoes.map(function (training, index) {
           return (
-            <div
-              key={index}
-              className="mb-4 border border-gray-100 p-2 rounded-lg"
+            <span
+              id={index}
+              className="mb-4 border border-black p-2 rounded-lg flex"
             >
               <div>
-                <label className="font-bold text-gray-800">Training: </label>
-                <span className="text-gray-600">{training.formacao}</span>
+                <img
+                  src="https://tse3.mm.bing.net/th?id=OIP.74gDxvdhJkPEH_kHkvGj8gHaFj&pid=15.1"
+                  alt="Image of a Sprout"
+                  className="hidden sm:block object-cover w-1/2 h-auto rounded-l-lg"
+                />
               </div>
-              <div>
-                <label className="font-bold text-gray-800">Beginning: </label>
-                <span className="text-gray-600">{training.Inicio}</span>
+              <div className="text-l text-gray-600 font-bold text-left mt-6">
+                <div className="mt-1">
+                  <label className="font-bold text-gray-800">Training: </label>
+                  <span className="text-gray-600">{training.formacao}</span>
+                </div>
+                <div className="mt-1">
+                  <label className="font-bold text-gray-800">Beginning: </label>
+                  <span className="text-gray-600">{training.Inicio}</span>
+                </div>
+                <div className="mt-1">
+                  <label className="font-bold text-gray-800">Teacher: </label>
+                  <span className="text-gray-600">{training.formador}</span>
+                </div>
+                <div className="mt-1">
+                  <label className="font-bold text-gray-800">Type: </label>
+                  <span className="text-gray-600">{training.tipo}</span>
+                </div>
               </div>
-              <div>
-                <label className="font-bold text-gray-800">Teacher: </label>
-                <span className="text-gray-600">{training.formador}</span>
-              </div>
-              <div>
-                <label className="font-bold text-gray-800">Type: </label>
-                <span className="text-gray-600">{training.tipo}</span>
-              </div>
-            </div>
+            </span>
           );
         })}
       </div>
