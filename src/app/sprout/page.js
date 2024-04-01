@@ -57,8 +57,13 @@ export default function Sprout() {
           </div>
         </div>
       ) : control === 1 ? (
-        <div className="flex justify-center items-center h-screen mt-5 mb-5">
-          <Layout />
+        <div>
+          <h1 className="text-5xl font-black text-center text-green-700 mt-8 font-tara">
+            Incoming Trainings
+          </h1>
+          <div className="flex justify-center items-center h-screen mb-5">
+            <Layout />
+          </div>
         </div>
       ) : (
         <div className="flex justify-center items-center h-screen">
