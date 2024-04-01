@@ -10,27 +10,167 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_URL")
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
-model Login {
-  lid Int @id @default(autoincrement())
-  email String @unique
-  password String
+// Define os modelos correspondentes às tabelas do banco de dados
+model location {
+  lnid     Int    @id @default(autoincrement())
+  lcity    String
+  lcountry String
+  user     user[]
 }
 
-model User {
-  uid Int @id @default(autoincrement())
-  perm String?
-  utype String?
-  uemployeenumber String?
-  uname String?
-  ufoto String?
-  udirectreports String?
-  ustartingdate String?
-  upais String?
-  ucidade String?
-  urole String?
-  useniority String?
-  ugroup String?
+model role {
+  rid   Int    @id @default(autoincrement())
+  rname String
+  user  user[]
+}
+
+model department {
+  did   Int    @id @default(autoincrement())
+  dname String
+  team  team[]
+}
+
+model team {
+  tid           Int        @id @default(autoincrement())
+  departmentdid Int
+  tname         String
+  department    department @relation(fields: [departmentdid], references: [did])
+  user          user[]
+}
+
+model user {
+  uid             Int      @id @default(autoincrement())
+  locationlnid    Int
+  rolerid         Int
+  teamtid         Int
+  upermission     String
+  utype           Int
+  uemployeenumber String
+  uname           String
+  ufoto           String
+  udirectreport   String
+  ustartingdate   DateTime
+
+  location      location        @relation(fields: [locationlnid], references: [lnid])
+  role          role            @relation(fields: [rolerid], references: [rid])
+  team          team            @relation(fields: [teamtid], references: [tid])
+  login         login[]
+  regularuser   regularuser[]
+  insideteacher insideteacher[]
+  userhasgroup  userhasgroup[]
+}
+
+model login {
+  lid       Int    @id @default(autoincrement())
+  useruid   Int
+  lemail    String
+  lpassword String
+
+  user user @relation(fields: [useruid], references: [uid])
+}
+
+model regularuser {
+  ruid                           Int                              @id @default(autoincrement())
+  useruid                        Int
+  user                           user                             @relation(fields: [useruid], references: [uid])
+  userhastrainings               userhastrainings[]
+  regularuserhasoutsidetrainings regularuserhasoutsidetrainings[]
+}
+
+model insideteacher {
+  itrid           Int               @id @default(autoincrement())
+  useruid         Int
+  user            user              @relation(fields: [useruid], references: [uid])
+  insidetrainings insidetrainings[]
+}
+
+model group {
+  gid          Int            @id @default(autoincrement())
+  gname        String
+  userhasgroup userhasgroup[]
+}
+
+model outsideteacher {
+  otrid            Int                @id @default(autoincrement())
+  otname           String
+  outsidetrainings outsidetrainings[]
+}
+
+model insidetrainings {
+  itid               Int    @id @default(autoincrement())
+  insideteacheritrid Int
+  itname             String
+  itnumofmin         String
+  iteventtype        String
+  itminparticipants  String
+  itmaxparticipants  String
+
+  insideteacher insideteacher  @relation(fields: [insideteacheritrid], references: [itrid])
+  trainingplan  trainingplan[]
+}
+
+model outsidetrainings {
+  otid                Int    @id @default(autoincrement())
+  outsideteacherotrid Int
+  otname              String
+  otnumofmin          String
+  oteventtype         String
+  otminparticipants   String
+  otmaxparticipants   String
+
+  outsideteacher                 outsideteacher                   @relation(fields: [outsideteacherotrid], references: [otrid])
+  trainingplan                   trainingplan[]
+  regularuserhasoutsidetrainings regularuserhasoutsidetrainings[]
+}
+
+model trainingplan {
+  trpid                Int @id @default(autoincrement())
+  insidetrainingsitid  Int
+  outsidetrainingsitid Int
+
+  insidetrainings  insidetrainings    @relation(fields: [insidetrainingsitid], references: [itid])
+  outsidetrainings outsidetrainings   @relation(fields: [outsidetrainingsitid], references: [otid])
+  userhastrainings userhastrainings[]
+  trainingtemplate trainingtemplate[]
+}
+
+model userhasgroup {
+  useruid  Int
+  groupgid Int
+
+  user  user  @relation(fields: [useruid], references: [uid])
+  group group @relation(fields: [groupgid], references: [gid])
+
+  @@id([useruid, groupgid])
+}
+
+model userhastrainings {
+  regularuserruid   Int
+  trainingplantrpid Int
+
+  regularuser  regularuser  @relation(fields: [regularuserruid], references: [ruid])
+  trainingplan trainingplan @relation(fields: [trainingplantrpid], references: [trpid])
+
+  @@id([regularuserruid, trainingplantrpid])
+}
+
+model regularuserhasoutsidetrainings {
+  regularuserruid      Int
+  outsidetrainingsotid Int
+  rotstartdate         DateTime
+
+  regularuser      regularuser      @relation(fields: [regularuserruid], references: [ruid])
+  outsidetrainings outsidetrainings @relation(fields: [outsidetrainingsotid], references: [otid])
+
+  @@id([regularuserruid, outsidetrainingsotid])
+}
+
+model trainingtemplate {
+  trtid             Int @id @default(autoincrement())
+  trainingplantrpid Int
+
+  trainingplan trainingplan @relation(fields: [trainingplantrpid], references: [trpid])
 }
