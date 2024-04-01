@@ -1,4 +1,5 @@
 import React, { Component, useState } from "react";
+import Link from "next/link";
 
 export default function Layout() {
   const getTrainings = () => {
@@ -75,41 +76,50 @@ export default function Layout() {
   //           src="https://tse3.mm.bing.net/th?id=OIP.74gDxvdhJkPEH_kHkvGj8gHaFj&pid=15.1"
 
   return (
-    <div className="overflow-y-auto w-flex border max-h-screen mas-w-screen rounded">
-      <div></div>
-      <div className="rounded-lg bg-white p-6 shadow-md w-full h-full">
+    <div className="overflow-y-auto border max-h-screen max-w-screen rounded">
+      <div className="grid grid-cols-3 gap-4 p-6">
         {formacoes.map(function (training, index) {
           return (
-            <span
+            <div
               id={index}
-              className="mb-4 border border-black p-2 rounded-lg flex"
+              key={index}
+              className="border border-black rounded-lg flex"
             >
-              <div>
+              <div className="w-32 h-auto">
                 <img
                   src="https://tse3.mm.bing.net/th?id=OIP.74gDxvdhJkPEH_kHkvGj8gHaFj&pid=15.1"
                   alt="Image of a Sprout"
-                  className="hidden sm:block object-cover w-1/2 h-auto rounded-l-lg"
+                  className="hidden sm:block object-cover w-full h-full rounded-lg"
                 />
               </div>
-              <div className="text-l text-gray-600 font-bold text-left mt-6">
-                <div className="mt-1">
-                  <label className="font-bold text-gray-800">Training: </label>
-                  <span className="text-gray-600">{training.formacao}</span>
+              <div className="flex-1 p-4">
+                <div className="text-l text-gray-600 font-bold text-left">
+                  <div className="mt-1">
+                    <label className="font-bold text-gray-800">
+                      Training:{" "}
+                    </label>
+                    <span className="text-gray-600">{training.formacao}</span>
+                  </div>
+                  <div className="mt-1">
+                    <label className="font-bold text-gray-800">
+                      Beginning:{" "}
+                    </label>
+                    <span className="text-gray-600">{training.Inicio}</span>
+                  </div>
+                  <div className="mt-1">
+                    <label className="font-bold text-gray-800">Teacher: </label>
+                    <span className="text-gray-600">{training.formador}</span>
+                  </div>
+                  <div className="mt-1">
+                    <label className="font-bold text-gray-800">Type: </label>
+                    <span className="text-gray-600">{training.tipo}</span>
+                  </div>
                 </div>
-                <div className="mt-1">
-                  <label className="font-bold text-gray-800">Beginning: </label>
-                  <span className="text-gray-600">{training.Inicio}</span>
-                </div>
-                <div className="mt-1">
-                  <label className="font-bold text-gray-800">Teacher: </label>
-                  <span className="text-gray-600">{training.formador}</span>
-                </div>
-                <div className="mt-1">
-                  <label className="font-bold text-gray-800">Type: </label>
-                  <span className="text-gray-600">{training.tipo}</span>
-                </div>
+                <button className="mt-4 text-white font-bold bg-green-500 p-1 rounded hover:bg-green-300 hover:text-black">
+                  Details
+                </button>
               </div>
-            </span>
+            </div>
           );
         })}
       </div>
