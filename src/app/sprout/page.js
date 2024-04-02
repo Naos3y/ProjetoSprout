@@ -58,7 +58,7 @@ export default function Sprout() {
         </div>
       ) : control === 1 ? (
         <div>
-          <h1 className="text-5xl font-black text-center text-green-700 mt-8 font-tara">
+          <h1 className="text-5xl font-black text-center text-green-700 mt-8 mb-8 font-tara">
             Incoming Trainings
           </h1>
           <div className="flex justify-center items-center h-screen mb-5">

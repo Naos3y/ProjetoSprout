@@ -15,26 +15,24 @@ export default function Validation() {
       if (sessionCookie) {
         try {
           const decryptedSession = await decrypt(sessionCookie);
-          setUsername(decryptedSession.user.email);
-          console.log(decryptedSession);
+          setUsername(decryptedSession.user.name);
 
-          console.log(username);
           let link;
           switch (decryptedSession.user.permission) {
             case 0:
             case 1:
             case 2:
-              link = <Link href="/admin">Continue to Home Page</Link>;
+              link = <Link href="/admin">Continue to Admin Page</Link>;
               setControl(1);
 
               break;
             case 3:
-              link = <Link href="/manager">Continue to Home Page</Link>;
+              link = <Link href="/manager">Continue to Manager Page</Link>;
               setControl(1);
 
               break;
             case 4:
-              link = <Link href="/sprout">Continue to Home Page</Link>;
+              link = <Link href="/sprout">Continue to Sprout Page</Link>;
               setControl(1);
 
               break;

@@ -15,13 +15,13 @@ export async function POST(request) {
       });
     }
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma.login.findFirst({
       where: {
-        email: email,
+        lemail: email,
       },
       select: {
-        email: true,
-        password: true,
+        lemail: true,
+        lpassword: true,
       },
     });
 

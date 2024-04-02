@@ -71,13 +71,73 @@ export default function Layout() {
       formador: "Sofia",
       tipo: "presencial",
     },
+    {
+      formacao: "JavaScript Básico",
+      Inicio: "01-04-2024",
+      formador: "Ana",
+      tipo: "presencial",
+    },
+    {
+      formacao: "HTML e CSS Avançado",
+      Inicio: "05-04-2024",
+      formador: "Pedro",
+      tipo: "remoto",
+    },
+    {
+      formacao: "Introdução ao Node.js",
+      Inicio: "10-04-2024",
+      formador: "Mariana",
+      tipo: "presencial",
+    },
+    {
+      formacao: "React Native para Iniciantes",
+      Inicio: "15-04-2024",
+      formador: "João",
+      tipo: "online",
+    },
+    {
+      formacao: "Python para Ciência de Dados",
+      Inicio: "20-04-2024",
+      formador: "Lucas",
+      tipo: "remoto",
+    },
+    {
+      formacao: "Machine Learning com TensorFlow",
+      Inicio: "25-04-2024",
+      formador: "Carla",
+      tipo: "presencial",
+    },
+    {
+      formacao: "Desenvolvimento Web Full Stack",
+      Inicio: "30-04-2024",
+      formador: "Rafael",
+      tipo: "online",
+    },
+    {
+      formacao: "Segurança da Informação",
+      Inicio: "05-05-2024",
+      formador: "Fernanda",
+      tipo: "presencial",
+    },
+    {
+      formacao: "Gestão de Projetos Ágeis",
+      Inicio: "10-05-2024",
+      formador: "Diego",
+      tipo: "remoto",
+    },
+    {
+      formacao: "Design Thinking",
+      Inicio: "15-05-2024",
+      formador: "Sofia",
+      tipo: "presencial",
+    },
   ];
 
   //           src="https://tse3.mm.bing.net/th?id=OIP.74gDxvdhJkPEH_kHkvGj8gHaFj&pid=15.1"
 
   return (
     <div className="overflow-y-auto border max-h-screen max-w-screen rounded">
-      <div className="grid grid-cols-3 gap-4 p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 p-6">
         {formacoes.map(function (training, index) {
           return (
             <div
@@ -89,7 +149,7 @@ export default function Layout() {
                 <img
                   src="https://tse3.mm.bing.net/th?id=OIP.74gDxvdhJkPEH_kHkvGj8gHaFj&pid=15.1"
                   alt="Image of a Sprout"
-                  className="hidden sm:block object-cover w-full h-full rounded-lg"
+                  className="block object-cover w-full h-full rounded-lg"
                 />
               </div>
               <div className="flex-1 p-4">

@@ -20,6 +20,7 @@ async function tryLogin(email, password) {
     }
 
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.error("Error:", error);
@@ -39,10 +40,11 @@ export async function Login(credentials) {
   const password = credentials.get("password");
 
   try {
-    if (email == "sam@root.pt") {
-      // const response = await tryLogin(email, password);
-      // if (response.code == 200) {
-      const user = { name: "sam", email: email, permission: permission };
+    // if (email == "sam@root.pt") {
+    const response = await tryLogin(email, password);
+    if (response.code == 200) {
+      //função para ir buscar o nome, id e permission
+      const user = { id: "1", name: "sam", permission: permission };
       const expires = new Date(Date.now() + 30 * 60 * 1000);
       const session = await encrypt({ user, expires });
       cookies().set("session", session, { expires });
