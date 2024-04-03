@@ -14,6 +14,13 @@ module.exports = {
       },
       fontFamily: {
         tara: ["Tarah", "sans-serif"],
+        proza: ["proza", "Proza Libre"],
+      },
+
+      colors: {
+        green: {
+          500: "#87B421",
+        },
       },
     },
   },

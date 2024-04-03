@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import Link from "next/link";
 
-export default function Layout() {
+export default function IncomingLayout() {
   const getTrainings = () => {
     // pedido da api
     // o body do pedido da api deve conter todas as formações a que essa pessoas está associada (já definido no ER)
@@ -175,7 +175,7 @@ export default function Layout() {
                     <span className="text-gray-600">{training.tipo}</span>
                   </div>
                 </div>
-                <button className="mt-4 text-white font-bold bg-green-500 p-1 rounded hover:bg-green-300 hover:text-black">
+                <button className="bg-[#DFDFDF] text-[#818181] font-bold mt-2 px-2 py-1 rounded-md shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700">
                   Details
                 </button>
               </div>

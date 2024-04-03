@@ -120,15 +120,6 @@ const Navbar = ({ activeRoute, privilege }) => {
               My Team
             </div>
           </Link>
-          <Link href="/sprout/adminhub">
-            <div
-              className={
-                activeRoute === "/sprout/adminhub" ? "tabs active-tabs" : "tabs"
-              }
-            >
-              Sprout Hub
-            </div>
-          </Link>
         </div>
       )}
       <UserOptions active={(activeRoute = "/profile" ? 1 : 0)} />

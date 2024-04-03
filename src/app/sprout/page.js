@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { sessionExpired, validSession } from "@/session/sessionUtils";
 import Navbar from "@/components/Navbar";
 import SessionExpired from "@/components/Session/SessionExpired";
-import Layout from "@/components/Sprout/Layout";
+import IncomingLayout from "@/components/Sprout/IncomingLayout";
 import Footer from "@/components/Footer";
+import "@fontsource/proza-libre"; // Defaults to weight 400
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);
@@ -58,11 +59,8 @@ export default function Sprout() {
         </div>
       ) : control === 1 ? (
         <div>
-          <h1 className="text-5xl font-black text-center text-green-700 mt-8 mb-8 font-tara">
-            Incoming Trainings
-          </h1>
-          <div className="flex justify-center items-center h-screen mb-5">
-            <Layout />
+          <div className="flex justify-center items-center h-screen mb-5 mt-5">
+            <IncomingLayout />
           </div>
         </div>
       ) : (

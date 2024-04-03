@@ -13,20 +13,7 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
-// Define os modelos correspondentes às tabelas do banco de dados
-model location {
-  lnid     Int    @id @default(autoincrement())
-  lcity    String
-  lcountry String
-  user     user[]
-}
-
-model role {
-  rid   Int    @id @default(autoincrement())
-  rname String
-  user  user[]
-}
-
+// schema.prisma
 model department {
   did   Int    @id @default(autoincrement())
   dname String
@@ -34,29 +21,30 @@ model department {
 }
 
 model team {
-  tid           Int        @id @default(autoincrement())
-  departmentdid Int
+  tid           Int         @id @default(autoincrement())
+  departmentdid Int?
   tname         String
-  department    department @relation(fields: [departmentdid], references: [did])
+  department    department? @relation(fields: [departmentdid], references: [did])
   user          user[]
 }
 
 model user {
-  uid             Int      @id @default(autoincrement())
-  locationlnid    Int
-  rolerid         Int
-  teamtid         Int
-  upermission     String
+  uid             Int     @id @default(autoincrement())
+  ucountry        String
+  urole           String
+  teamtid         Int?
+  uadminrights    String
   utype           Int
   uemployeenumber String
   uname           String
-  ufoto           String
-  udirectreport   String
-  ustartingdate   DateTime
+  uphoto          String
+  udirectreport   String?
+  ustartdate      String
+  ucity           String
+  uleader         String?
+  useniority      String
 
-  location      location        @relation(fields: [locationlnid], references: [lnid])
-  role          role            @relation(fields: [rolerid], references: [rid])
-  team          team            @relation(fields: [teamtid], references: [tid])
+  team          team?           @relation(fields: [teamtid], references: [tid])
   login         login[]
   regularuser   regularuser[]
   insideteacher insideteacher[]
@@ -65,24 +53,26 @@ model user {
 
 model login {
   lid       Int    @id @default(autoincrement())
-  useruid   Int
+  useruid   Int?
   lemail    String
   lpassword String
-
-  user user @relation(fields: [useruid], references: [uid])
+  user      user?  @relation(fields: [useruid], references: [uid])
 }
 
 model regularuser {
-  ruid                           Int                              @id @default(autoincrement())
-  useruid                        Int
+  ruid    Int @id @default(autoincrement())
+  useruid Int
+
   user                           user                             @relation(fields: [useruid], references: [uid])
   userhastrainings               userhastrainings[]
+  regularuserhasinsidetrainings  regularuserhasinsidetrainings[]
   regularuserhasoutsidetrainings regularuserhasoutsidetrainings[]
 }
 
 model insideteacher {
-  itrid           Int               @id @default(autoincrement())
-  useruid         Int
+  itrid   Int @id @default(autoincrement())
+  useruid Int
+
   user            user              @relation(fields: [useruid], references: [uid])
   insidetrainings insidetrainings[]
 }
@@ -101,40 +91,42 @@ model outsideteacher {
 
 model insidetrainings {
   itid               Int    @id @default(autoincrement())
-  insideteacheritrid Int
+  insideteacheritrid Int?
   itname             String
   itnumofmin         String
   iteventtype        String
   itminparticipants  String
   itmaxparticipants  String
 
-  insideteacher insideteacher  @relation(fields: [insideteacheritrid], references: [itrid])
-  trainingplan  trainingplan[]
+  insideteacher                 insideteacher?                  @relation(fields: [insideteacheritrid], references: [itrid])
+  trainingplan                  trainingplan[]
+  regularuserhasinsidetrainings regularuserhasinsidetrainings[]
 }
 
 model outsidetrainings {
   otid                Int    @id @default(autoincrement())
-  outsideteacherotrid Int
+  outsideteacherotrid Int?
   otname              String
   otnumofmin          String
   oteventtype         String
   otminparticipants   String
   otmaxparticipants   String
 
-  outsideteacher                 outsideteacher                   @relation(fields: [outsideteacherotrid], references: [otrid])
+  outsideteacher                 outsideteacher?                  @relation(fields: [outsideteacherotrid], references: [otrid])
   trainingplan                   trainingplan[]
   regularuserhasoutsidetrainings regularuserhasoutsidetrainings[]
 }
 
 model trainingplan {
-  trpid                Int @id @default(autoincrement())
-  insidetrainingsitid  Int
-  outsidetrainingsitid Int
+  trpid                Int  @id @default(autoincrement())
+  insidetrainingsitid  Int?
+  outsidetrainingsotid Int?
+  trpstarted           Int?
 
-  insidetrainings  insidetrainings    @relation(fields: [insidetrainingsitid], references: [itid])
-  outsidetrainings outsidetrainings   @relation(fields: [outsidetrainingsitid], references: [otid])
+  insidetrainings  insidetrainings?   @relation(fields: [insidetrainingsitid], references: [itid])
+  outsidetrainings outsidetrainings?  @relation(fields: [outsidetrainingsotid], references: [otid])
   userhastrainings userhastrainings[]
-  trainingtemplate trainingtemplate[]
+  trainingtemplate trainingtemplate?
 }
 
 model userhasgroup {
@@ -157,6 +149,17 @@ model userhastrainings {
   @@id([regularuserruid, trainingplantrpid])
 }
 
+model regularuserhasinsidetrainings {
+  insidetrainingsitid Int
+  regularuserruid     Int
+  ritstartdate        DateTime
+
+  insidetrainings insidetrainings @relation(fields: [insidetrainingsitid], references: [itid])
+  regularuser     regularuser     @relation(fields: [regularuserruid], references: [ruid])
+
+  @@id([insidetrainingsitid, regularuserruid])
+}
+
 model regularuserhasoutsidetrainings {
   regularuserruid      Int
   outsidetrainingsotid Int
@@ -169,8 +172,12 @@ model regularuserhasoutsidetrainings {
 }
 
 model trainingtemplate {
-  trtid             Int @id @default(autoincrement())
+  trtid             Int    @id @default(autoincrement())
   trainingplantrpid Int
+  trtstartingdate   String
 
   trainingplan trainingplan @relation(fields: [trainingplantrpid], references: [trpid])
+
+  @@unique([trainingplantrpid], name: "uk_trtid")
+  @@index([trainingplantrpid], name: "fk_TrainingTemplate_TrainingPlan1_idx")
 }

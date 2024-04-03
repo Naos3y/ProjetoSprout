@@ -19,7 +19,7 @@ export default async function LoginForm(props) {
           <input
             name="email"
             type="email"
-            className="w-full px-3 py-2 border border-black rounded-md text-black"
+            className="border p-2 w-full rounded-md border-gray-300 focus:outline-none  focus:border-green-500  mt-2"
             placeholder="Write your Email"
             required
           />
@@ -30,13 +30,13 @@ export default async function LoginForm(props) {
           <input
             name="password"
             type="password"
-            className="w-full px-3 py-2 border border-black rounded-md text-black "
+            className="border p-2 w-full rounded-md border-gray-300 focus:outline-none  focus:border-green-500  mt-2"
             placeholder="Write your Password"
             required
           />
         </div>
 
-        <div className="mb-8 text-center">
+        <div className="mb-4 text-center">
           <a
             href="#"
             className="text-black transition-colors hover:text-gray-500 duration-300 font-bold"
@@ -47,7 +47,7 @@ export default async function LoginForm(props) {
         <div className="text-center">
           <button
             type="submit"
-            className="w-1/2 bg-green-700 font-black text-center text-white py-2 px-4 rounded-md hover:bg-green-400 hover:text-black transition-colors duration-300 mb-2"
+            className="bg-[#DFDFDF] text-[#818181] font-bold px-12 py-2 mb-4 rounded-md shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
           >
             Login
           </button>
@@ -59,7 +59,7 @@ export default async function LoginForm(props) {
             </p>
           ) : (
             <p className=" text-sm transition-colors text-white duration-300 font-bold">
-              sprout
+              :)
             </p>
           )}
         </div>
