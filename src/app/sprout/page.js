@@ -18,14 +18,15 @@ export default function Sprout() {
 
   useEffect(() => {
     let flag = true;
+    let sessionStatus;
     const getSession = async () => {
       if (!flag) {
-        const sessionStatus = await sessionExpired();
-        if (sessionStatus === 1 && !showExpired) {
+        const expired = await sessionExpired();
+        if (sessionStatus === 1 && expired === 1 && !showExpired) {
           setShowExpired(true);
         }
       } else if (flag) {
-        const sessionStatus = await validSession(4);
+        sessionStatus = await validSession(4);
         setControl(sessionStatus);
         flag = !flag;
       }
@@ -37,10 +38,6 @@ export default function Sprout() {
 
   return (
     <div>
-      <nav>
-        <Navbar activeRoute="/sprout" />
-      </nav>
-
       {control === -1 ? (
         <div className="flex justify-center items-center h-screen">
           <div className="rounded-lg bg-white p-6 shadow-md w-full md:w-96">
@@ -59,7 +56,10 @@ export default function Sprout() {
         </div>
       ) : control === 1 ? (
         <div>
-          <div className="flex justify-center items-center h-screen mb-5 mt-5">
+          <nav>
+            <Navbar activeRoute="/sprout" />
+          </nav>
+          <div className="justify-center items-center mr-5 ml-5">
             <IncomingLayout />
           </div>
         </div>

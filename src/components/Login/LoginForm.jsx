@@ -30,7 +30,7 @@ export default async function LoginForm(props) {
           <input
             name="password"
             type="password"
-            className="border p-2 w-full rounded-md border-gray-300 focus:outline-none  focus:border-green-500  mt-2"
+            className="border p-2 w-full rounded-md border-gray-300 focus:outline-none  focus:border-green-500  mt-2 text-black"
             placeholder="Write your Password"
             required
           />

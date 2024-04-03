@@ -5,13 +5,16 @@ import { IoIosSettings } from "react-icons/io";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import { Toaster, toast } from "sonner";
 
 export default function UserOptions(active) {
   const logout = async () => {
     try {
       Cookies.remove("session");
+      toast.success("Good bye sprout :)");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      toast.error("Something went wrong ...");
     }
   };
 
