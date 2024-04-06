@@ -7,11 +7,28 @@ export async function POST(request) {
   const body = await request.json();
 
   try {
-    const {email,perm,utype,uemployeenumber,uname,ufoto,udirectreports,ustartingdate,upais,ucidade,urole,useniority,ugroup} = body;
+    const {
+      upermission,
+      utype,
+      uemployeenumber,
+      uname,
+      ufoto,
+      udirectreports,
+      ustartingdate,
+      upais,
+      ucidade,
+      role,
+      useniority, // Adicionando a variável useniority
+      lemail,
+      ugroup,
+    } = body;
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma.login.findFirst({
       where: {
-        email: email,
+        lemail: lemail,
+      },
+      select: {
+        lemail: true,
       },
     });
     if (user) {
@@ -21,8 +38,8 @@ export async function POST(request) {
       });
     }
 
-    const regist = await prisma.$queryRaw`SELECT insert_user(${email},${perm},${utype},${uemployeenumber},${uname},${ufoto},${udirectreports},${ustartingdate},${upais},${ucidade},${urole},${useniority},${ugroup})`;
-
+    const regist =
+      await prisma.$queryRaw`SELECT insert_user(${lemail},${upermission},${utype},${uemployeenumber},${uname},${ufoto},${udirectreports},${ustartingdate},${upais},${ucidade},${role},${ugroup},${useniority})`;
 
     if (regist[0]) {
       console.log("OK");
@@ -38,4 +55,3 @@ export async function POST(request) {
     });
   }
 }
-

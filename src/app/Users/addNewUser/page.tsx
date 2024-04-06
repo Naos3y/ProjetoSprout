@@ -1,324 +1,284 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
-import { Icon } from '@iconify/react';
+import React, { useState } from "react";
+import { Icon } from "@iconify/react";
+import TextInput from "@/components/TextInput";
+import Dropdown from "@/components/Dropdown";
+import CompleteName from "@/components/CompleteName";
+import DatePicker from "@/components/DatePicker";
+import Multiselect from "@/components/MultiselectAddUser";
+import PhotoInput from "@/components/PhotoInput";
+import { Toaster, toast } from "sonner";
 
 const Formulario = () => {
-  const [userType, setUserType] = useState('');
-  const [adminRights, setAdminRights] = useState('');
-  const [employeeNumber, setEmployeeNumber] = useState('');
-  const [role, setRole] = useState('');
-  const [completeName, setCompleteName] = useState('');
-  const [seniority, setSeniority] = useState('');
-  const [photo, setPhoto] = useState('');
-  const [email, setEmail] = useState('');
-  const [team, setTeam] = useState('');
-  const [leader, setLeader] = useState('');
-  const [department, setDepartment] = useState('');
-  const [groups, setGroups] = useState('');
-  const [country, setCountry] = useState('');
-  const [city, setCity] = useState('');
-  const [day, setDay] = useState('');
-  const [month, setMonth] = useState('');
-  const [year, setYear] = useState('');
-  const [associateTraining, setAssociateTraining] = useState('');
+  const [userType, setUserType] = useState("");
+  const [adminRights, setAdminRights] = useState("");
+  const [employeeNumber, setEmployeeNumber] = useState("");
+  const [role, setRole] = useState("");
+  const [completeName, setCompleteName] = useState("");
+  const [seniority, setSeniority] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [email, setEmail] = useState("");
+  const [team, setTeam] = useState("");
+  const [leader, setLeader] = useState("");
+  const [department, setDepartment] = useState("");
+  const [groups, setGroups] = useState("");
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [day, setStartDate] = useState("");
+  const [associateTraining, setAssociateTraining] = useState("");
+  const [report, setReport] = useState("");
+  const [selectedTrainingPlans, setSelectedTrainingPlans] = useState([]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('User Type:', userType);
-    console.log('Admin Rights:', adminRights);
-    console.log('Employee Number:', employeeNumber);
-    console.log('Role:', role);
-    console.log('Complete Name:', completeName);
-    console.log('Photo:', photo);
-    console.log('Email:', email);
-    console.log('Team:', team);
-    console.log('Leader:', leader);
-    console.log('Department:', department);
-    console.log('Groups:', groups);
-    console.log('Country:', country);
-    console.log('City:', city);
-    console.log('Day:', day);
-    console.log('Month:', month);
-    console.log('Year:', year);
-    console.log('Associate Training Plans?', associateTraining);
-    console.log('seniority:', seniority);
+  interface Option {
+    value: string;
+    label: string;
+  }
+
+  const handleAssociateTrainingChange = (option: Option) => {
+    setAssociateTraining(option.value);
+    // Se a opção for "No", limpa os planos de treinamento selecionados
+    if (option.value === "No") {
+      setSelectedTrainingPlans([]);
+    }
   };
 
-  return ( 
-    <form  className="space-y-8">
-      <div className="grid grid-cols-4 gap-4">
-        <div className="flex items-center">
-          <Icon icon="wpf:add-user" width="19" height="19" className="text-green-500" />
-          <span className="font-semibold text-green-500 text-lg ml-2">Add New User</span>
-        </div>
+  return (
+    <div>
+      <div className="flex items-center ml-4">
+        <Icon
+          icon="wpf:add-user"
+          width="19"
+          height="19"
+          className="text-green-500"
+        />
+        <span className="font-semibold text-green-500 text-lg ml-2">
+          Add New Group
+        </span>
       </div>
-      <div className="grid grid-cols-4 gap-4">
-        <div>
-          <label htmlFor="userType" className="font-semibold">
-            User Type
-          </label>
-          <select
-            name='userType'
-            id="userType"
-            value={userType}
-            onChange={(e) => setUserType(e.target.value)}
-            className="block w-50 mt-2 focus:border-green-500 focus:outline-none border-black rounded-md"
-          >
-            <option value="">Selecione o tipo de utilizador</option>
-            <option value="admin">Admin</option>
-            <option value="user">User</option>
-            {/* Adicione mais opções conforme necessário */}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="adminRights" className="font-semibold">
-            Admin Rights
-          </label>
-          <input
-          name='adminRights'
-            id="adminRights"
-            type="text"
-            value={adminRights}
-            onChange={(e) => setAdminRights(e.target.value)}
-            className="block w-50 mt-2 focus:border-green-500 focus:outline-none border-black rounded-md"
+      <div className="flex flex-wrap">
+        <div className="gap-4 ml-10">
+          <Dropdown
+            label="User Type"
+            options={[
+              { value: "IC", label: "IC" },
+              { value: "Leader", label: "Leader" },
+            ]}
+            message="Select One"
+            returned={(option: { value: string }) => setUserType(option.value)}
           />
         </div>
-        <div>
-          <label htmlFor="employeeNumber" className="font-semibold">
-            Employee Number
-          </label>
-          <input
-          name='employeeNumber'
-            id="employeeNumber"
-            type="text"
-            value={employeeNumber}
-            onChange={(e) => setEmployeeNumber(e.target.value)}
-            className="block w-50 mt-2 focus:border-green-500 focus:outline-none rounded-md"
+
+        <div className="gap-4 ml-10">
+          <Dropdown
+            label="Admin Rights"
+            options={[
+              { value: 4, label: "Sprout" },
+              { value: 3, label: "Manager" },
+              { value: 0, label: "Admin" },
+            ]}
+            message="Select One"
+            returned={setAdminRights}
           />
         </div>
-        <div>
-          <label htmlFor="role" className="font-semibold">
-            Role
-          </label>
-          <input
-          name='role'
-            id="role"
-            type="text"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="block w-50 mt-2 focus:border-green-500 focus:outline-none rounded-md"
+
+        <div className="ml-10">
+          <TextInput label={"Employee Number"} returned={setEmployeeNumber} />
+        </div>
+
+        <div className="ml-10">
+          <Dropdown
+            label="Role"
+            options={[
+              { value: "Backend Engineer", label: "Backend Engineer" },
+              { value: "Frontend Engineer", label: "Frontend Engineer" },
+              { value: "Fullstack Engineer", label: "Fullstack Engineer" },
+              { value: "Data Engineer", label: "Data Engineer" },
+              {
+                value: "Talent Acquisition Specialist",
+                label: "Talent Acquisition Specialist",
+              },
+              { value: "People Ops", label: "People Ops" },
+              { value: "Technical Support", label: "Technical Support" },
+              {
+                value: "Costumer Service Representative",
+                label: "Costumer Service Representative",
+              },
+              { value: "Agile Coach", label: "Agile Coach" },
+              { value: "Devops Engineer", label: "Devops Engineer" },
+              { value: "Technical Advisor", label: "Technical Advisor" },
+              { value: "Marketing Specialist", label: "Marketing Specialist" },
+              {
+                value: "IT Sales Representative",
+                label: "IT Sales Representative",
+              },
+            ]}
+            message="Select One"
+            returned={setRole}
           />
-        </div>
-      </div>
-      <div className="grid grid-cols-4 gap-4">
-        <div>
-          <label htmlFor="seniority" className="font-semibold">
-            Seniority
-          </label>
-          <select
-          name='seniority'
-            id="seniority"
-            value={userType}
-            onChange={(e) => setSeniority(e.target.value)}
-            className="block w-50 mt-2 focus:border-green-500 focus:outline-none rounded-md"
-          >
-            <option value="">Selecione o tipo de utilizador</option>
-            <option value="leader">Leader</option>
-            <option value="user">User</option>
-          </select>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="completeName" className="font-semibold">
-            Complete Name
-          </label>
-          <input
-          name='completeName'
-            id="completeName"
-            type="text"
-            value={completeName}
-            onChange={(e) => setCompleteName(e.target.value)}
-            className="block w-5/6 mt-2 focus:border-green-500 focus:outline-none rounded-md"
-          />
-        </div>
-        <div>
-          <label htmlFor="photo" className="font-semibold ml-4">
-            Photo
-          </label>
-          <input
-          name='photo'
-            id="photo"
-            type="file"
-            accept="image/*"
-            onChange={(e) => setPhoto(e.target.value)}
-            className="block ml-4 mt-1 focus:border-green-500 focus:outline-none rounded-md"
-          />
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="email" className="font-semibold">
-            Email
-          </label>
-          <input
-          name='email'
-            id="email"
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="block w-4/6 mt-2 focus:border-green-500 focus:border-green-500 rounded-md"
-          />
-        </div>
-      </div>
-      <div className="grid grid-cols-4 gap-4">
-        <div>
-          <label htmlFor="team" className="font-semibold">
-            Team
-          </label>
-          <input
-          name='team'
-            id="team"
-            type="text"
-            value={team}
-            onChange={(e) => setTeam(e.target.value)}
-            className="block w-4/6 mt-2 focus:border-green-500 focus:outline-green-500 rounded-md"
-          />
-        </div>
-        <div>
-          <label htmlFor="leader" className="font-semibold">
-            Leader
-          </label>
-          <input
-          name='leader'
-            id="leader"
-            type="text"
-            value={leader}
-            onChange={(e) => setLeader(e.target.value)}
-            className="block w-4/6 mt-2 focus:border-green-500 focus:outline-green-500 rounded-md"
-          />
-        </div>
-        <div>
-          <label htmlFor="department" className="font-semibold">
-            Department
-          </label>
-          <input
-          name='department'
-            id="department"
-            type="text"
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-            className="block w-4/6 mt-2 focus:border-green-500 focus:outline-green-500 rounded-md"
-          />
-        </div>
-        <div>
-          <label htmlFor="groups" className="font-semibold">
-            Groups
-          </label>
-          <input
-          name='groups'
-            id="groups"
-            type="text"
-            value={groups}
-            onChange={(e) => setGroups(e.target.value)}
-            className="block w-4/6 mt-2 focus:border-green-500 focus:outline-green-500 rounded-md"
-          />
-        </div>
-      </div>
-      <div className="grid grid-cols-4 gap-4">
-        <div>
-          <label htmlFor="country" className="font-semibold">
-            Country
-          </label>
-          <input
-          name='country'
-            id="country"
-            type="text"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-            className="block w-4/6 mt-2 focus:border-green-500 focus:outline-green-500 rounded-md"
-          />
-        </div>
-        <div>
-          <label htmlFor="city" className="font-semibold">
-            City
-          </label>
-          <input
-          name='city'
-            id="city"
-            type="text"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className="block w-4/6 mt-2 focus:border-green-500 focus:outline-green-500 rounded-md"
-          />
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-4">
-        <div>
-          <label htmlFor="startDate" className="font-semibold">
-            Start Date
-          </label>
-          <div className="flex items-center">
-            <input
-              id="day"
-              type="text"
-              value={day}
-              onChange={(e) => setDay(e.target.value)}
-              className="block w-16 mt-2 mr-2 focus:border-green-500 focus:outline-green-500 rounded-md"
-            />
-            <input
-              id="month"
-              type="text"
-              value={month}
-              onChange={(e) => setMonth(e.target.value)}
-              className="block w-16 mt-2 mr-2 focus:border-green-500 focus:outline-green-500 rounded-md"
-            />
-            <input
-              id="year"
-              type="text"
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-              className="block w-16 mt-2 focus:border-green-500 focus:outline-green-500 rounded-md"
-            />
-          </div>
-        </div>
-        <div>
-          <label htmlFor="city" className="font-semibold">
-            Associate Training Plans?
-          </label>
-          <div className="flex items-center ml-4">
-            <button
-              onClick={() => setAssociateTraining('Yes')}
-              className="bg-gray-400 text-white mt-2 px-6 py-2 mr-2 rounded-md focus:outline-none rounded-md"
-            >
-              Yes
-            </button>
-            <button
-              onClick={() => setAssociateTraining('No')}
-              className="bg-gray-400 text-white mt-2 px-6 py-2 rounded-md focus:outline-none rounded-md"
-            >
-              No
-            </button>
-          </div>
         </div>
       </div>
 
-      <div className="flex justify-center items-center">
-        <div className="grid grid-cols-1 gap-4">
-          <div className="flex space-x-4 mt-12">
-            <button type="submit" className="bg-gray-500 text-white px-4 py-2 rounded-md">
-              Cancel
-            </button>
-            <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-md">
-              Regist New User
-            </button>
+      <div className="flex flex-wrap">
+        <div className="ml-10">
+          <Dropdown
+            label="Seniority"
+            options={[
+              { value: "Senior", label: "Senior" },
+              { value: "Junior", label: "Junior" },
+              { value: "Mid", label: "Mid" },
+            ]}
+            message="Select One"
+            returned={setSeniority}
+          />
+        </div>
+
+        {userType === "Leader" && (
+          <div className="ml-10">
+            <Dropdown
+              label="Report Teams"
+              options={[
+                { value: "equipa dos gelados", label: "equipa dos gelados" },
+              ]}
+              message="Select One"
+              returned={setReport}
+            />
           </div>
+        )}
+      </div>
+
+      <div className="flex flex-wrap">
+        <div className="ml-10">
+          <CompleteName label={"Complete Name"} returned={setCompleteName} />
+        </div>
+
+        <div className="ml-10 ">
+          <PhotoInput label="Photo" returned={setPhoto} />
         </div>
       </div>
-    </form>
+
+      <div className="flex flex-wrap">
+        <div className="ml-10 ">
+          <CompleteName label={"Email"} returned={setEmail} />
+        </div>
+      </div>
+
+      <div className="flex flex-wrap">
+        <div className="gap-4 ml-10">
+          <Dropdown
+            label="Leader"
+            options={[{ value: "Jorge", label: "Jorge" }]}
+            message="Select One"
+            returned={setLeader}
+          />
+        </div>
+
+        <div className="ml-10">
+          <Dropdown
+            label="Team"
+            options={[{ value: "Developers", label: "Developers" }]}
+            message="Select One"
+            returned={setTeam}
+          />
+        </div>
+
+        <div className="ml-10">
+          <TextInput label={"Department"} returned={setDepartment} />
+        </div>
+
+        <div className="ml-10">
+          <Dropdown
+            label="Groups"
+            options={[{ value: "Xbox", label: "Xbox" }]}
+            message="Select One"
+            returned={setGroups}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-wrap">
+        <div className="ml-10">
+          <Dropdown
+            label="Country"
+            options={[{ value: "portugal", label: "Portugal" }]}
+            message="Select One"
+            returned={setCountry}
+          />
+        </div>
+
+        <div className="ml-10">
+          <Dropdown
+            label="City"
+            options={[{ value: "Santarem", label: "Santarem" }]}
+            message="Select One"
+            returned={setCity}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-wrap">
+        <div className="ml-10">
+          {<DatePicker label={"Start Date"} returned={setStartDate} />}
+        </div>
+      </div>
+
+      <div className="flex flex-wrap">
+        <div className="gap-4 ml-10">
+          <Dropdown
+            label="Associate Training Plans?"
+            options={[
+              { value: "Yes", label: "Yes" },
+              { value: "No", label: "No" },
+            ]}
+            message="Select One"
+            returned={handleAssociateTrainingChange}
+          />
+        </div>
+
+        {/* Renderiza o componente Multiselect apenas se a opção for "Yes" */}
+        {associateTraining === "Yes" && (
+          <div className="ml-10">
+            <Multiselect
+              label="Select Training Plan"
+              options={[
+                { value: "all", label: "All" },
+                { value: "department", label: "Department" },
+                { value: "groups", label: "Groups" },
+                { value: "teams", label: "Teams" },
+                { value: "people", label: "People" },
+              ]}
+              message="Select One / Multi"
+              returned={setSelectedTrainingPlans}
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="flex justify-center ">
+        <div className="flex flex-wrap ">
+          <Toaster richColors position="bottom-center" />
+          <button
+            style={{
+              marginTop: "50px",
+              marginRight: "10px",
+              marginBottom: "100px",
+            }}
+            className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-500 hover:text-white active:bg-gray-500"
+            onClick={() => toast.error("Registration Canceled!")}
+          >
+            Cancel
+          </button>
+          <button
+            style={{ marginTop: "50px", marginBottom: "100px" }}
+            className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+            onClick={() => toast.success("User registed successfully!")}
+          >
+            Regist New User
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
 export default Formulario;
-
