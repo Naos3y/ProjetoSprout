@@ -18,12 +18,34 @@ async function tryLogin(email, password) {
     if (!response.ok) {
       throw new Error("Something went wrong");
     }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function tryGetEssentials(email) {
+  try {
+    const url = new URL("http://localhost:3000/api/getessentials");
+    url.searchParams.append("email", email);
+
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Something went wrong");
+    }
 
     const data = await response.json();
     console.log(data);
     return data;
   } catch (error) {
-    console.error("Error:", error);
+    console.log(error);
     throw error;
   }
 }
@@ -43,12 +65,26 @@ export async function Login(credentials) {
     // if (email == "sam@root.pt") {
     const response = await tryLogin(email, password);
     if (response.code == 200) {
-      //função para ir buscar o nome, id e permission
-      const user = { id: "1", name: "sam", permission: permission };
-      const expires = new Date(Date.now() + 30 * 60 * 1000);
-      const session = await encrypt({ user, expires });
-      cookies().set("session", session, { expires });
-      return session;
+      const essentials = await tryGetEssentials(email);
+      if (essentials.code == 200) {
+        const id = essentials.message[0].uid;
+        const name = essentials.message[0].name;
+        const permission = parseInt(essentials.message[0].permission);
+
+        const user = {
+          id: id,
+          name: name,
+          permission: permission,
+        };
+        const expires = new Date(Date.now() + 30 * 60 * 1000);
+        const session = await encrypt({ user, expires });
+        cookies().set("session", session, { expires });
+        return session;
+      } else {
+        const expires = new Date(Date.now() + 1 * 1000);
+        cookies().set("error", "Invalid Credentials", { expires });
+        return null;
+      }
     } else {
       const expires = new Date(Date.now() + 1 * 1000);
       cookies().set("error", "Invalid Credentials", { expires });
