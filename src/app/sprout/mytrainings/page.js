@@ -7,7 +7,7 @@ import Layout from "@/components/Sprout/Layout";
 import Footer from "@/components/Footer";
 import "@fontsource/proza-libre"; // Defaults to weight 400
 
-export default function Sprout() {
+export default function MyTrainigs() {
   const [control, setControl] = useState(-1);
   const [showExpired, setShowExpired] = useState(false);
 
@@ -57,7 +57,7 @@ export default function Sprout() {
       ) : control === 1 ? (
         <div>
           <nav>
-            <Navbar activeRoute="/sprout" />
+            <Navbar activeRoute="/sprout/mytrainings" />
           </nav>
           <div className="justify-center items-center mr-5 ml-5">
             <Layout />
