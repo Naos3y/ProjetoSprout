@@ -103,7 +103,6 @@ const AddTrainingPlan = () => {
                 { value: "department", label: "Department" },
                 { value: "groups", label: "Groups" },
                 { value: "teams", label: "Teams" },
-                { value: "people", label: "People" },
               ]}
               message="Select One / Multi"
               returned={setOpenFor}
