@@ -53,16 +53,15 @@ async function tryGetEssentials(email) {
 export async function Login(credentials) {
   const permission = 4;
   //permissions :
-  // 0 -> admin root
-  // 1 -> admin supreme
-  // 2 -> admin light
+  // 0 -> admin
+  // 1 -> admin
+  // 2 -> admin
   // 3 -> manager
   // 4 -> sprout
   const email = credentials.get("email");
   const password = credentials.get("password");
 
   try {
-    // if (email == "sam@root.pt") {
     const response = await tryLogin(email, password);
     if (response.code == 200) {
       const essentials = await tryGetEssentials(email);

@@ -253,7 +253,7 @@ export default function IncomingLayout() {
             return (
               <div className="border-t border-gray-200 rounded-s">
                 <div id={index} key={index} className="flex">
-                  <div className="w-32 h-auto">
+                  <div className="w-4 h-auto">
                     <div
                       // src="https://tse3.mm.bing.net/th?id=OIP.74gDxvdhJkPEH_kHkvGj8gHaFj&pid=15.1"
                       // alt="Image of a Sprout"
@@ -316,6 +316,12 @@ export default function IncomingLayout() {
                               {training.maxParticipantes}
                             </span>
                           </div>
+                          <button
+                            className="bg-[#DFDFDF] text-[#818181] font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
+                            //onClick={() => handleAppyToTraining(index)}
+                          >
+                            Apply
+                          </button>
                         </div>
                       )}
                     </div>

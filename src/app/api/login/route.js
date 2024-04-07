@@ -19,10 +19,6 @@ export async function POST(request) {
       where: {
         lemail: email,
       },
-      select: {
-        lemail: true,
-        lpassword: true,
-      },
     });
 
     if (!user) {
