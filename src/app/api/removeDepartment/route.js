@@ -3,42 +3,39 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function GET(req, res) {
+export async function POST(request) {
+  const body = await request.json();
+
   try {
-    const { departmentId } = req.query;
+    const { did } = body;
 
-    if (!departmentId) {
-      return NextResponse.json({
-        code: 400,
-        message: "Missing departmentId parameter",
-      });
-    }
-
-    const teams = await prisma.team.findMany({
+    // Remover todas as equipes associadas ao departamento
+    await prisma.team.deleteMany({
       where: {
-        departmentId: parseInt(departmentId, 10),
+        departmentdid: parseInt(did),
       },
     });
 
+    // Remover o departamento
+    await prisma.department.delete({
+      where: {
+        did: parseInt(did),
+      },
+    });
+
+    console.log("Department and associated teams removed successfully.");
+
     return NextResponse.json({
       code: 200,
-      data: teams,
+      message: "Department and associated teams removed successfully.",
     });
   } catch (error) {
     console.error(error);
     return NextResponse.json({
       code: 500,
-      message: error.message,
-    });
-  }
-}
-
-export async function handler(req, res) {
-  if (req.method === "GET") {
-    return GET(req, res);
-  } else {
-    return NextResponse.error(new Error("Method not allowed"), {
-      statusCode: 405,
+      message:
+        "An error occurred while removing department and associated teams.",
+      error: error.message,
     });
   }
 }

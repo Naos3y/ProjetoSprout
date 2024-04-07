@@ -18,6 +18,7 @@ const Formulario = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [teams, setTeams] = useState<
     {
+      tid: number;
       departmentdid: number;
       dname: string;
       tname: string;
@@ -35,7 +36,15 @@ const Formulario = () => {
       const response = await fetch("/api/getTeams");
       if (response.ok) {
         const data = await response.json();
-        setTeams(data.data);
+        setTeams(
+          data.data.sort((a: any, b: any) => {
+            // Ordena os dados por nome do departamento
+            if (a.department && b.department) {
+              return a.department.dname.localeCompare(b.department.dname);
+            }
+            return 0;
+          })
+        );
       } else {
         toast.error("Failed to fetch Teams.");
       }
@@ -66,6 +75,29 @@ const Formulario = () => {
     setIsOpen(false);
   };
 
+  const handleRemoveTeam = async (id: number) => {
+    try {
+      const response = await fetch("/api/removeTeam", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tid: id }), // Enviar o ID da team a ser removida
+      });
+
+      if (response.ok) {
+        fetchDepartments();
+        fetchTeams(); // Recarregar a lista de teams após a remoção
+        toast.success("Team removed successfully!");
+      } else {
+        toast.error("Failed to remove team.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while removing team.");
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const response = await fetch("/api/addNewTeam", {
@@ -81,7 +113,9 @@ const Formulario = () => {
 
       if (response.ok) {
         toast.success("Team registered successfully!");
-        setTeamName(""); // Limpa os dados na caixa de texto
+        setTeamName("");
+        setTeams([]); // Limpa a lista de equipes antes de buscar os novos dados
+        fetchDepartments();
         fetchTeams(); //atualiza a tablea
       } else {
         toast.error("Failed to register team.");
@@ -142,7 +176,7 @@ const Formulario = () => {
       </div>
 
       <div className="flex justify-center">
-        <div className="flex flex-wrap mt-16">
+        <div className="flex flex-wrap mt-2">
           <Toaster richColors position="bottom-center" />
           <button
             style={{
@@ -150,7 +184,7 @@ const Formulario = () => {
               marginRight: "10px",
               marginBottom: "100px",
             }}
-            className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-500 hover:text-white active:bg-gray-500"
+            className="bg-gray-500 text-white font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-600 hover:text-white active:bg-gray-500"
             onClick={() => {
               toast.error("Registration Canceled!");
               setTeamName("");
@@ -160,7 +194,7 @@ const Formulario = () => {
           </button>
           <button
             style={{ marginTop: "50px", marginBottom: "100px" }}
-            className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+            className="bg-green-500 text-white font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-800 hover:text-white active:bg-green-700"
             onClick={handleSubmit}
           >
             Register New Team
@@ -169,8 +203,8 @@ const Formulario = () => {
       </div>
 
       {/* Tabela de Equipes */}
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">
+      <div className="mt-2">
+        <h2 className="text-xl font-semibold mb-4 text-center ">
           Teams and Respective Departments
         </h2>
         <table className="mt-2 w-1/2 mx-auto border-collapse border border-gray-400 rounded-lg overflow-hidden bg-white">
@@ -182,18 +216,30 @@ const Formulario = () => {
               <th className="border border-gray-300 px-4 py-2 text-center">
                 Team
               </th>
+              <th className="border border-gray-300 px-4 py-2 text-center">
+                Remove
+              </th>
             </tr>
           </thead>
           <tbody>
             {teams.map((team) => (
               <tr key={team.departmentdid}>
                 <td className="border border-gray-300 px-4 py-2 text-center">
-                  {team.department
-                    ? team.department.dname
-                    : "Unknown Department"}
+                  {team.department ? team.department.dname : "null"}{" "}
                 </td>
                 <td className="border border-gray-300 px-4 py-2 text-center">
                   {team.tname}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  <div className="flex justify-center items-center">
+                    <Icon
+                      icon="pajamas:remove"
+                      width="19"
+                      height="19"
+                      className="text-black-900 cursor-pointer"
+                      onClick={() => handleRemoveTeam(team.tid)}
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

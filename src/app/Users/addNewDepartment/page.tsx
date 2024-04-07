@@ -111,7 +111,7 @@ const AddNewDepartment = () => {
             Cancel
           </button>
           <button
-            className="bg-green-500 text-white font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-600 active:bg-green-700"
+            className="bg-green-500 text-white font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-800 active:bg-green-700"
             onClick={handleSubmit}
           >
             Register New Department
