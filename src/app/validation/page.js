@@ -59,7 +59,7 @@ export default function Validation() {
           {control === -1
             ? "Validating your session... please wait ..."
             : control === 1
-            ? `Welcome ${username} 🌱`
+            ? `Welcome ${username} 🌱 \n Change your password is this is your first time!`
             : "An unexpected error has occurred !"}
         </h2>
         <div className="max-w-screen">
