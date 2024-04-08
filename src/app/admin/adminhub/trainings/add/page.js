@@ -9,14 +9,14 @@ import BigInput from "@/components/BigInput";
 import DatePicker from "@/components/DatePicker";
 import { Toaster, toast } from "sonner";
 
-const AddTrainingPlan = () => {
+const AddTraining = () => {
   const [trainingType, setTrainingType] = useState(null);
   const [trainingArea, setTrainingArea] = useState(null);
   const [eventType, setEventType] = useState(null);
   const [oponFor, setOpenFor] = useState([]);
   const [numMin, setNumMin] = useState(0);
   const [text, setText] = useState(null);
-  const [bigText, setBigText] = useState(null);
+  const [description, setDescription] = useState(null);
   const [date, setDate] = useState(null);
   const [trainers, setTrainers] = useState([]);
   const [minParticipants, setMinParticipants] = useState(null);
@@ -31,6 +31,55 @@ const AddTrainingPlan = () => {
   console.log("text:", text);
   console.log("Big text:", bigText);
   console.log("Date:", date); */
+
+  /*
+  itname            String
+  itnumofmin        String
+  iteventtype       String
+  itminparticipants String
+  itmaxparticipants String
+  ittrainingarea    String
+  itdescription     String?
+  itstarted         Boolean
+  itstartdate       DateTime
+  */
+
+  const handleAddTraining = async () => {
+    const dataToSend = {
+      trainingName: trainingName.toString(),
+      numMin: numMin.toString(),
+      eventType: eventType.value.toString(),
+      minParticipants: minParticipants.toString(),
+      maxParticipants: maxParticipants.toString(),
+      trainingArea: trainingArea.value.toString(),
+      description: description.toString(),
+    };
+
+    try {
+      const response = await fetch("/api/adminTrainings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        toast.success("Training Added");
+
+        window.location.reload();
+      } else {
+        toast.error(
+          "It wasn't possible to add the training. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        "An error occurred while adding the training. Please try again later."
+      );
+    }
+  };
 
   return (
     <div>
@@ -126,7 +175,7 @@ const AddTrainingPlan = () => {
 
             <BigInput
               label={"Event | Training Description"}
-              returned={setBigText}
+              returned={setDescription}
             />
 
             {/* <DatePicker label={"Date"} returned={setDate} /> */}
@@ -136,7 +185,7 @@ const AddTrainingPlan = () => {
             <Toaster richColors position="bottom-center" />
             <button
               className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-              onClick={() => toast.success("Training Added")}
+              onClick={handleAddTraining}
             >
               Add Training
             </button>
@@ -157,4 +206,4 @@ const AddTrainingPlan = () => {
   );
 };
 
-export default AddTrainingPlan;
+export default AddTraining;

@@ -110,7 +110,7 @@ model trainingplantemplate {
 
 model trainingplan {
   trpid                     Int      @id @default(autoincrement())
-  tpstartingdate            DateTime
+  tpstartingdate            String
   trainingplantemplatetrtid Int
 
   trainingplantemplate trainingplantemplate @relation(fields: [trainingplantemplatetrtid], references: [trtid])
@@ -130,8 +130,8 @@ model insidetrainings {
   itmaxparticipants String
   ittrainingarea    String
   itdescription     String?
-  itstarted         Boolean
-  itstartdate       DateTime
+  itstarted         Boolean @default(false)
+  itstartdate       String?
 
   insideteacherhasinsidestrainings insideteacherhasinsidestrainings[]
 
@@ -171,7 +171,7 @@ model userhastrainingplans {
 model regularuserhasoutsidetrainings {
   regularuserruid      Int
   outsidetrainingsitid Int
-  rotstartdate         DateTime
+  rotstartdate         String
 
   regularuser      regularuser      @relation(fields: [regularuserruid], references: [ruid])
   outsidetrainings outsidetrainings @relation(fields: [outsidetrainingsitid], references: [otid])
