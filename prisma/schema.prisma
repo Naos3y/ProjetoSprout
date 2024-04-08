@@ -1,9 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// schema.prisma
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// Define a configuração do banco de dados
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,28 +10,14 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
-// schema.prisma
-model department {
-  did   Int    @id @default(autoincrement())
-  dname String
-  team  team[]
-}
-
-model team {
-  tid           Int         @id @default(autoincrement())
-  departmentdid Int?
-  tname         String
-  department    department? @relation(fields: [departmentdid], references: [did])
-  user          user[]
-}
-
+// Define os modelos correspondentes às tabelas do banco de dados
 model user {
   uid             Int     @id @default(autoincrement())
   ucountry        String
   urole           String
   teamtid         Int?
-  uadminrights    String
-  utype           Int
+  uadminrights    Int
+  utype           String
   uemployeenumber String
   uname           String
   uphoto          String
@@ -51,84 +34,6 @@ model user {
   userhasgroup  userhasgroup[]
 }
 
-model login {
-  lid       Int    @id @default(autoincrement())
-  useruid   Int?
-  lemail    String
-  lpassword String
-  user      user?  @relation(fields: [useruid], references: [uid])
-}
-
-model regularuser {
-  ruid    Int @id @default(autoincrement())
-  useruid Int
-
-  user                           user                             @relation(fields: [useruid], references: [uid])
-  userhastrainings               userhastrainings[]
-  regularuserhasinsidetrainings  regularuserhasinsidetrainings[]
-  regularuserhasoutsidetrainings regularuserhasoutsidetrainings[]
-}
-
-model insideteacher {
-  itrid   Int @id @default(autoincrement())
-  useruid Int
-
-  user            user              @relation(fields: [useruid], references: [uid])
-  insidetrainings insidetrainings[]
-}
-
-model group {
-  gid          Int            @id @default(autoincrement())
-  gname        String
-  userhasgroup userhasgroup[]
-}
-
-model outsideteacher {
-  otrid            Int                @id @default(autoincrement())
-  otname           String
-  outsidetrainings outsidetrainings[]
-}
-
-model insidetrainings {
-  itid               Int    @id @default(autoincrement())
-  insideteacheritrid Int?
-  itname             String
-  itnumofmin         String
-  iteventtype        String
-  itminparticipants  String
-  itmaxparticipants  String
-
-  insideteacher                 insideteacher?                  @relation(fields: [insideteacheritrid], references: [itrid])
-  trainingplan                  trainingplan[]
-  regularuserhasinsidetrainings regularuserhasinsidetrainings[]
-}
-
-model outsidetrainings {
-  otid                Int    @id @default(autoincrement())
-  outsideteacherotrid Int?
-  otname              String
-  otnumofmin          String
-  oteventtype         String
-  otminparticipants   String
-  otmaxparticipants   String
-
-  outsideteacher                 outsideteacher?                  @relation(fields: [outsideteacherotrid], references: [otrid])
-  trainingplan                   trainingplan[]
-  regularuserhasoutsidetrainings regularuserhasoutsidetrainings[]
-}
-
-model trainingplan {
-  trpid                Int  @id @default(autoincrement())
-  insidetrainingsitid  Int?
-  outsidetrainingsotid Int?
-  trpstarted           Int?
-
-  insidetrainings  insidetrainings?   @relation(fields: [insidetrainingsitid], references: [itid])
-  outsidetrainings outsidetrainings?  @relation(fields: [outsidetrainingsotid], references: [otid])
-  userhastrainings userhastrainings[]
-  trainingtemplate trainingtemplate?
-}
-
 model userhasgroup {
   useruid  Int
   groupgid Int
@@ -139,7 +44,121 @@ model userhasgroup {
   @@id([useruid, groupgid])
 }
 
-model userhastrainings {
+model group {
+  gid          Int            @id @default(autoincrement())
+  gname        String
+  userhasgroup userhasgroup[]
+}
+
+model team {
+  tid           Int         @id @default(autoincrement())
+  departmentdid Int?
+  tname         String
+  department    department? @relation(fields: [departmentdid], references: [did])
+  user          user[]
+}
+
+model department {
+  did   Int    @id @default(autoincrement())
+  dname String
+  team  team[]
+}
+
+model login {
+  lid       Int     @id @default(autoincrement())
+  useruid   Int?
+  lemail    String
+  lpassword String?
+  user      user?   @relation(fields: [useruid], references: [uid])
+}
+
+model regularuser {
+  ruid    Int @id @default(autoincrement())
+  useruid Int
+
+  user                           user                             @relation(fields: [useruid], references: [uid])
+  trainingplan                   trainingplan?                    @relation(fields: [trainingplanTrpid], references: [trpid])
+  trainingplanTrpid              Int?
+  userhastrainingplans           userhastrainingplans[]
+  regularuserhasoutsidetrainings regularuserhasoutsidetrainings[]
+  regularuserhasinsidetrainings  regularuserhasinsidetrainings[]
+}
+
+model insideteacher {
+  itrid   Int @id @default(autoincrement())
+  useruid Int
+
+  user                             user                               @relation(fields: [useruid], references: [uid])
+  insideteacherhasinsidestrainings insideteacherhasinsidestrainings[]
+}
+
+model outsideteacher {
+  otrid            Int                @id @default(autoincrement())
+  otname           String
+  outsidetrainings outsidetrainings[]
+}
+
+model trainingplantemplate {
+  trtid      Int     @id @default(autoincrement())
+  tptname    String
+  tptstarted Boolean @default(false)
+
+  trainingplan                            trainingplan[]
+  trainingplantemplatehasinsidetrainings  trainingplantemplatehasinsidetrainings[]
+  trainingplantemplatehasoutsidetrainings trainingplantemplatehasoutsidetrainings[]
+}
+
+model trainingplan {
+  trpid                     Int      @id @default(autoincrement())
+  tpstartingdate            DateTime
+  trainingplantemplatetrtid Int
+
+  trainingplantemplate trainingplantemplate @relation(fields: [trainingplantemplatetrtid], references: [trtid])
+
+  regularuser          regularuser[]
+  userhastrainingplans userhastrainingplans[]
+
+  @@unique([trpid, trainingplantemplatetrtid], name: "uk_trpid")
+}
+
+model insidetrainings {
+  itid              Int      @id @default(autoincrement())
+  itname            String
+  itnumofmin        String
+  iteventtype       String
+  itminparticipants String
+  itmaxparticipants String
+  ittrainingarea    String
+  itdescription     String?
+  itstarted         Boolean
+  itstartdate       DateTime
+
+  insideteacherhasinsidestrainings insideteacherhasinsidestrainings[]
+
+  regularuserhasinsidetrainings          regularuserhasinsidetrainings[]
+  trainingplantemplatehasinsidetrainings trainingplantemplatehasinsidetrainings[]
+
+  @@unique([itid, ittrainingarea], name: "uk_itid")
+}
+
+model outsidetrainings {
+  otid               Int    @id @default(autoincrement())
+  outsideteacherotid Int
+  otname             String
+  otnumofmin         String
+  oteventtype        String
+  otminparticipants  String
+  otmaxparticipants  String
+
+  outsideteacher outsideteacher @relation(fields: [outsideteacherotid], references: [otrid])
+
+  regularuserhasoutsidetrainings          regularuserhasoutsidetrainings[]
+  trainingplantemplatehasoutsidetrainings trainingplantemplatehasoutsidetrainings[]
+
+  @@unique([otid, outsideteacherotid], name: "uk_otid")
+}
+
+model userhastrainingplans {
   regularuserruid   Int
   trainingplantrpid Int
 
@@ -149,35 +168,56 @@ model userhastrainings {
   @@id([regularuserruid, trainingplantrpid])
 }
 
-model regularuserhasinsidetrainings {
-  insidetrainingsitid Int
-  regularuserruid     Int
-  ritstartdate        DateTime
-
-  insidetrainings insidetrainings @relation(fields: [insidetrainingsitid], references: [itid])
-  regularuser     regularuser     @relation(fields: [regularuserruid], references: [ruid])
-
-  @@id([insidetrainingsitid, regularuserruid])
-}
-
 model regularuserhasoutsidetrainings {
   regularuserruid      Int
-  outsidetrainingsotid Int
+  outsidetrainingsitid Int
   rotstartdate         DateTime
 
   regularuser      regularuser      @relation(fields: [regularuserruid], references: [ruid])
-  outsidetrainings outsidetrainings @relation(fields: [outsidetrainingsotid], references: [otid])
+  outsidetrainings outsidetrainings @relation(fields: [outsidetrainingsitid], references: [otid])
 
-  @@id([regularuserruid, outsidetrainingsotid])
+  @@id([regularuserruid, outsidetrainingsitid])
 }
 
-model trainingtemplate {
-  trtid             Int    @id @default(autoincrement())
-  trainingplantrpid Int
-  trtstartingdate   String
+model insideteacherhasinsidestrainings {
+  insideteacheritrid   Int
+  insidestrainingsitid Int
 
-  trainingplan trainingplan @relation(fields: [trainingplantrpid], references: [trpid])
+  insideteacher    insideteacher   @relation(fields: [insideteacheritrid], references: [itrid])
+  insidestrainings insidetrainings @relation(fields: [insidestrainingsitid], references: [itid])
 
-  @@unique([trainingplantrpid], name: "uk_trtid")
-  @@index([trainingplantrpid], name: "fk_TrainingTemplate_TrainingPlan1_idx")
+  @@id([insideteacheritrid, insidestrainingsitid])
+}
+
+model regularuserhasinsidetrainings {
+  regularuserruid     Int
+  insidetrainingsitid Int
+  uhitmandatory       Boolean? @default(false)
+  uhitpending         Boolean? @default(true)
+
+  regularuser     regularuser     @relation(fields: [regularuserruid], references: [ruid])
+  insidetrainings insidetrainings @relation(fields: [insidetrainingsitid], references: [itid])
+
+  @@id([regularuserruid, insidetrainingsitid])
+}
+
+model trainingplantemplatehasinsidetrainings {
+  trainingplantemplatetrtid Int
+  insidetrainingsitid       Int
+  tptipriority              Int?
+
+  trainingplantemplate trainingplantemplate @relation(fields: [trainingplantemplatetrtid], references: [trtid])
+  insidetrainings      insidetrainings      @relation(fields: [insidetrainingsitid], references: [itid])
+
+  @@id([trainingplantemplatetrtid, insidetrainingsitid])
+}
+
+model trainingplantemplatehasoutsidetrainings {
+  trainingplantemplatetrtid Int
+  outsidetrainingsotid      Int
+
+  trainingplantemplate trainingplantemplate @relation(fields: [trainingplantemplatetrtid], references: [trtid])
+  outsidetrainings     outsidetrainings     @relation(fields: [outsidetrainingsotid], references: [otid])
+
+  @@id([trainingplantemplatetrtid, outsidetrainingsotid])
 }

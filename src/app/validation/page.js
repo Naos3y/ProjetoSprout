@@ -16,7 +16,6 @@ export default function Validation() {
         try {
           const decryptedSession = await decrypt(sessionCookie);
           setUsername(decryptedSession.user.name);
-          console.log(decryptedSession);
 
           let link;
           switch (decryptedSession.user.permission) {

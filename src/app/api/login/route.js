@@ -32,13 +32,11 @@ export async function POST(request) {
       await prisma.$queryRaw`SELECT validate_password(${email}, ${password})`;
 
     if (!login[0].validate_password) {
-      console.log("NOK");
       return NextResponse.json({
         code: 400,
         message: "Incorrect password",
       });
     } else if (login[0].validate_password) {
-      console.log("OK");
       return NextResponse.json({
         code: 200,
         message: "Success",
