@@ -6,7 +6,6 @@ export default function ProfileLayout() {
   const profile = {
     name: "Samuel",
     email: "sam@root.pt",
-    contact: "91919191",
     location: "my Location",
     groups: ["g1", "g2", "g3", "g4"],
     team: "Green",
@@ -42,10 +41,6 @@ export default function ProfileLayout() {
           <div className="text-l text-gray-600 font-bold text-left">
             Email:
             <span className="text-black  mt-1 ml-1">{profile.email}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Contact:
-            <span className="text-black  mt-1 ml-1">{profile.contact}</span>
           </div>
           <div className="text-l text-gray-600 font-bold text-left">
             Location:

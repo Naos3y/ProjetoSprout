@@ -8,7 +8,6 @@ export default function EditProfile() {
   const profile = {
     name: "Samuel",
     email: "sam@root.pt",
-    contact: "91919191",
     location: "my Location",
     groups: ["g1", "g2", "g3", "g4"],
     team: "Green",
