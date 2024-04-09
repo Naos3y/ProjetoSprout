@@ -5,10 +5,11 @@ const prisma = new PrismaClient();
 
 export async function GET(request) {
   try {
-    const { id } = request.query;
+    const url = new URL(request.url);
+    const params = new URLSearchParams(url.searchParams);
 
     const result = await prisma.$queryRaw`
-      SELECT bruno_checkUsersInTraining(${id})`;
+      SELECT bruno_checkUsersInTraining(${params.get("id")})`;
 
     if (result[0]) {
       return NextResponse.json({
