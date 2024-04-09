@@ -3,19 +3,21 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function POST(request) {
+export async function GET(request) {
   try {
-    const body = await request.json();
-    const { email } = body;
+    const { email } = request.query;
 
-    console.log(" +++++++++++++++++ " + email + " +++++++++++++++++ ");
+    if (!email) {
+      return NextResponse.json({
+        status: 400,
+        message: "Missing email parameter in request.",
+      });
+    }
 
     const result = await prisma.$queryRaw`
       SELECT bruno_checkUserEmail(${email})`;
 
-    console.log(result[0]);
-
-    if (result[0].bruno_checkuseremail) {
+    if (result[0]) {
       return NextResponse.json({
         status: 200,
         message: "Email found",
