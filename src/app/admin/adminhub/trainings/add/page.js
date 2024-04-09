@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
-import Dropdown from "@/components/Dropdown";
+import Dropdown from "@/components/DropdownFilter";
 import Multiselect from "@/components/Multiselect";
 import Counter from "@/components/Counter";
 import TextInput from "@/components/TextInput";

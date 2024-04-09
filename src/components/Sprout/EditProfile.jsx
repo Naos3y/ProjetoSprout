@@ -37,7 +37,10 @@ export default function EditProfile() {
         </div>
         <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded ">
           <div className="max-w-96">
-            <TextInput label="New Contact" returned={handleReturnedValue} />
+            <TextInput
+              label="Upload a new photo"
+              returned={handleReturnedValue}
+            />
           </div>
           <button
             onClick={saveProfile}

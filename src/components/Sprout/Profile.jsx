@@ -31,7 +31,7 @@ export default function ProfileLayout() {
           </Link>
         </span>
         <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded">
-          <h3 className="text-2xl  font-bold text-center text-[#87B421]">
+          <h3 className="text-xl  font-bold text-right text-[#87B421]">
             Personal Information
           </h3>
           <div className="text-l text-gray-600 font-bold text-left">
@@ -48,10 +48,10 @@ export default function ProfileLayout() {
           </div>
         </div>
         <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded">
-          <h3 className="text-2xl  font-bold text-center text-[#87B421]">
+          <h3 className="text-xl  font-bold text-right text-[#87B421]">
             Group Information
           </h3>
-          {profile.groups.map(function (group, index) {
+          {profile.groups.map(function (group) {
             return (
               <div className="text-l text-gray-600 font-bold text-left">
                 Group:
@@ -61,7 +61,7 @@ export default function ProfileLayout() {
           })}
         </div>
         <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded">
-          <h3 className="text-2xl  font-bold text-center text-[#87B421]">
+          <h3 className="text-xl  font-bold text-right text-[#87B421]">
             Team Information
           </h3>
           <div className="text-l text-gray-600 font-bold text-left">

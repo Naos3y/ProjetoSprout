@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { sessionExpired, validSession } from "@/session/sessionUtils";
 import Navbar from "@/components/Navbar";
 import SessionExpired from "@/components/Session/SessionExpired";
+import TeamLayout from "@/components/Sprout/Team";
 import Footer from "@/components/Footer";
 import "@fontsource/proza-libre"; // Defaults to weight 400
 
@@ -59,7 +60,7 @@ export default function MyTeam() {
             <Navbar activeRoute="/sprout/myteam" />
           </nav>
           <div className="justify-center items-center mr-5 ml-5">
-            <p>TODO</p>
+            <TeamLayout />
           </div>
         </div>
       ) : (

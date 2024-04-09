@@ -1,5 +1,7 @@
 import React, { Component, useState } from "react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
+import Dropdown from "../DropdownFilter";
+import { GrClearOption } from "react-icons/gr";
 
 export default function IncomingLayout() {
   const getTrainings = () => {
@@ -15,8 +17,8 @@ export default function IncomingLayout() {
       nome: "Desenvolvimento Web com NodeJS",
       inicio: "06-05-2024",
       duracao: "2h",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "João Silva",
       minParticipantes: 10,
       maxParticipantes: 20,
@@ -25,8 +27,8 @@ export default function IncomingLayout() {
       nome: "APIs RESTful com Express",
       inicio: "13-05-2024",
       duracao: "1h30min",
-      tipoFormador: "interno",
-      tipo: "online",
+      tipoFormador: "intern",
+      tipo: "remote",
       professor: "Maria Oliveira",
       minParticipantes: 5,
       maxParticipantes: 15,
@@ -35,8 +37,8 @@ export default function IncomingLayout() {
       nome: "Testes Unitários com Jest",
       inicio: "20-05-2024",
       duracao: "1h",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "Pedro Santos",
       minParticipantes: 8,
       maxParticipantes: 12,
@@ -45,8 +47,8 @@ export default function IncomingLayout() {
       nome: "Implementação de Segurança em Aplicações Web",
       inicio: "27-05-2024",
       duracao: "2h",
-      tipoFormador: "interno",
-      tipo: "online",
+      tipoFormador: "intern",
+      tipo: "remote",
       professor: "Ana Costa",
       minParticipantes: 7,
       maxParticipantes: 14,
@@ -55,8 +57,8 @@ export default function IncomingLayout() {
       nome: "Desenvolvimento Mobile com React Native",
       inicio: "03-06-2024",
       duracao: "2h30min",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "Bruno Fernandes",
       minParticipantes: 12,
       maxParticipantes: 25,
@@ -65,8 +67,8 @@ export default function IncomingLayout() {
       nome: "Desenvolvimento Web com NodeJS",
       inicio: "06-05-2024",
       duracao: "2h",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "João Silva",
       minParticipantes: 10,
       maxParticipantes: 20,
@@ -75,8 +77,8 @@ export default function IncomingLayout() {
       nome: "APIs RESTful com Express",
       inicio: "13-05-2024",
       duracao: "1h30min",
-      tipoFormador: "interno",
-      tipo: "online",
+      tipoFormador: "intern",
+      tipo: "remote",
       professor: "Maria Oliveira",
       minParticipantes: 5,
       maxParticipantes: 15,
@@ -85,8 +87,8 @@ export default function IncomingLayout() {
       nome: "Testes Unitários com Jest",
       inicio: "20-05-2024",
       duracao: "1h",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "Pedro Santos",
       minParticipantes: 8,
       maxParticipantes: 12,
@@ -95,8 +97,8 @@ export default function IncomingLayout() {
       nome: "Implementação de Segurança em Aplicações Web",
       inicio: "27-05-2024",
       duracao: "2h",
-      tipoFormador: "interno",
-      tipo: "online",
+      tipoFormador: "intern",
+      tipo: "remote",
       professor: "Ana Costa",
       minParticipantes: 7,
       maxParticipantes: 14,
@@ -105,8 +107,8 @@ export default function IncomingLayout() {
       nome: "Desenvolvimento Mobile com React Native",
       inicio: "03-06-2024",
       duracao: "2h30min",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "Bruno Fernandes",
       minParticipantes: 12,
       maxParticipantes: 25,
@@ -115,8 +117,8 @@ export default function IncomingLayout() {
       nome: "Desenvolvimento Web com NodeJS",
       inicio: "06-05-2024",
       duracao: "2h",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "João Silva",
       minParticipantes: 10,
       maxParticipantes: 20,
@@ -125,8 +127,8 @@ export default function IncomingLayout() {
       nome: "APIs RESTful com Express",
       inicio: "13-05-2024",
       duracao: "1h30min",
-      tipoFormador: "interno",
-      tipo: "online",
+      tipoFormador: "intern",
+      tipo: "remote",
       professor: "Maria Oliveira",
       minParticipantes: 5,
       maxParticipantes: 15,
@@ -135,8 +137,8 @@ export default function IncomingLayout() {
       nome: "Testes Unitários com Jest",
       inicio: "20-05-2024",
       duracao: "1h",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "Pedro Santos",
       minParticipantes: 8,
       maxParticipantes: 12,
@@ -145,8 +147,8 @@ export default function IncomingLayout() {
       nome: "Implementação de Segurança em Aplicações Web",
       inicio: "27-05-2024",
       duracao: "2h",
-      tipoFormador: "interno",
-      tipo: "online",
+      tipoFormador: "intern",
+      tipo: "remote",
       professor: "Ana Costa",
       minParticipantes: 7,
       maxParticipantes: 14,
@@ -155,8 +157,8 @@ export default function IncomingLayout() {
       nome: "Desenvolvimento Mobile com React Native",
       inicio: "03-06-2024",
       duracao: "2h30min",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "Bruno Fernandes",
       minParticipantes: 12,
       maxParticipantes: 25,
@@ -165,8 +167,8 @@ export default function IncomingLayout() {
       nome: "Desenvolvimento Web com NodeJS",
       inicio: "06-05-2024",
       duracao: "2h",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "João Silva",
       minParticipantes: 10,
       maxParticipantes: 20,
@@ -175,8 +177,8 @@ export default function IncomingLayout() {
       nome: "APIs RESTful com Express",
       inicio: "13-05-2024",
       duracao: "1h30min",
-      tipoFormador: "interno",
-      tipo: "online",
+      tipoFormador: "intern",
+      tipo: "remote",
       professor: "Maria Oliveira",
       minParticipantes: 5,
       maxParticipantes: 15,
@@ -185,8 +187,8 @@ export default function IncomingLayout() {
       nome: "Testes Unitários com Jest",
       inicio: "20-05-2024",
       duracao: "1h",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "Pedro Santos",
       minParticipantes: 8,
       maxParticipantes: 12,
@@ -195,8 +197,8 @@ export default function IncomingLayout() {
       nome: "Implementação de Segurança em Aplicações Web",
       inicio: "27-05-2024",
       duracao: "2h",
-      tipoFormador: "interno",
-      tipo: "online",
+      tipoFormador: "intern",
+      tipo: "remote",
       professor: "Ana Costa",
       minParticipantes: 7,
       maxParticipantes: 14,
@@ -205,8 +207,8 @@ export default function IncomingLayout() {
       nome: "Desenvolvimento Mobile com React Native",
       inicio: "03-06-2024",
       duracao: "2h30min",
-      tipoFormador: "externo",
-      tipo: "presencial",
+      tipoFormador: "extern",
+      tipo: "presential",
       professor: "Bruno Fernandes",
       minParticipantes: 12,
       maxParticipantes: 25,
@@ -215,37 +217,82 @@ export default function IncomingLayout() {
 
   const [filter, setFilter] = useState("");
   const [expandedTrainings, setExpandedTrainings] = useState([]);
+  const [prof, setProf] = useState("");
+  const [type, setType] = useState("");
+  const [Mprof, setMProf] = useState("Professor");
+  const [Mtype, setMType] = useState("Type");
+
+  const optionsProf = [
+    { value: "", label: "All" },
+    { value: "intern", label: "Intern" },
+    { value: "extern", label: "Extern" },
+  ];
+
+  const optionsType = [
+    { value: "", label: "All" },
+    { value: "presential", label: "Presential" },
+    { value: "remote", label: "Remote" },
+  ];
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
   };
 
-  const filteredFormacoes = formacoes.filter((formacao) => {
-    return formacao.nome.toLowerCase().includes(filter.toLowerCase());
-  });
+  const handleProf = (e) => {
+    setProf(e.value);
+  };
 
-  function handleExpand(index) {
-    const newExpandedTrainings = [...expandedTrainings];
-    if (newExpandedTrainings.includes(index)) {
-      newExpandedTrainings.splice(newExpandedTrainings.indexOf(index), 1);
-    } else {
-      newExpandedTrainings.push(index);
-    }
-    setExpandedTrainings(newExpandedTrainings);
-  }
+  const handleType = (e) => {
+    setType(e.value);
+  };
+
+  const resetFilter = () => {
+    setFilter("");
+  };
+
+  const filteredFormacoes = formacoes.filter((formacao) => {
+    const nomeLowerCase = formacao.nome.toLowerCase();
+    const tipoFormadorLowerCase = formacao.tipoFormador.toLowerCase();
+    const tipoLowerCase = formacao.tipo.toLowerCase();
+
+    const filterLowerCase = filter.toLowerCase();
+    const profLowerCase = typeof prof === "string" ? prof.toLowerCase() : "";
+    const typeLowerCase = typeof type === "string" ? type.toLowerCase() : "";
+
+    console.log(profLowerCase);
+    console.log(typeLowerCase);
+
+    return (
+      nomeLowerCase.includes(filterLowerCase) &&
+      tipoFormadorLowerCase.includes(profLowerCase) &&
+      tipoLowerCase.includes(typeLowerCase)
+    );
+  });
 
   return (
     <div className="border rounded mt-5 max-w-screen">
-      <div className="text-left ml-2 mr-2 mb-2 border-b">
+      <div className="text-left border-b flex">
         <input
           name="filter"
           type="text"
           value={filter}
           onChange={handleFilterChange}
-          className="border p-2 w-full rounded-md border-gray-300 focus:outline-none  focus:border-green-500 mt-5 mb-3 max-w-96 ml-4 text-black"
+          className="border-l border-t border-b p-2 w-full rounded-tl rounded-bl border-gray-300 focus:outline-none  focus:border-green-500 mt-5 mb-5 max-w-96 ml-4 text-black"
           placeholder="filter by training"
           required
         />
+        <button
+          onClick={resetFilter}
+          className="p-2 w-max-100 mt-5 mb-5 border rounded-tr rounded-br border-gray-300 hover:border-green-500 focus:outline-none  cursor-pointer font-bold flex items-center justify-between bg-white shadow-sm text-black"
+        >
+          <GrClearOption />
+        </button>
+        <Dropdown
+          options={optionsProf}
+          message="Professor"
+          returned={handleProf}
+        />
+        <Dropdown options={optionsType} message="Type" returned={handleType} />
       </div>
       <div className="h-screen">
         <div className="max-h-screen overflow-y-auto max-w-screen grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 p-6">
