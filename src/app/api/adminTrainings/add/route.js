@@ -21,12 +21,15 @@ export async function POST(request) {
       SELECT bruno_insertTraining(
         ${trainingName}, ${numMin}, ${eventType}, ${minParticipants},
         ${maxParticipants}, ${trainingArea}, ${description}
-      )`;
+      ) AS id`;
+
+    const trainingId = result[0]?.id.toString();
+    console.log("id obtido post: " + trainingId + " .");
 
     return NextResponse.json({
       status: 201,
       message: "Training Added",
-      data: result,
+      id: trainingId,
     });
   } catch (error) {
     console.error("Error adding training:", error);
