@@ -8,12 +8,8 @@ export async function POST(request) {
     const body = await request.json();
     const { email } = body;
 
-    console.log(" +++++++++++++++++ " + email + " +++++++++++++++++ ");
-
     const result = await prisma.$queryRaw`
       SELECT bruno_checkUserEmail(${email})`;
-
-    console.log(result[0]);
 
     if (result[0].bruno_checkuseremail) {
       return NextResponse.json({
