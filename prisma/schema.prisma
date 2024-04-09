@@ -33,8 +33,8 @@ model user {
   ucountry        String
   urole           String
   teamtid         Int?
-  uadminrights    String
-  utype           Int
+  uadminrights    Int
+  utype           String
   uemployeenumber String
   uname           String
   uphoto          String

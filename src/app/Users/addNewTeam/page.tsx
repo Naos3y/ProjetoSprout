@@ -25,6 +25,8 @@ const Formulario = () => {
       department?: { did: number; dname: string };
     }[]
   >([]);
+  const [confirmRemoveModal, setConfirmRemoveModal] = useState(false);
+  const [teamToRemoveId, setTeamToRemoveId] = useState<number>();
 
   useEffect(() => {
     fetchDepartments();
@@ -76,19 +78,25 @@ const Formulario = () => {
   };
 
   const handleRemoveTeam = async (id: number) => {
+    setTeamToRemoveId(id);
+    setConfirmRemoveModal(true);
+  };
+
+  const confirmRemove = async () => {
     try {
       const response = await fetch("/api/removeTeam", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ tid: id }), // Enviar o ID da team a ser removida
+        body: JSON.stringify({ tid: teamToRemoveId }), // Enviar o ID da team a ser removida
       });
 
       if (response.ok) {
         fetchDepartments();
         fetchTeams(); // Recarregar a lista de teams após a remoção
         toast.success("Team removed successfully!");
+        setConfirmRemoveModal(false);
       } else {
         toast.error("Failed to remove team.");
       }
@@ -99,6 +107,16 @@ const Formulario = () => {
   };
 
   const handleSubmit = async () => {
+    if (!selectedDepartmentId) {
+      toast.warning("Please select a valid department.");
+      return;
+    }
+
+    if (!teamName.trim()) {
+      toast.warning("Please enter a valid team name.");
+      return;
+    }
+
     try {
       const response = await fetch("/api/addNewTeam", {
         method: "POST",
@@ -174,7 +192,6 @@ const Formulario = () => {
           />
         </div>
       </div>
-
       <div className="flex justify-center">
         <div className="flex flex-wrap mt-2">
           <Toaster richColors position="bottom-center" />
@@ -201,7 +218,6 @@ const Formulario = () => {
           </button>
         </div>
       </div>
-
       {/* Tabela de Equipes */}
       <div className="mt-2">
         <h2 className="text-xl font-semibold mb-4 text-center ">
@@ -236,7 +252,7 @@ const Formulario = () => {
                       icon="pajamas:remove"
                       width="19"
                       height="19"
-                      className="text-black-900 cursor-pointer"
+                      className="text-red-700 cursor-pointer"
                       onClick={() => handleRemoveTeam(team.tid)}
                     />
                   </div>
@@ -246,6 +262,29 @@ const Formulario = () => {
           </tbody>
         </table>
       </div>
+
+      {confirmRemoveModal && ( //PAINEL DE REMOÇÃO DE EQUIPA
+        <div className="text-center fixed inset-0 z-50 flex justify-center items-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">Confirm Remove Team</h2>
+            <p className="mb-4">Are you sure you want to remove this team?</p>
+            <div className="flex justify-center">
+              <button
+                className="bg-red-500 text-white font-bold px-4 py-2 rounded-md shadow-sm mr-4 hover:bg-red-600"
+                onClick={confirmRemove}
+              >
+                Remove
+              </button>
+              <button
+                className="bg-gray-500 text-white font-bold px-4 py-2 rounded-md shadow-sm hover:bg-gray-600"
+                onClick={() => setConfirmRemoveModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

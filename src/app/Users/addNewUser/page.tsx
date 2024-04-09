@@ -1,46 +1,326 @@
 "use client";
 
-import React, { useState } from "react";
+import {
+  getCountries,
+  getStates,
+  getCities,
+} from "@/app/api/getCountryCity/api";
+import DropdownCountry from "@/components/DropdownCoutryCity/DropdownCountry";
+
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import TextInput from "@/components/TextInput";
 import Dropdown from "@/components/Dropdown";
 import CompleteName from "@/components/CompleteName";
 import DatePicker from "@/components/DatePicker";
-import Multiselect from "@/components/MultiselectAddUser";
 import PhotoInput from "@/components/PhotoInput";
 import { Toaster, toast } from "sonner";
 
 const Formulario = () => {
   const [userType, setUserType] = useState("");
-  const [adminRights, setAdminRights] = useState("");
+  const [adminRights, setAdminRights] = useState(0);
   const [employeeNumber, setEmployeeNumber] = useState("");
   const [role, setRole] = useState("");
   const [completeName, setCompleteName] = useState("");
   const [seniority, setSeniority] = useState("");
   const [photo, setPhoto] = useState("");
-  const [email, setEmail] = useState("");
-  const [team, setTeam] = useState("");
-  const [leader, setLeader] = useState("");
-  const [department, setDepartment] = useState("");
-  const [groups, setGroups] = useState("");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
+  const [email, setEmail] = useState<string>("");
   const [day, setStartDate] = useState("");
-  const [associateTraining, setAssociateTraining] = useState("");
-  const [report, setReport] = useState("");
-  const [selectedTrainingPlans, setSelectedTrainingPlans] = useState([]);
 
-  interface Option {
-    value: string;
+  //Dropdown do Report Team
+  const [isOpenReportTeam, setIsOpenReportTeam] = useState(false);
+  const [selectedReportTeamID, setSelectedReportTeamId] = useState<string>();
+  const [reportTeam, setReportTeam] = useState<
+    { tid: number; tname: string }[]
+  >([]);
+
+  const resetForm = () => {
+    setUserType("");
+    setAdminRights(0);
+    setEmployeeNumber("");
+    setRole("");
+    setCompleteName("");
+    setSeniority("");
+    setPhoto("");
+    setEmail("");
+    setStartDate("");
+    setSelectedReportTeamId("");
+    setSelectedTeamId(0);
+    setSelectedDepartmentId(0);
+    setSelectedGroupId(0);
+    setSelectedCountry("Select Country");
+    setSelectedState("Select State");
+  };
+
+  //Dropdown das Teams
+  const [isOpenTeam, setIsOpenTeam] = useState(false);
+  const [selectedTeamID, setSelectedTeamId] = useState<number>();
+  const [teamDrop, setTeamDrop] = useState<
+    {
+      tid: number;
+      departmentdid: number;
+      dname: string;
+      tname: string;
+      department?: { did: number; dname: string };
+    }[]
+  >([]);
+
+  //Dropdown do Leader
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedLeaderID, setSelectedDepartmentId] = useState<number>();
+  const [leaderType, setLeaderType] = useState<
+    { uid: number; uname: string }[]
+  >([]);
+
+  //Dropdown dos Groups
+  const [isOpenGroup, setIsOpenGroup] = useState(false);
+  const [selectedGroupID, setSelectedGroupId] = useState<number>();
+  const [groupsName, setGroupsName] = useState<
+    { gid: number; gname: string }[]
+  >([]);
+
+  useEffect(() => {
+    fetchLeader();
+    fetchReportTeam();
+    fetchTeam();
+    fetchGroups();
+  }, []);
+
+  interface OptionGroup {
+    value: number;
     label: string;
   }
 
-  const handleAssociateTrainingChange = (option: Option) => {
-    setAssociateTraining(option.value);
-    // Se a opção for "No", limpa os planos de treinamento selecionados
-    if (option.value === "No") {
-      setSelectedTrainingPlans([]);
+  const handleSelectGroup = (option: OptionGroup) => {
+    setSelectedGroupId(option.value);
+    setIsOpenGroup(false);
+  };
+
+  interface OptionReportTeam {
+    value: number;
+    label: string;
+  }
+
+  const handleSelectReportTeam = (option: OptionReportTeam) => {
+    setSelectedReportTeamId(option.label.toString());
+    setIsOpenReportTeam(false);
+  };
+
+  interface OptionTeam {
+    value: number;
+    label: string;
+  }
+
+  const handleSelectTeam = async (option: OptionTeam) => {
+    setSelectedTeamId(option.value);
+    setIsOpenTeam(false);
+  };
+
+  interface Option {
+    value: number;
+    label: string;
+  }
+
+  const handleSelect = (option: Option) => {
+    setSelectedDepartmentId(option.value);
+    setIsOpen(false);
+  };
+
+  const fetchLeader = async () => {
+    try {
+      const response = await fetch("/api/getUserType");
+      if (response.ok) {
+        const data = await response.json();
+        setLeaderType(data.data);
+      } else {
+        toast.error("Failed to fetch leaders.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while fetching leaders.");
     }
+  };
+
+  const fetchReportTeam = async () => {
+    try {
+      const response = await fetch("/api/getReportTeams");
+      if (response.ok) {
+        const data = await response.json();
+        setReportTeam(data.data);
+        setTeamDrop(data.data);
+      } else {
+        toast.error("Failed to fetch report teams.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while fetching report teams.");
+    }
+  };
+
+  const fetchTeam = async () => {
+    try {
+      const response = await fetch("/api/getTeamAndDepartmentAssociated");
+      if (response.ok) {
+        const data = await response.json();
+        //setTeamDrop(data.data);
+      } else {
+        toast.error("Failed to fetch teams.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while fetching teams.");
+    }
+  };
+
+  const fetchGroups = async () => {
+    try {
+      const response = await fetch("/api/getGroups");
+      if (response.ok) {
+        const data = await response.json();
+        setGroupsName(data.data);
+      } else {
+        toast.error("Failed to fetch Groups.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while fetching groups.");
+    }
+  };
+
+  //COUNTRY CITY AND STATE
+
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
+
+  const [countryStates, setCountryStates] = useState([]);
+  const [selectedState, setSelectedState] = useState<string>("");
+
+  const [cities, setCities] = useState([]);
+
+  useEffect(() => {
+    getCountries().then((result) => {
+      setCountries(result.data.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log(selectedCountry);
+    if (selectedCountry !== "Select Country") {
+      getStates(selectedCountry).then((result) => {
+        setCountryStates(result.data.data.states);
+      });
+    }
+  }, [selectedCountry]);
+
+  useEffect(() => {
+    console.log(selectedState);
+    if (selectedState !== "Select State" && selectedCountry) {
+      getCities(selectedCountry, selectedState).then((result) => {
+        setCities(result.data.data);
+      });
+    }
+  }, [selectedState]);
+
+  const handleCountryChange = (
+    event: React.SyntheticEvent<HTMLSelectElement>
+  ) => {
+    setSelectedCountry(event.currentTarget.value);
+  };
+
+  const handleStateChange = (
+    event: React.SyntheticEvent<HTMLSelectElement>
+  ) => {
+    setSelectedState(event.currentTarget.value);
+  };
+
+  //VERIFICACAO DO EMAIL
+
+  const isValidEmail = (email: string) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      // Verificar se o email é válido antes de avançar
+      if (!isValidEmail(email)) {
+        toast.error("Please enter a valid email address.");
+        return;
+      }
+      console.log("Selected Team ID:", selectedTeamID);
+
+      const selectededReportTeamID = selectedReportTeamID || "";
+      console.log("Selected ReportTeam ID:", selectededReportTeamID);
+
+      let userData: any = {
+        userType,
+        adminRights,
+        employeeNumber,
+        role,
+        completeName,
+        seniority,
+        photo,
+        email,
+        startDate: day,
+        selectedLeaderID: selectedLeaderID ? String(selectedLeaderID) : null,
+        selectedTeamID,
+        selectedGroupID,
+        country: selectedCountry,
+        City: selectedState,
+        selectededReportTeamID,
+      };
+
+      const response = await fetch("/api/addNewUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      // Verificar se a requisição foi bem-sucedida
+      if (response.ok) {
+        const data = await response.json();
+        console.log("User registered successfully:", data);
+        toast.success("User registered successfully.");
+        // Aqui você pode redirecionar o u.suário para outra página ou realizar outra ação após o registro bem-sucedido
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to register user:", errorData);
+        toast.error("Failed to register user: " + errorData.message);
+        // Aqui você pode exibir uma mensagem de erro para o usuário ou realizar outra ação em caso de falha no registro
+      }
+      resetForm();
+      fetchLeader();
+      fetchReportTeam();
+      fetchTeam();
+      fetchGroups();
+      getCountries().then((result) => {
+        setCountries(result.data.data);
+      });
+    } catch (error) {
+      console.error("Error registering user:", error);
+      toast.error("An error occurred while registering user.");
+      // Aqui você pode lidar com erros de rede ou outros erros que possam ocorrer durante a requisição
+    }
+  };
+
+  const handleSelectAdminRights = (option: { value: string }) => {
+    const adminRightsValue = parseInt(option.value);
+    setAdminRights(adminRightsValue);
+  };
+
+  const handleSelectRole = (option: { value: string }) => {
+    setRole(option.value);
+  };
+
+  const handleSelectSeniority = (option: { value: string }) => {
+    setSeniority(option.value);
+  };
+
+  const setPhotos = (fileName: string) => {
+    // Atualize o estado da photo com o nome do arquivo
+    setPhoto(fileName);
   };
 
   return (
@@ -53,7 +333,7 @@ const Formulario = () => {
           className="text-green-500"
         />
         <span className="font-semibold text-green-500 text-lg ml-2">
-          Add New Group
+          Add New User
         </span>
       </div>
       <div className="flex flex-wrap">
@@ -73,12 +353,12 @@ const Formulario = () => {
           <Dropdown
             label="Admin Rights"
             options={[
-              { value: 4, label: "Sprout" },
-              { value: 3, label: "Manager" },
-              { value: 0, label: "Admin" },
+              { value: "4", label: "Sprout" },
+              { value: "3", label: "Manager" },
+              { value: "0", label: "Admin" },
             ]}
             message="Select One"
-            returned={setAdminRights}
+            returned={handleSelectAdminRights}
           />
         </div>
 
@@ -114,7 +394,7 @@ const Formulario = () => {
               },
             ]}
             message="Select One"
-            returned={setRole}
+            returned={handleSelectRole}
           />
         </div>
       </div>
@@ -129,37 +409,46 @@ const Formulario = () => {
               { value: "Mid", label: "Mid" },
             ]}
             message="Select One"
-            returned={setSeniority}
+            returned={handleSelectSeniority}
           />
         </div>
 
-        {userType === "Leader" && (
-          <div className="ml-10">
+        <div className="ml-10">
+          {userType === "Leader" && (
             <Dropdown
-              label="Report Teams"
-              options={[
-                { value: "equipa dos gelados", label: "equipa dos gelados" },
-              ]}
+              label="Report Team"
+              options={
+                reportTeam && reportTeam.length > 0
+                  ? reportTeam.map((team) => ({
+                      value: team.tid,
+                      label: team.tname,
+                    }))
+                  : []
+              }
               message="Select One"
-              returned={setReport}
+              returned={handleSelectReportTeam}
             />
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <div className="flex flex-wrap">
         <div className="ml-10">
-          <CompleteName label={"Complete Name"} returned={setCompleteName} />
+          <CompleteName
+            label={"Complete Name"}
+            value={completeName}
+            returned={setCompleteName}
+          />
         </div>
 
         <div className="ml-10 ">
-          <PhotoInput label="Photo" returned={setPhoto} />
+          <PhotoInput label="Photo" returned={setPhotos} />
         </div>
       </div>
 
       <div className="flex flex-wrap">
         <div className="ml-10 ">
-          <CompleteName label={"Email"} returned={setEmail} />
+          <CompleteName label={"Email"} value={email} returned={setEmail} />
         </div>
       </div>
 
@@ -167,91 +456,78 @@ const Formulario = () => {
         <div className="gap-4 ml-10">
           <Dropdown
             label="Leader"
-            options={[{ value: "Jorge", label: "Jorge" }]}
+            options={
+              leaderType && leaderType.length > 0
+                ? leaderType.map((user) => ({
+                    value: user.uid,
+                    label: user.uname,
+                  }))
+                : []
+            }
             message="Select One"
-            returned={setLeader}
+            returned={handleSelect}
           />
         </div>
 
         <div className="ml-10">
           <Dropdown
             label="Team"
-            options={[{ value: "Developers", label: "Developers" }]}
+            options={
+              teamDrop && teamDrop.length > 0
+                ? teamDrop.map((team) => ({
+                    value: team.tid,
+                    label: team.tname,
+                  }))
+                : []
+            }
             message="Select One"
-            returned={setTeam}
+            returned={handleSelectTeam}
           />
-        </div>
-
-        <div className="ml-10">
-          <TextInput label={"Department"} returned={setDepartment} />
         </div>
 
         <div className="ml-10">
           <Dropdown
             label="Groups"
-            options={[{ value: "Xbox", label: "Xbox" }]}
+            options={
+              groupsName && groupsName.length > 0
+                ? groupsName.map((team) => ({
+                    value: team.gid,
+                    label: team.gname,
+                  }))
+                : []
+            }
             message="Select One"
-            returned={setGroups}
+            returned={handleSelectGroup}
           />
         </div>
       </div>
 
       <div className="flex flex-wrap">
-        <div className="ml-10">
-          <Dropdown
+        <div className="mt-6 ml-20">
+          <DropdownCountry
             label="Country"
-            options={[{ value: "portugal", label: "Portugal" }]}
-            message="Select One"
-            returned={setCountry}
+            options={countries}
+            customValueKey="name"
+            onChange={handleCountryChange}
           />
         </div>
-
-        <div className="ml-10">
-          <Dropdown
-            label="City"
-            options={[{ value: "Santarem", label: "Santarem" }]}
-            message="Select One"
-            returned={setCity}
+        <div className="mt-6 ml-20">
+          <DropdownCountry
+            label="State"
+            options={countryStates}
+            customValueKey="name"
+            onChange={handleStateChange}
           />
+        </div>
+        <div className="mt-6 ml-20">
+          <DropdownCountry label="City" options={cities} />
         </div>
       </div>
 
       <div className="flex flex-wrap">
-        <div className="ml-10">
+        <div className="mt-6 ml-10">
           {<DatePicker label={"Start Date"} returned={setStartDate} />}
         </div>
-      </div>
-
-      <div className="flex flex-wrap">
-        <div className="gap-4 ml-10">
-          <Dropdown
-            label="Associate Training Plans?"
-            options={[
-              { value: "Yes", label: "Yes" },
-              { value: "No", label: "No" },
-            ]}
-            message="Select One"
-            returned={handleAssociateTrainingChange}
-          />
-        </div>
-
-        {/* Renderiza o componente Multiselect apenas se a opção for "Yes" */}
-        {associateTraining === "Yes" && (
-          <div className="ml-10">
-            <Multiselect
-              label="Select Training Plan"
-              options={[
-                { value: "all", label: "All" },
-                { value: "department", label: "Department" },
-                { value: "groups", label: "Groups" },
-                { value: "teams", label: "Teams" },
-                { value: "people", label: "People" },
-              ]}
-              message="Select One / Multi"
-              returned={setSelectedTrainingPlans}
-            />
-          </div>
-        )}
       </div>
 
       <div className="flex justify-center ">
@@ -271,7 +547,7 @@ const Formulario = () => {
           <button
             style={{ marginTop: "50px", marginBottom: "100px" }}
             className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-            onClick={() => toast.success("User registed successfully!")}
+            onClick={handleSubmit}
           >
             Regist New User
           </button>

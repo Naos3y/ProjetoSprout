@@ -8,6 +8,8 @@ import CompleteName from "@/components/CompleteName";
 const Formulario = () => {
   const [groupName, setGroupName] = useState("");
   const [groups, setGroups] = useState<{ gid: number; gname: string }[]>([]);
+  const [confirmRemoveModal, setConfirmRemoveModal] = useState(false);
+  const [groupToRemoveId, setGroupToRemoveId] = useState<number>();
 
   useEffect(() => {
     fetchGroups();
@@ -29,18 +31,24 @@ const Formulario = () => {
   };
 
   const handleRemoveGroup = async (id: number) => {
+    setGroupToRemoveId(id);
+    setConfirmRemoveModal(true);
+  };
+
+  const confirmRemove = async () => {
     try {
       const response = await fetch("/api/removeGroup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ gid: id }), // Enviar o ID do departamento a ser removido
+        body: JSON.stringify({ gid: groupToRemoveId }), // Enviar o ID do grupo a ser removido
       });
 
       if (response.ok) {
         fetchGroups(); // Recarregar a lista de grupos após a remoção
         toast.success("Group removed successfully!");
+        setConfirmRemoveModal(false);
       } else {
         toast.error("Failed to remove group.");
       }
@@ -51,6 +59,11 @@ const Formulario = () => {
   };
 
   const handleSubmit = async () => {
+    if (!groupName.trim()) {
+      toast.warning("Group name cannot be empty.");
+      return;
+    }
+
     try {
       const response = await fetch("/api/addNewGroup", {
         method: "POST",
@@ -147,7 +160,7 @@ const Formulario = () => {
                       icon="pajamas:remove"
                       width="19"
                       height="19"
-                      className="text-black-900 cursor-pointer"
+                      className="text-red-700 cursor-pointer"
                       onClick={() => handleRemoveGroup(group.gid)}
                     />
                   </div>
@@ -157,6 +170,31 @@ const Formulario = () => {
           </tbody>
         </table>
       </div>
+
+      {confirmRemoveModal && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-center text-lg font-semibold mb-4">
+              Confirm Remove Group
+            </h2>
+            <p className="mb-4">Are you sure you want to remove this group?</p>
+            <div className="flex justify-center">
+              <button
+                className="bg-red-500 text-white font-bold px-4 py-2 rounded-md shadow-sm mr-4 hover:bg-red-600"
+                onClick={confirmRemove}
+              >
+                Remove
+              </button>
+              <button
+                className="bg-gray-500 text-white font-bold px-4 py-2 rounded-md shadow-sm hover:bg-gray-600"
+                onClick={() => setConfirmRemoveModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import CompleteName from "@/components/CompleteName";
@@ -10,6 +9,8 @@ const AddNewDepartment = () => {
   const [departments, setDepartments] = useState<
     { did: number; dname: string }[]
   >([]);
+  const [confirmRemoveModal, setConfirmRemoveModal] = useState(false);
+  const [departmentToRemoveId, setDepartmentToRemoveId] = useState<number>();
 
   useEffect(() => {
     fetchDepartments();
@@ -31,6 +32,11 @@ const AddNewDepartment = () => {
   };
 
   const handleSubmit = async () => {
+    // VERIFICAR SE O NOME DO DEPARTAMENTO INSERIDO É VALIDO
+    if (!department.trim()) {
+      toast.warning("Department name cannot be empty.");
+      return;
+    }
     try {
       const response = await fetch("/api/addNewDepartment", {
         method: "POST",
@@ -54,18 +60,24 @@ const AddNewDepartment = () => {
   };
 
   const handleRemoveDepartment = async (id: number) => {
+    setDepartmentToRemoveId(id);
+    setConfirmRemoveModal(true);
+  };
+
+  const confirmRemove = async () => {
     try {
       const response = await fetch("/api/removeDepartment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ did: id }), // Enviar o ID do departamento a ser removido
+        body: JSON.stringify({ did: departmentToRemoveId }), // Enviar o ID do departamento a ser removido
       });
 
       if (response.ok) {
         fetchDepartments(); // Recarregar a lista de departamentos após a remoção
         toast.success("Department removed successfully!");
+        setConfirmRemoveModal(false);
       } else {
         toast.error("Failed to remove department.");
       }
@@ -143,7 +155,7 @@ const AddNewDepartment = () => {
                       icon="pajamas:remove"
                       width="19"
                       height="19"
-                      className="text-black-900 cursor-pointer"
+                      className="text-red-700 cursor-pointer"
                       onClick={() => handleRemoveDepartment(dept.did)}
                     />
                   </div>
@@ -153,6 +165,34 @@ const AddNewDepartment = () => {
           </tbody>
         </table>
       </div>
+
+      {confirmRemoveModal && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-center text-lg font-semibold mb-4">
+              Confirm Remove Department
+            </h2>
+            <p className="mb-4">
+              Are you sure you want to remove this department and all teams
+              associated?
+            </p>
+            <div className="flex justify-center">
+              <button
+                className="bg-red-500 text-white font-bold px-4 py-2 rounded-md shadow-sm mr-4 hover:bg-red-600"
+                onClick={confirmRemove}
+              >
+                Remove
+              </button>
+              <button
+                className="bg-gray-500 text-white font-bold px-4 py-2 rounded-md shadow-sm hover:bg-gray-600"
+                onClick={() => setConfirmRemoveModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

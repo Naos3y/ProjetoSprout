@@ -8,50 +8,93 @@ export async function POST(request) {
 
   try {
     const {
-      upermission,
-      utype,
-      uemployeenumber,
-      uname,
-      ufoto,
-      udirectreports,
-      ustartingdate,
-      upais,
-      ucidade,
+      userType,
+      adminRights,
+      employeeNumber,
       role,
-      useniority, // Adicionando a variável useniority
-      lemail,
-      ugroup,
+      completeName,
+      seniority,
+      photo,
+      email,
+      startDate,
+      selectedLeaderID,
+      selectedTeamID,
+      selectedGroupID,
+      country,
+      City,
+      selectededReportTeamID,
     } = body;
 
-    const user = await prisma.login.findFirst({
+    // Verificar se o utilizador já existe pelo email
+    const userExists = await prisma.login.findFirst({
       where: {
-        lemail: lemail,
-      },
-      select: {
-        lemail: true,
+        lemail: email,
       },
     });
-    if (user) {
+    if (userExists) {
       return NextResponse.json({
         code: 400,
-        message: "Utilizador JA EXISTE",
+        message: "User already exists.",
       });
     }
 
-    const regist =
-      await prisma.$queryRaw`SELECT insert_user(${lemail},${upermission},${utype},${uemployeenumber},${uname},${ufoto},${udirectreports},${ustartingdate},${upais},${ucidade},${role},${ugroup},${useniority})`;
+    // Inserir o novo utilizador diretamente no banco de dados
+    const newUser = await prisma.user.create({
+      data: {
+        utype: userType,
+        uadminrights: adminRights,
+        uemployeenumber: employeeNumber,
+        urole: role,
+        uname: completeName,
+        uleader: selectedLeaderID,
+        udirectreport: selectededReportTeamID,
+        useniority: seniority,
+        uphoto: photo,
+        ucountry: country,
+        ucity: City,
+        ustartdate: startDate,
+        login: {
+          create: {
+            lemail: email,
+            lpassword: "ola",
+          },
+        },
+        team: {
+          connect: {
+            tid: selectedTeamID,
+          },
+        },
+      },
+    });
 
-    if (regist[0]) {
-      console.log("OK");
-      return NextResponse.json({
-        code: 200,
-        message: "Sucesso",
+    if (selectedGroupID) {
+      await prisma.userhasgroup.create({
+        data: {
+          useruid: newUser.uid,
+          groupgid: selectedGroupID,
+        },
       });
     }
+
+    await prisma.regularuser.create({
+      data: {
+        useruid: newUser.uid,
+      },
+    });
+
+    console.log("New user created:", newUser);
+
+    return NextResponse.json({
+      code: 200,
+      message: "User created successfully.",
+      data: newUser,
+    });
   } catch (error) {
+    console.error("Error:", error);
+
     return NextResponse.json({
       code: 500,
-      message: error.message,
+      message: "Internal server error.",
     });
   }
 }

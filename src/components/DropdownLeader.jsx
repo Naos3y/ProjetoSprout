@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Dropdown = ({ label, options, message, returned }) => {
+const Dropdown = ({ label, options, optionsFiltered, message, returned }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -36,7 +36,7 @@ const Dropdown = ({ label, options, message, returned }) => {
           // para ficar sobreposto
           style={{ zIndex: 1000 }}
         >
-          {options.map((option) => (
+          {optionsFiltered.map((option) => (
             <div
               key={option.value}
               className="cursor-pointer hover:bg-gray-300 p-2"

@@ -6,8 +6,9 @@ const PhotoInput = ({ label, returned }) => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-    returned(event.target.files[0]); // Passa o arquivo selecionado para a função retornada
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    returned(file?.name || ""); // Passa o nome do arquivo selecionado para a função retornada
   };
 
   return (
