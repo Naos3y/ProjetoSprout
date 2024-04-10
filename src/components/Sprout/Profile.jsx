@@ -147,56 +147,73 @@ export default function ProfileLayout() {
           <h3 className="text-xl  font-bold text-right text-[#87B421]">
             Personal Information
           </h3>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Name:
-            <span className="text-black mt-1 ml-1">{user.name}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Number:
-            <span className="text-black  mt-1 ml-1">{user.number}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Email:
-            <span className="text-black  mt-1 ml-1">{user.email}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Role:
-            <span className="text-black  mt-1 ml-1">{user.role}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Seniority:
-            <span className="text-black  mt-1 ml-1">{user.seniority}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Type:
-            <span className="text-black  mt-1 ml-1">{user.type}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Starting Date:
-            <span className="text-black  mt-1 ml-1">{user.start}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Country:
-            <span className="text-black  mt-1 ml-1">{user.coutry}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
-            City:
-            <span className="text-black  mt-1 ml-1">{user.city}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Photo:
-            <span className="text-black  mt-1 ml-1">{user.photo}</span>
+          <div className="flex">
+            <div className="w-[300px] h-[200px]">
+              <div className="text-l text-gray-600 font-bold text-left bg-blue-500 w-[200px] h-[200px]">
+                <span className="text-black  mt-1 ml-1">{user.photo}</span>
+              </div>
+            </div>
+            <div className="flex-1 p-4 ">
+              <div className="text-xl text-gray-600 font-bold">
+                Name:
+                <span className="text-black mt-1 ml-2 text-lg">
+                  {user.name}
+                </span>
+              </div>
+              <div className="text-xl text-gray-600 font-bold">
+                Number:
+                <span className="text-black  mt-1 ml-2 text-lg">
+                  {user.number}
+                </span>
+              </div>
+              <div className="text-xl text-gray-600 font-bold">
+                Email:
+                <span className="text-black  mt-1 ml-2 text-lg">
+                  {user.email}
+                </span>
+              </div>
+
+              <div className="text-xl text-gray-600 font-bold">
+                Seniority:
+                <span className="text-black  mt-1 ml-2 text-lg">
+                  {user.seniority}
+                </span>
+              </div>
+
+              <div className="text-xl text-gray-600 font-bold">
+                Starting Date:
+                <span className="text-black  mt-1 ml-2 text-lg">
+                  {user.start}
+                </span>
+              </div>
+              <div className="text-xl text-gray-600 font-bold">
+                Location:
+                <span className="text-black  mt-1 ml-2 text-lg">
+                  {user.country} - {user.city}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded">
+        <div className="ml-2 mr-2 mb-2 border p-5 m-2 rounded">
           <h3 className="text-xl  font-bold text-right text-[#87B421]">Team</h3>
-          <div className="text-l text-gray-600 font-bold text-left">
-            Team:
-            <span className="text-black mt-1 ml-1">{team.team}</span>
-          </div>
-          <div className="text-l text-gray-600 font-bold text-left">
+          <div className="text-xl text-gray-600 font-bold text-left">
             Department:
-            <span className="text-black mt-1 ml-1">{team.department}</span>
+            <span className="text-black mt-1 ml-2 text-lg">
+              {team.department}
+            </span>
+          </div>
+          <div className="text-xl text-gray-600 font-bold text-left">
+            Team:
+            <span className="text-black mt-1 ml-2 text-lg">{team.team}</span>
+          </div>
+          <div className="text-xl text-gray-600 font-bold">
+            Type:
+            <span className="text-black  mt-1 ml-2 text-lg">{user.type}</span>
+          </div>
+          <div className="text-xl text-gray-600 font-bold ">
+            Role:
+            <span className="text-black  mt-1 ml-2 text-lg">{user.role}</span>
           </div>
         </div>
         <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded">
@@ -206,9 +223,9 @@ export default function ProfileLayout() {
           {group.map(function (group, index) {
             return (
               <div id={index} key={index} className="flex">
-                <div className="text-l text-gray-600 font-bold text-left">
+                <div className="text-xl text-gray-600 font-bold text-left">
                   Name:
-                  <span className="text-black mt-1 ml-1">
+                  <span className="text-black mt-1 ml-2 text-lg">
                     {group.group_name}
                   </span>
                 </div>
