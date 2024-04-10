@@ -250,6 +250,16 @@ export default function IncomingLayout() {
     setFilter("");
   };
 
+  function handleExpand(index) {
+    const newExpandedTrainings = [...expandedTrainings];
+    if (newExpandedTrainings.includes(index)) {
+      newExpandedTrainings.splice(newExpandedTrainings.indexOf(index), 1);
+    } else {
+      newExpandedTrainings.push(index);
+    }
+    setExpandedTrainings(newExpandedTrainings);
+  }
+
   const filteredFormacoes = formacoes.filter((formacao) => {
     const nomeLowerCase = formacao.nome.toLowerCase();
     const tipoFormadorLowerCase = formacao.tipoFormador.toLowerCase();
@@ -289,7 +299,7 @@ export default function IncomingLayout() {
         </button>
         <Dropdown
           options={optionsProf}
-          message="Professor"
+          message="Instructor"
           returned={handleProf}
         />
         <Dropdown options={optionsType} message="Type" returned={handleType} />

@@ -111,6 +111,15 @@ const Navbar = ({ activeRoute, privilege }) => {
               My Trainigs
             </div>
           </Link>
+          <Link href="/sprout/calendar">
+            <div
+              className={
+                activeRoute === "/sprout/calendar" ? "tabs active-tabs" : "tabs"
+              }
+            >
+              Calendar
+            </div>
+          </Link>
           <Link href="/sprout/myteam">
             <div
               className={
