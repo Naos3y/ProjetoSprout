@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import Link from "next/link";
-import TextInput from "../TextInput";
+import TextInput from "../TextInputUpdated";
 import { Toaster, toast } from "sonner";
 
 export default function EditProfile() {
@@ -30,7 +30,7 @@ export default function EditProfile() {
   };
 
   return (
-    <div className="border rounded mt-5 max-w-screen">
+    <div className="border rounded mt-5 mb-5 max-w-screen">
       <div className="h-screen">
         <div className="border p-5 m-2 rounded bg-[#87B421] text-white font-bold text-xl text-center">
           Edit my Profile

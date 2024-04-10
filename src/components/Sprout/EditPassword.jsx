@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import Link from "next/link";
-import TextInput from "../TextInput";
+import TextInput from "../TextInputUpdated";
 import { Toaster, toast } from "sonner";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
@@ -78,8 +78,7 @@ export default function EditPassword() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      console.log("Token:", token); // Add this line to check the token value
-      const requestOptions = {
+      const response = await fetch("http://localhost:3000/api/changepassword", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -89,12 +88,7 @@ export default function EditPassword() {
           id: decryptedSession.user.id,
           password: password,
         }),
-      };
-
-      const response = await fetch(
-        "http://localhost:3000/api/changepassword",
-        requestOptions
-      );
+      });
 
       if (!response.ok) {
         throw new Error("Something went wrong");
@@ -107,7 +101,7 @@ export default function EditPassword() {
   }
 
   return (
-    <div className="border rounded mt-5 max-w-screen">
+    <div className="border rounded mt-5 mb-5 max-w-screen">
       <Toaster richColors position="bottom-center" />
       <div className="h-screen">
         <div className="border p-5 m-2 rounded bg-[#87B421] text-white font-bold text-xl text-center">
@@ -115,13 +109,21 @@ export default function EditPassword() {
         </div>
         <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded ">
           <div className="max-w-96">
-            <TextInput label="Email" returned={handleEmail} />
+            <TextInput type="email" label="Email" returned={handleEmail} />
           </div>
           <div className="max-w-96">
-            <TextInput label="Current Password" returned={handleOldPassword} />
+            <TextInput
+              type="password"
+              label="Current Password"
+              returned={handleOldPassword}
+            />
           </div>
           <div className="max-w-96">
-            <TextInput label="New Password" returned={handleNewPassword} />
+            <TextInput
+              type="password"
+              label="New Password"
+              returned={handleNewPassword}
+            />
           </div>
           <button
             onClick={saveProfile}

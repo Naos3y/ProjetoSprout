@@ -97,7 +97,7 @@ const Navbar = ({ activeRoute, privilege }) => {
                 activeRoute === "/sprout" ? "tabs active-tabs" : "tabs"
               }
             >
-              Home
+              Catalog
             </div>
           </Link>
           <Link href="/sprout/mytrainings">

@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Dropdown from "@/components/DropdownFilter";
 import Multiselect from "@/components/Multiselect";
 import Counter from "@/components/Counter";
-import TextInput from "@/components/TextInput";
+import TextInput from "@/components/TextInputUpdated";
 import BigInput from "@/components/BigInput";
 import DatePicker from "@/components/DatePicker";
 import { Toaster, toast } from "sonner";

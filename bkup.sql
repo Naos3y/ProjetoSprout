@@ -97,6 +97,67 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION get_user_info(user_id INT)
+RETURNS TABLE (
+	email TEXT,
+    name TEXT,
+    city TEXT,
+    country TEXT,
+    role TEXT,
+    type TEXT,
+    number TEXT,
+    photo TEXT,
+    start TEXT,
+    seniority TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT lemail AS email, uname AS name, ucity AS city, ucountry AS country, urole AS role,
+           utype AS type, uemployeenumber AS number, uphoto AS photo,
+           ustartdate AS start, useniority AS seniority
+    FROM public."user", login l
+	where uid = useruid
+    AND uid = user_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_user_team_department(user_id INT)
+RETURNS TABLE (
+    team TEXT,
+    department TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT tname AS team, dname AS department
+    FROM team t
+    JOIN department d ON t.departmentdid = d.did
+    JOIN public."user" u ON t.tid = u.teamtid
+    WHERE u.uid = user_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_user_groups(user_id INT)
+RETURNS TABLE (
+    group_name TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT g.gname AS group_name
+    FROM public."group" g
+    JOIN public."userhasgroup" ug ON g.gid = ug.groupgid
+    WHERE ug.useruid = user_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- TESTES
+
+select * from get_user_info(1)
+select * from get_user_team_department(1)
+select * from get_user_groups(23)
+
 insert into public."login" (lemail,lpassword) values ('sam@root.pt','root');
 insert into public."user" (utype,uemployeenumber,uname,uadminrights,ucity,ucountry,uphoto,urole,useniority,ustartdate)
 values(1,1,'Samuel',4,'city','country','none','admin','admin','now')

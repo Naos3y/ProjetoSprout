@@ -224,8 +224,8 @@ export default function IncomingLayout() {
 
   const optionsProf = [
     { value: "", label: "All" },
-    { value: "intern", label: "Intern" },
-    { value: "extern", label: "Extern" },
+    { value: "intern", label: "Internal" },
+    { value: "extern", label: "External" },
   ];
 
   const optionsType = [
@@ -270,7 +270,7 @@ export default function IncomingLayout() {
   });
 
   return (
-    <div className="border rounded mt-5 max-w-screen">
+    <div className="border rounded mt-5 mb-5 max-w-screen">
       <div className="text-left border-b flex">
         <input
           name="filter"
