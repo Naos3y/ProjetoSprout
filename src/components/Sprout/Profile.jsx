@@ -3,6 +3,10 @@ import Link from "next/link";
 import { Toaster, toast } from "sonner";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
+import { SlPeople } from "react-icons/sl";
+import { RiTeamFill } from "react-icons/ri";
+import { FaLayerGroup } from "react-icons/fa";
+
 export default function ProfileLayout() {
   // const profile = {
   //   uname: "Samuel",
@@ -126,112 +130,116 @@ export default function ProfileLayout() {
   }, []);
 
   return (
-    <div className="border rounded mt-5 mb-5 max-w-screen">
-      <div className="h-screen">
-        <div className="border p-5 m-2 rounded bg-[#87B421] text-white font-bold text-xl text-center">
-          My Profile
-        </div>
-        <span className="ml-3">
-          <Link href="/profile/edit">
-            <button className="bg-[#DFDFDF] text-[#818181] font-bold px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700 mr-2">
-              Edit profile
-            </button>
-          </Link>
-          <Link href="/profile/password">
-            <button className="bg-[#DFDFDF] text-[#818181] font-bold px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700">
-              Edit password
-            </button>
-          </Link>
-        </span>
-        <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded">
-          <h3 className="text-xl  font-bold text-right text-[#87B421]">
-            Personal Information
-          </h3>
-          <div className="flex">
-            <div className="w-[300px] h-[200px]">
-              <div className="text-l text-gray-600 font-bold text-left bg-blue-500 w-[200px] h-[200px]">
-                <span className="text-black  mt-1 ml-1">{user.photo}</span>
-              </div>
-            </div>
-            <div className="flex-1 p-4 ">
-              <div className="text-xl text-gray-600 font-bold">
-                Name:
-                <span className="text-black mt-1 ml-2 text-lg">
-                  {user.name}
-                </span>
-              </div>
-              <div className="text-xl text-gray-600 font-bold">
-                Number:
-                <span className="text-black  mt-1 ml-2 text-lg">
-                  {user.number}
-                </span>
-              </div>
-              <div className="text-xl text-gray-600 font-bold">
-                Email:
-                <span className="text-black  mt-1 ml-2 text-lg">
-                  {user.email}
-                </span>
-              </div>
+    <div className="mt-5 mb-5 max-w-screen max-h-screen">
+      <Toaster richColors position="bottom-center" />
+      <div className="h-screen ">
+        <div className="max-w-screen mx-auto p-5">
+          <div className="flex justify-between items-center mb-8 rounded-s py-5 bg-gray-100">
+            <h1 className="text-3xl font-bold ml-10">Profile</h1>
 
-              <div className="text-xl text-gray-600 font-bold">
-                Seniority:
-                <span className="text-black  mt-1 ml-2 text-lg">
-                  {user.seniority}
-                </span>
-              </div>
-
-              <div className="text-xl text-gray-600 font-bold">
-                Starting Date:
-                <span className="text-black  mt-1 ml-2 text-lg">
-                  {user.start}
-                </span>
-              </div>
-              <div className="text-xl text-gray-600 font-bold">
-                Location:
-                <span className="text-black  mt-1 ml-2 text-lg">
-                  {user.country} - {user.city}
-                </span>
-              </div>
+            <div className="space-x-4 mr-10">
+              <Link href="/profile/edit">
+                <button className="bg-[#DFDFDF] text-[#818181] font-bold px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700 mr-2">
+                  Edit Profile
+                </button>
+              </Link>
+              <Link href="/profile/password">
+                <button className="bg-[#DFDFDF] text-[#818181] font-bold px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700 mr-2">
+                  Change Password
+                </button>
+              </Link>
             </div>
           </div>
-        </div>
-        <div className="ml-2 mr-2 mb-2 border p-5 m-2 rounded">
-          <h3 className="text-xl  font-bold text-right text-[#87B421]">Team</h3>
-          <div className="text-xl text-gray-600 font-bold text-left">
-            Department:
-            <span className="text-black mt-1 ml-2 text-lg">
-              {team.department}
+
+          <div className="mb-8 p-5 bg-gray-100 rounded-s">
+            <span className="flex ">
+              <SlPeople className="mt-1 mr-4 ml-2" />
+              <h2 className="text-xl font-bold">Personal Information</h2>
             </span>
-          </div>
-          <div className="text-xl text-gray-600 font-bold text-left">
-            Team:
-            <span className="text-black mt-1 ml-2 text-lg">{team.team}</span>
-          </div>
-          <div className="text-xl text-gray-600 font-bold">
-            Type:
-            <span className="text-black  mt-1 ml-2 text-lg">{user.type}</span>
-          </div>
-          <div className="text-xl text-gray-600 font-bold ">
-            Role:
-            <span className="text-black  mt-1 ml-2 text-lg">{user.role}</span>
-          </div>
-        </div>
-        <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded">
-          <h3 className="text-xl  font-bold text-right text-[#87B421]">
-            Groups
-          </h3>
-          {group.map(function (group, index) {
-            return (
-              <div id={index} key={index} className="flex">
-                <div className="text-xl text-gray-600 font-bold text-left">
-                  Name:
-                  <span className="text-black mt-1 ml-2 text-lg">
-                    {group.group_name}
-                  </span>
+
+            <hr className="mb-5" />
+            <div className="grid grid-cols-2 gap-4 ml-10">
+              <div className="col-span-2">
+                <p className="font-semibold">Photo:</p>
+                <div className="h-40 w-40 bg-gray-200 rounded-md flex justify-center items-center">
+                  <img
+                    className="h-full w-full object-cover rounded-md"
+                    src={user.photo}
+                    alt="User Photo"
+                  />
                 </div>
               </div>
-            );
-          })}
+              <div className="col-span-1">
+                <p className="font-semibold">Name:</p>
+                <p>{user.name}</p>
+              </div>
+              <div className="col-span-1">
+                <p className="font-semibold">Number:</p>
+                <p>{user.number}</p>
+              </div>
+              <div className="col-span-1">
+                <p className="font-semibold">Email:</p>
+                <p>{user.email}</p>
+              </div>
+              <div className="col-span-1">
+                <p className="font-semibold">Seniority:</p>
+                <p>{user.seniority}</p>
+              </div>
+              <div className="col-span-1">
+                <p className="font-semibold">Starting Date:</p>
+                <p>{user.start}</p>
+              </div>
+              <div className="col-span-1">
+                <p className="font-semibold">Location:</p>
+                <p>
+                  {user.country} - {user.city}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-8 p-5 bg-gray-100 rounded-s">
+            <span className="flex ">
+              <RiTeamFill className="mt-1 mr-4 ml-2" />
+              <h2 className="text-xl font-bold">My Team</h2>
+            </span>
+            <hr className="mb-5" />
+            <div className="grid grid-cols-2 gap-4 ml-10">
+              <div className="col-span-1">
+                <p className="font-semibold">Department:</p>
+                <p>{team.department}</p>
+              </div>
+              <div className="col-span-1">
+                <p className="font-semibold">Team:</p>
+                <p>{team.team}</p>
+              </div>
+              <div className="col-span-1">
+                <p className="font-semibold">Type:</p>
+                <p>{user.type}</p>
+              </div>
+              <div className="col-span-1">
+                <p className="font-semibold">Role:</p>
+                <p>{user.role}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-8 p-5 bg-gray-100 rounded-s">
+            <span className="flex ">
+              <FaLayerGroup className="mt-1 mr-4 ml-2" />
+              <h2 className="text-xl font-bold">Groups</h2>
+            </span>
+            <hr className="mb-5" />
+
+            <div className="space-y-4 ml-10">
+              {group.map((group, index) => (
+                <div key={index}>
+                  <p className="font-semibold">Name:</p>
+                  <p>{group.group_name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

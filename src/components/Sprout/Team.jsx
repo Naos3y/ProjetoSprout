@@ -49,13 +49,9 @@ export default function TeamLayout() {
     updateData();
   }, []);
   return (
-    <div className="border rounded mt-5 mb-5 max-w-screen">
+    <div className="border rounded-s mt-5 mb-5 max-w-screen">
       <Toaster richColors position="bottom-center" />
       <div className="h-screen">
-        <div className="border p-5 m-2 rounded bg-[#87B421] text-white font-bold text-xl text-center">
-          My Team
-        </div>
-
         <div className="max-h-screen overflow-y-auto max-w-screen grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 p-6">
           {Array.isArray(team) && team.length > 0 ? (
             team.map(function (user, index) {
