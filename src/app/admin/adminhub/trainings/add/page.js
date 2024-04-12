@@ -7,7 +7,7 @@ import Counter from "@/components/Counter";
 import TextInput from "@/components/TextInput";
 import BigInput from "@/components/BigInput";
 import DatePicker from "@/components/DatePicker";
-import TableTextInput from "@/components/TableTextInput";
+import TableTextInput from "@/components/EnrollUser";
 import { Toaster, toast } from "sonner";
 
 const AddTraining = () => {
@@ -36,9 +36,10 @@ const AddTraining = () => {
   console.log("numMin:", numMin);
   console.log("text:", text);
   console.log("Big text:", bigText);
-  console.log("Date:", date); */
+  console.log("Date:", date); 
   console.log("userEmail:", userEmail);
   console.log("oponFor:", oponFor);
+  */
 
   const handleAddTraining = async () => {
     const isEmpty = validateTrainingData();
@@ -95,10 +96,6 @@ const AddTraining = () => {
     }
   };
 
-  const handleTrainingTypeChange = (selectedType) => {
-    setTrainingType(selectedType);
-  };
-
   const validateTrainingData = () => {
     let isEmpty = false;
 
@@ -147,6 +144,41 @@ const AddTraining = () => {
     return isEmpty;
   };
 
+  const handleTrainerOptions = async (type) => {
+    try {
+      if (type.value == "external") {
+        console.log("Tipo escolhido: externo");
+      } else {
+        try {
+          const response = await fetch(
+            `/api/adminTrainings/getInternalTrainers`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (response.ok) {
+            const responseData = await response.json();
+            //console.log(responseData);
+          } else {
+            toast.error("Failed to get trainers");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          toast.error(
+            "An error occurred while trying to get internal trainers. Please try again later."
+          );
+        }
+      }
+    } catch (error) {
+      toast.error("Training type is required");
+      return [];
+    }
+  };
+
   return (
     <div>
       <Navbar activeRoute="/admin/adminhub" />
@@ -163,103 +195,103 @@ const AddTraining = () => {
                 { value: "external", label: "External" },
               ]}
               message="Select One"
-              returned={handleTrainingTypeChange}
+              returned={setTrainingType}
             />
 
-            <Dropdown
-              label="Trainig Area"
-              options={[
-                { value: "p&c", label: "P&C" },
-                { value: "itdevelopment", label: "IT Development" },
-                { value: "sales", label: "Sales" },
-                { value: "languages", label: "Languages" },
-                { value: "product", label: "Product" },
-                {
-                  value: "interpersonalskills",
-                  label: "Interpersonal Skills",
-                },
-                { value: "leadership", label: "Leadership" },
-                { value: "h&s", label: "Health and Safety" },
-                {
-                  value: "businesspracticess",
-                  label: "Business Practices",
-                },
-              ]}
-              message="Select One"
-              returned={setTrainingArea}
-            />
+            {trainingType && (
+              <>
+                <Dropdown
+                  label="Trainig Area"
+                  options={[
+                    { value: "p&c", label: "P&C" },
+                    { value: "itdevelopment", label: "IT Development" },
+                    { value: "sales", label: "Sales" },
+                    { value: "languages", label: "Languages" },
+                    { value: "product", label: "Product" },
+                    {
+                      value: "interpersonalskills",
+                      label: "Interpersonal Skills",
+                    },
+                    { value: "leadership", label: "Leadership" },
+                    { value: "h&s", label: "Health and Safety" },
+                    {
+                      value: "businesspracticess",
+                      label: "Business Practices",
+                    },
+                  ]}
+                  message="Select One"
+                  returned={setTrainingArea}
+                />
 
-            <Dropdown
-              label="Event Type"
-              options={[
-                { value: "offline", label: "Offline" },
-                { value: "onsite", label: "On Site" },
-                { value: "virtual", label: "Virtual" },
-                { value: "virtualonsite", label: "Virtual or Onsite" },
-              ]}
-              message="Select One"
-              returned={setEventType}
-            />
+                <Dropdown
+                  label="Event Type"
+                  options={[
+                    { value: "offline", label: "Offline" },
+                    { value: "onsite", label: "On Site" },
+                    { value: "virtual", label: "Virtual" },
+                    { value: "virtualonsite", label: "Virtual or Onsite" },
+                  ]}
+                  message="Select One"
+                  returned={setEventType}
+                />
 
-            <Multiselect
-              label="Trainers"
-              options={[
-                { value: "i1", label: "José Silva" },
-                { value: "i2", label: "António Lopes" },
-                { value: "i3", label: "Joana Marques" },
-                { value: "i4", label: "Bruno Lopes" },
-                { value: "i5", label: "Daniela Pinto" },
-                { value: "i6", label: "Tatiana Rorigues" },
-                { value: "e1", label: "ISTQB" },
-                { value: "e2", label: "HGD" },
-              ]}
-              message="Select One / Multi"
-              returned={setTrainers}
-            />
+                <Multiselect
+                  label="Trainers"
+                  options={handleTrainerOptions(trainingType)}
+                  message="Select One / Multi"
+                  returned={setTrainers}
+                />
 
-            <Multiselect
-              label="Enrolement Open For"
-              options={[
-                { value: "all", label: "All" },
-                { value: "department", label: "Department" },
-                { value: "groups", label: "Groups" },
-                { value: "teams", label: "Teams" },
-              ]}
-              message="Select One / Multi"
-              returned={setOpenFor}
-            />
+                <Multiselect
+                  label="Enrolement Open For"
+                  options={[
+                    { value: "all", label: "All" },
+                    { value: "department", label: "Department" },
+                    { value: "groups", label: "Groups" },
+                    { value: "teams", label: "Teams" },
+                  ]}
+                  message="Select One / Multi"
+                  returned={setOpenFor}
+                />
 
-            <Counter label="Duration (Minutes)" returned={setNumMin} />
+                <Counter label="Duration (Minutes)" returned={setNumMin} />
 
-            <Counter
-              label="Min Nº of Participants"
-              returned={setMinParticipants}
-            />
+                <Counter
+                  label="Min Nº of Participants"
+                  returned={setMinParticipants}
+                />
 
-            <Counter
-              label="Max Nº of Participants"
-              returned={setMaxParticipants}
-            />
+                <Counter
+                  label="Max Nº of Participants"
+                  returned={setMaxParticipants}
+                />
 
-            <TableTextInput label={"Enroll"} returned={setUserEmail} />
+                <TableTextInput label={"Enroll"} returned={setUserEmail} />
 
-            <TextInput label={"Training Name"} returned={setTrainingName} />
+                <TextInput label={"Training Name"} returned={setTrainingName} />
 
-            <BigInput
-              label={"Event | Training Description"}
-              returned={setDescription}
-            />
+                <BigInput
+                  label={"Event | Training Description"}
+                  returned={setDescription}
+                />
+              </>
+            )}
 
             {/* <DatePicker label={"Date"} returned={setDate} /> */}
           </div>
           <div className="flex justify-center">
             <Toaster richColors position="bottom-center" />
-            <button
-              className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-              onClick={handleAddTraining}
-            >
-              Add Training
-            </button>
+            {trainingType && (
+              <>
+                <button
+                  className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                  onClick={handleAddTraining}
+                >
+                  Add Training
+                </button>
+              </>
+            )}
+
             {showStartButton && (
               <button
                 className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
