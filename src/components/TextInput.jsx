@@ -10,8 +10,8 @@ const TextInput = ({ label, returned }) => {
   };
 
   return (
-    <div className="relative px-5 py-5 space-x-5">
-      <label className="px-5 text-black">{label}</label>
+    <div className="relative py-5 ">
+      <label>{label}</label>
       <input
         type="text"
         value={text}

@@ -28,8 +28,8 @@ const MultiselectSearch = ({ label, options, message, returned }) => {
   );
 
   return (
-    <div className="relative px-5 py-5 space-x-5">
-      <label className="px-5">{label}</label>
+    <div className="relative py-5 ">
+      <label>{label}</label>
       <button
         type="button"
         className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-[200px] bg-white shadow-sm mt-2"

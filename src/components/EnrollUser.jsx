@@ -54,8 +54,8 @@ const TableTextInput = ({ label, returned }) => {
   };
 
   return (
-    <div className="relative px-5 py-5 space-x-5">
-      <label className="px-5">{label}</label>
+    <div className="relative  py-5">
+      <label>{label}</label>
       <div className="flex items-center space-x-5">
         <input
           type="text"

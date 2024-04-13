@@ -17,7 +17,9 @@ const AddTraining = () => {
   const [trainingType, setTrainingType] = useState(null);
   const [trainingArea, setTrainingArea] = useState(null);
   const [eventType, setEventType] = useState(null);
-  const [oponFor, setOpenFor] = useState([]);
+  const [department, setDepartments] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [numMin, setNumMin] = useState(0);
   const [description, setDescription] = useState(null);
   const [date, setDate] = useState(null);
@@ -57,35 +59,39 @@ const AddTraining = () => {
         ...(emptyDescription ? {} : { description: description.toString() }),
       };
 
-      try {
-        const response = await fetch("/api/adminTrainings/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataToSend),
-        });
+      if (trainingType == "internal") {
+        try {
+          const response = await fetch("/api/adminTrainings/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataToSend),
+          });
 
-        if (response.ok) {
-          const responseData = await response.json();
-          const trainingId = parseInt(responseData.id);
-          setIdTraining(trainingId);
+          if (response.ok) {
+            const responseData = await response.json();
+            const trainingId = parseInt(responseData.id);
+            setIdTraining(trainingId);
 
-          console.log("Training ID:", trainingId);
-          toast.success("Training Added");
-          setShowStartButton(true);
+            console.log("Training ID:", trainingId);
+            toast.success("Training Added");
+            setShowStartButton(true);
 
-          //window.location.reload();
-        } else {
+            //window.location.reload();
+          } else {
+            toast.error(
+              "It wasn't possible to add the training. Please try again."
+            );
+          }
+        } catch (error) {
+          console.error("Error:", error);
           toast.error(
-            "It wasn't possible to add the training. Please try again."
+            "An error occurred while adding the training. Please try again later."
           );
         }
-      } catch (error) {
-        console.error("Error:", error);
-        toast.error(
-          "An error occurred while adding the training. Please try again later."
-        );
+      } else {
+        toast.error("treino externo por implementar");
       }
     }
   };
@@ -220,6 +226,12 @@ const AddTraining = () => {
     setTrainingType(selectedType);
   };
 
+  const handleDepartmentOptions = () => {};
+
+  const handleTeamOptions = () => {};
+
+  const handleGroupOptions = () => {};
+
   /*   console.log("trainingType:", trainingType);
   console.log("trainingArea:", trainingArea);
   console.log("eventType:", eventType);
@@ -241,63 +253,116 @@ const AddTraining = () => {
           barra lateral
         </div>
         <div className="mx-auto max-w-6xl my-4 space-y-4">
-          <div className="flex flex-wrap">
-            <DropdownState
-              label="Training Type"
-              options={[
-                { value: "internal", label: "Internal" },
-                { value: "external", label: "External" },
-              ]}
-              message="Select One"
-              returned={handleTrainingTypeSelect}
-              disabled={trainingTypeSelected}
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-20 gap-y-3">
+            <div>
+              <DropdownState
+                label="Training Type"
+                options={[
+                  { value: "internal", label: "Internal" },
+                  { value: "external", label: "External" },
+                ]}
+                message="Select One"
+                returned={handleTrainingTypeSelect}
+                disabled={trainingTypeSelected}
+              />
+            </div>
 
             {trainingType && (
               <>
-                <Dropdown
-                  label="Trainig Area"
-                  options={[
-                    { value: "p&c", label: "P&C" },
-                    { value: "itdevelopment", label: "IT Development" },
-                    { value: "sales", label: "Sales" },
-                    { value: "languages", label: "Languages" },
-                    { value: "product", label: "Product" },
-                    {
-                      value: "interpersonalskills",
-                      label: "Interpersonal Skills",
-                    },
-                    { value: "leadership", label: "Leadership" },
-                    { value: "h&s", label: "Health and Safety" },
-                    {
-                      value: "businesspracticess",
-                      label: "Business Practices",
-                    },
-                  ]}
-                  message="Select One"
-                  returned={setTrainingArea}
-                />
+                <div>
+                  <Dropdown
+                    label="Trainig Area"
+                    options={[
+                      { value: "p&c", label: "P&C" },
+                      { value: "itdevelopment", label: "IT Development" },
+                      { value: "sales", label: "Sales" },
+                      { value: "languages", label: "Languages" },
+                      { value: "product", label: "Product" },
+                      {
+                        value: "interpersonalskills",
+                        label: "Interpersonal Skills",
+                      },
+                      { value: "leadership", label: "Leadership" },
+                      { value: "h&s", label: "Health and Safety" },
+                      {
+                        value: "businesspracticess",
+                        label: "Business Practices",
+                      },
+                    ]}
+                    message="Select One"
+                    returned={setTrainingArea}
+                  />
+                </div>
 
-                <Dropdown
-                  label="Event Type"
-                  options={[
-                    { value: "offline", label: "Offline" },
-                    { value: "onsite", label: "On Site" },
-                    { value: "virtual", label: "Virtual" },
-                    { value: "virtualonsite", label: "Virtual or Onsite" },
-                  ]}
-                  message="Select One"
-                  returned={setEventType}
-                />
+                <div>
+                  <Dropdown
+                    label="Event Type"
+                    options={[
+                      { value: "offline", label: "Offline" },
+                      { value: "onsite", label: "On Site" },
+                      { value: "virtual", label: "Virtual" },
+                      { value: "virtualonsite", label: "Virtual or Onsite" },
+                    ]}
+                    message="Select One"
+                    returned={setEventType}
+                  />
+                </div>
 
-                <MultiselectSearch
-                  label="Trainers"
-                  options={options}
-                  message="Select One / Multi"
-                  returned={setTrainers}
-                />
+                <div>
+                  <MultiselectSearch
+                    label="Trainers"
+                    options={options}
+                    message="Select One / Multi"
+                    returned={setTrainers}
+                  />
+                </div>
 
-                <Multiselect
+                <div>
+                  <MultiselectSearch
+                    label="Enrolment for Department"
+                    //options={handleDepartmentOptions}
+                    options={[
+                      { value: "offline", label: "Offline" },
+                      { value: "onsite", label: "On Site" },
+                      { value: "virtual", label: "Virtual" },
+                      { value: "virtualonsite", label: "Virtual or Onsite" },
+                    ]}
+                    message="Select One / Multi"
+                    returned={setDepartments}
+                  />
+                </div>
+
+                <div>
+                  <MultiselectSearch
+                    label="Enrolment for Groups"
+                    //options={handleGroupOptions}
+                    options={[
+                      { value: "offline", label: "Offline" },
+                      { value: "onsite", label: "On Site" },
+                      { value: "virtual", label: "Virtual" },
+                      { value: "virtualonsite", label: "Virtual or Onsite" },
+                    ]}
+                    message="Select One / Multi"
+                    returned={setGroups}
+                  />
+                </div>
+
+                <div>
+                  <MultiselectSearch
+                    label="Enrolment for Teams"
+                    //options={handleTeamOptions}
+                    options={[
+                      { value: "offline", label: "Offline" },
+                      { value: "onsite", label: "On Site" },
+                      { value: "virtual", label: "Virtual" },
+                      { value: "virtualonsite", label: "Virtual or Onsite" },
+                    ]}
+                    message="Select One / Multi"
+                    returned={setTeams}
+                  />
+                </div>
+
+                {/* <Multiselect
                   label="Enrolement Open For"
                   options={[
                     { value: "all", label: "All" },
@@ -307,28 +372,43 @@ const AddTraining = () => {
                   ]}
                   message="Select One / Multi"
                   returned={setOpenFor}
-                />
+                /> */}
 
-                <Counter label="Duration (Minutes)" returned={setNumMin} />
+                <div>
+                  <Counter label="Duration (Minutes)" returned={setNumMin} />
+                </div>
 
-                <Counter
-                  label="Min Nº of Participants"
-                  returned={setMinParticipants}
-                />
+                <div>
+                  <Counter
+                    label="Min Nº of Participants"
+                    returned={setMinParticipants}
+                  />
+                </div>
 
-                <Counter
-                  label="Max Nº of Participants"
-                  returned={setMaxParticipants}
-                />
+                <div>
+                  <Counter
+                    label="Max Nº of Participants"
+                    returned={setMaxParticipants}
+                  />
+                </div>
 
-                <TableTextInput label={"Enroll"} returned={setUserEmail} />
+                <div className="col-span-2 ">
+                  <TableTextInput label={"Enroll"} returned={setUserEmail} />
+                </div>
 
-                <TextInput label={"Training Name"} returned={setTrainingName} />
+                <div className="col-span-2">
+                  <TextInput
+                    label={"Training Name"}
+                    returned={setTrainingName}
+                  />
+                </div>
 
-                <BigInput
-                  label={"Event | Training Description"}
-                  returned={setDescription}
-                />
+                <div className="col-span-2 ">
+                  <BigInput
+                    label={"Event | Training Description"}
+                    returned={setDescription}
+                  />
+                </div>
               </>
             )}
 

@@ -132,6 +132,7 @@ model insidetrainings {
   itdescription     String?
   itstarted         Boolean @default(false)
   itstartdate       String?
+  // falta a location
 
   insideteacherhasinsidestrainings insideteacherhasinsidestrainings[]
 
@@ -149,6 +150,7 @@ model outsidetrainings {
   oteventtype        String
   otminparticipants  String
   otmaxparticipants  String
+  // falta description, started, start date e location
 
   outsideteacher outsideteacher @relation(fields: [outsideteacherotid], references: [otrid])
 
