@@ -10,6 +10,8 @@ import BigInput from "@/components/BigInput";
 import DatePicker from "@/components/DatePicker";
 import TableTextInput from "@/components/EnrollUser";
 import { Toaster, toast } from "sonner";
+import DropdownState from "@/components/DropdownState";
+import MultiselectSearch from "@/components/MultiselectSearch";
 
 const AddTraining = () => {
   const [trainingType, setTrainingType] = useState(null);
@@ -17,22 +19,19 @@ const AddTraining = () => {
   const [eventType, setEventType] = useState(null);
   const [oponFor, setOpenFor] = useState([]);
   const [numMin, setNumMin] = useState(0);
-  const [text, setText] = useState(null);
   const [description, setDescription] = useState(null);
   const [date, setDate] = useState(null);
   const [trainers, setTrainers] = useState([]);
   const [minParticipants, setMinParticipants] = useState(null);
   const [maxParticipants, setMaxParticipants] = useState(null);
   const [trainingName, setTrainingName] = useState(null);
-
   const [showStartButton, setShowStartButton] = useState(false);
   const [idTraining, setIdTraining] = useState(0);
-
   const [userEmail, setUserEmail] = useState([]);
-  const [insideTrainers, setInsideTrainers] = useState([]);
-
   const [options, setOptions] = useState([]);
+  const [trainingTypeSelected, setTrainingTypeSelected] = useState(false);
 
+  // useEffect obtido através do gemini
   useEffect(() => {
     const fetchData = async () => {
       const trainers = await handleTrainerOptions(trainingType);
@@ -40,20 +39,6 @@ const AddTraining = () => {
     };
     fetchData();
   }, [trainingType]);
-
-  /*   console.log("trainingType:", trainingType);
-  console.log("trainingArea:", trainingArea);
-  console.log("eventType:", eventType);
-  console.log("oponFor:", oponFor);
-  console.log("numMin:", numMin);
-  console.log("text:", text);
-  console.log("Big text:", bigText);
-  console.log("Date:", date); 
-  console.log("userEmail:", userEmail);
-  console.log("oponFor:", oponFor);
-  */
-
-  console.log("valor do cenas: ", trainers);
 
   const handleAddTraining = async () => {
     const isEmpty = validateTrainingData();
@@ -162,9 +147,38 @@ const AddTraining = () => {
   const handleTrainerOptions = async (type) => {
     try {
       if (type.value == "external") {
-        console.log("Tipo escolhido: externo");
-        return [];
+        setTrainers([]);
+        try {
+          const response = await fetch(
+            `/api/adminTrainings/getExternalTrainers`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (response.ok) {
+            const responseData = await response.json();
+            const mappedTrainers = responseData.trainers.map((trainer) => ({
+              value: trainer.trainer_id,
+              label: trainer.trainer_name,
+            }));
+            //console.log("aqui", mappedTrainers);
+            return mappedTrainers;
+          } else {
+            toast.error("Failed to get trainers");
+            return [];
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          toast.error(
+            "An error occurred while trying to get internal trainers. Please try again later."
+          );
+        }
       } else if (type.value == "internal") {
+        setTrainers([]);
         try {
           const response = await fetch(
             `/api/adminTrainings/getInternalTrainers`,
@@ -201,6 +215,24 @@ const AddTraining = () => {
     }
   };
 
+  const handleTrainingTypeSelect = (selectedType) => {
+    setTrainingTypeSelected(true);
+    setTrainingType(selectedType);
+  };
+
+  /*   console.log("trainingType:", trainingType);
+  console.log("trainingArea:", trainingArea);
+  console.log("eventType:", eventType);
+  console.log("oponFor:", oponFor);
+  console.log("numMin:", numMin);
+  console.log("text:", text);
+  console.log("Big text:", bigText);
+  console.log("Date:", date); 
+  console.log("userEmail:", userEmail);
+  console.log("oponFor:", oponFor);
+  console.log("valor do cenas: ", trainers);
+  */
+
   return (
     <div>
       <Navbar activeRoute="/admin/adminhub" />
@@ -210,14 +242,15 @@ const AddTraining = () => {
         </div>
         <div className="mx-auto max-w-6xl my-4 space-y-4">
           <div className="flex flex-wrap">
-            <Dropdown
+            <DropdownState
               label="Training Type"
               options={[
                 { value: "internal", label: "Internal" },
                 { value: "external", label: "External" },
               ]}
               message="Select One"
-              returned={setTrainingType}
+              returned={handleTrainingTypeSelect}
+              disabled={trainingTypeSelected}
             />
 
             {trainingType && (
@@ -257,7 +290,7 @@ const AddTraining = () => {
                   returned={setEventType}
                 />
 
-                <Multiselect
+                <MultiselectSearch
                   label="Trainers"
                   options={options}
                   message="Select One / Multi"
