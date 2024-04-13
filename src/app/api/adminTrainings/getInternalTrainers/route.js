@@ -6,8 +6,7 @@ const prisma = new PrismaClient();
 export async function GET(request) {
   try {
     const result = await prisma.$queryRaw`
-      SELECT bruno_getAllInsideTeacherNames() AS names`;
-    //console.log(result);
+      SELECT * FROM public.bruno_getallinsideteachernames()`;
 
     if (result[0]) {
       return NextResponse.json({

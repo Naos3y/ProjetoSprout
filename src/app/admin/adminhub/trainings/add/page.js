@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Dropdown from "@/components/Dropdown";
 import Multiselect from "@/components/Multiselect";
@@ -28,6 +29,17 @@ const AddTraining = () => {
   const [idTraining, setIdTraining] = useState(0);
 
   const [userEmail, setUserEmail] = useState([]);
+  const [insideTrainers, setInsideTrainers] = useState([]);
+
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const trainers = await handleTrainerOptions(trainingType);
+      setOptions(trainers);
+    };
+    fetchData();
+  }, [trainingType]);
 
   /*   console.log("trainingType:", trainingType);
   console.log("trainingArea:", trainingArea);
@@ -40,6 +52,8 @@ const AddTraining = () => {
   console.log("userEmail:", userEmail);
   console.log("oponFor:", oponFor);
   */
+
+  console.log("valor do cenas: ", trainers);
 
   const handleAddTraining = async () => {
     const isEmpty = validateTrainingData();
@@ -54,6 +68,7 @@ const AddTraining = () => {
         maxParticipants: maxParticipants.toString(),
         trainingArea: trainingArea.value.toString(),
 
+        // pedaço codigo do chatgpt
         ...(emptyDescription ? {} : { description: description.toString() }),
       };
 
@@ -148,7 +163,8 @@ const AddTraining = () => {
     try {
       if (type.value == "external") {
         console.log("Tipo escolhido: externo");
-      } else {
+        return [];
+      } else if (type.value == "internal") {
         try {
           const response = await fetch(
             `/api/adminTrainings/getInternalTrainers`,
@@ -162,9 +178,15 @@ const AddTraining = () => {
 
           if (response.ok) {
             const responseData = await response.json();
-            //console.log(responseData);
+            const mappedTrainers = responseData.trainers.map((trainer) => ({
+              value: trainer.user_id,
+              label: trainer.teacher_name,
+            }));
+            console.log("aqui", mappedTrainers);
+            return mappedTrainers;
           } else {
             toast.error("Failed to get trainers");
+            return [];
           }
         } catch (error) {
           console.error("Error:", error);
@@ -237,7 +259,7 @@ const AddTraining = () => {
 
                 <Multiselect
                   label="Trainers"
-                  options={handleTrainerOptions(trainingType)}
+                  options={options}
                   message="Select One / Multi"
                   returned={setTrainers}
                 />
