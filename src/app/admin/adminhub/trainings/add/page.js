@@ -32,6 +32,9 @@ const AddTraining = () => {
   const [userEmail, setUserEmail] = useState([]);
   const [options, setOptions] = useState([]);
   const [trainingTypeSelected, setTrainingTypeSelected] = useState(false);
+  const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [groupOptions, setGroupOtions] = useState([]);
+  const [teamOptions, setTeamOptions] = useState([]);
 
   // useEffect obtido através do gemini
   useEffect(() => {
@@ -41,6 +44,30 @@ const AddTraining = () => {
     };
     fetchData();
   }, [trainingType]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const departments = await handleDepartmentOptions();
+      setDepartmentOptions(departments);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const groups = await handleGroupOptions();
+      setGroupOtions(groups);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const teams = await handleTeamOptions();
+      setTeamOptions(teams);
+    };
+    fetchData();
+  }, []);
 
   const handleAddTraining = async () => {
     const isEmpty = validateTrainingData();
@@ -226,11 +253,89 @@ const AddTraining = () => {
     setTrainingType(selectedType);
   };
 
-  const handleDepartmentOptions = () => {};
+  const handleDepartmentOptions = async () => {
+    try {
+      const response = await fetch(`/api/adminTrainings/getDepartmentNames`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  const handleTeamOptions = () => {};
+      if (response.ok) {
+        const responseData = await response.json();
+        const mappedDepartments = responseData.trainers.map((departments) => ({
+          value: departments.department_id,
+          label: departments.department_name,
+        }));
+        return mappedDepartments;
+      } else {
+        toast.error("Failed to get departments");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        "An error occurred while trying to get the departments. Please try again later."
+      );
+    }
+  };
 
-  const handleGroupOptions = () => {};
+  const handleTeamOptions = async () => {
+    try {
+      const response = await fetch(`/api/adminTrainings/getTeamNames`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        const mappedTeams = responseData.trainers.map((teams) => ({
+          value: teams.team_id,
+          label: teams.team_name,
+        }));
+        return mappedTeams;
+      } else {
+        toast.error("Failed to get teams");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        "An error occurred while trying to get the teams. Please try again later."
+      );
+    }
+  };
+
+  const handleGroupOptions = async () => {
+    try {
+      const response = await fetch(`/api/adminTrainings/getGroupNames`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        const mappedGroups = responseData.trainers.map((groups) => ({
+          value: groups.group_id,
+          label: groups.group_name,
+        }));
+        return mappedGroups;
+      } else {
+        toast.error("Failed to get groups");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        "An error occurred while trying to get the groups. Please try again later."
+      );
+    }
+  };
 
   /*   console.log("trainingType:", trainingType);
   console.log("trainingArea:", trainingArea);
@@ -320,13 +425,7 @@ const AddTraining = () => {
                 <div>
                   <MultiselectSearch
                     label="Enrolment for Department"
-                    //options={handleDepartmentOptions}
-                    options={[
-                      { value: "offline", label: "Offline" },
-                      { value: "onsite", label: "On Site" },
-                      { value: "virtual", label: "Virtual" },
-                      { value: "virtualonsite", label: "Virtual or Onsite" },
-                    ]}
+                    options={departmentOptions}
                     message="Select One / Multi"
                     returned={setDepartments}
                   />
@@ -335,13 +434,7 @@ const AddTraining = () => {
                 <div>
                   <MultiselectSearch
                     label="Enrolment for Groups"
-                    //options={handleGroupOptions}
-                    options={[
-                      { value: "offline", label: "Offline" },
-                      { value: "onsite", label: "On Site" },
-                      { value: "virtual", label: "Virtual" },
-                      { value: "virtualonsite", label: "Virtual or Onsite" },
-                    ]}
+                    options={groupOptions}
                     message="Select One / Multi"
                     returned={setGroups}
                   />
@@ -350,13 +443,7 @@ const AddTraining = () => {
                 <div>
                   <MultiselectSearch
                     label="Enrolment for Teams"
-                    //options={handleTeamOptions}
-                    options={[
-                      { value: "offline", label: "Offline" },
-                      { value: "onsite", label: "On Site" },
-                      { value: "virtual", label: "Virtual" },
-                      { value: "virtualonsite", label: "Virtual or Onsite" },
-                    ]}
+                    options={teamOptions}
                     message="Select One / Multi"
                     returned={setTeams}
                   />
