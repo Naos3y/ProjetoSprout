@@ -14,27 +14,32 @@ import DropdownState from "@/components/DropdownState";
 import MultiselectSearch from "@/components/MultiselectSearch";
 
 const AddTraining = () => {
+  // variaveis para o treino
   const [trainingType, setTrainingType] = useState(null);
   const [trainingArea, setTrainingArea] = useState(null);
   const [eventType, setEventType] = useState(null);
-  const [department, setDepartments] = useState([]);
-  const [groups, setGroups] = useState([]);
-  const [teams, setTeams] = useState([]);
   const [numMin, setNumMin] = useState(0);
   const [description, setDescription] = useState(null);
-  const [date, setDate] = useState(null);
-  const [trainers, setTrainers] = useState([]);
   const [minParticipants, setMinParticipants] = useState(null);
   const [maxParticipants, setMaxParticipants] = useState(null);
   const [trainingName, setTrainingName] = useState(null);
+
+  // para uso geral em componentes e afins
   const [showStartButton, setShowStartButton] = useState(false);
-  const [idTraining, setIdTraining] = useState(0);
-  const [userEmail, setUserEmail] = useState([]);
   const [options, setOptions] = useState([]);
   const [trainingTypeSelected, setTrainingTypeSelected] = useState(false);
   const [departmentOptions, setDepartmentOptions] = useState([]);
   const [groupOptions, setGroupOtions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
+
+  // para adicionar pessoas ao treino
+  const [department, setDepartments] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [teams, setTeams] = useState([]);
+  const [idTraining, setIdTraining] = useState(0);
+  const [date, setDate] = useState(null);
+  const [trainers, setTrainers] = useState([]);
+  const [userEmail, setUserEmail] = useState([]);
 
   // useEffect obtido através do gemini
   useEffect(() => {
@@ -86,7 +91,8 @@ const AddTraining = () => {
         ...(emptyDescription ? {} : { description: description.toString() }),
       };
 
-      if (trainingType == "internal") {
+      console.log("training type: ", trainingType);
+      if (trainingType.value == "internal") {
         try {
           const response = await fetch("/api/adminTrainings/add", {
             method: "POST",
@@ -124,8 +130,12 @@ const AddTraining = () => {
   };
 
   const handleInitTraining = () => {
-    if (userEmail.length == 0) {
-      toast.error("Enroll vazio");
+    if (department.length == 0 && groups.length == 0 && teams.length == 0) {
+      toast.error(
+        "Unable to initiate training. Please ensure participants are added to the training session."
+      );
+    } else {
+      toast.success("Training Started");
     }
   };
 
