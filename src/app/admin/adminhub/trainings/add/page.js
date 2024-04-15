@@ -12,6 +12,7 @@ import TableTextInput from "@/components/EnrollUser";
 import { Toaster, toast } from "sonner";
 import DropdownState from "@/components/DropdownState";
 import MultiselectSearch from "@/components/MultiselectSearch";
+import AddedUsersToTraining from "@/components/AddedUsersToTraining";
 
 const AddTraining = () => {
   // variaveis para o treino
@@ -129,13 +130,94 @@ const AddTraining = () => {
     }
   };
 
-  const handleInitTraining = () => {
-    if (department.length == 0 && groups.length == 0 && teams.length == 0) {
+  const handleInitTraining = async () => {
+    const userIDsArray = [];
+    const uniqueUserIDs = new Set();
+
+    if (
+      department.length === 0 &&
+      groups.length === 0 &&
+      teams.length === 0 &&
+      userEmail.length === 0
+    ) {
       toast.error(
         "Unable to initiate training. Please ensure participants are added to the training session."
       );
-    } else {
+      return;
+    }
+
+    // adaptado do chatGPT
+    const extractUserIDs = (responseData) => {
+      responseData.forEach((item) => {
+        const userID =
+          item.bruno_getusersbydepartmentid ||
+          item.bruno_getusersbyteamid ||
+          item.bruno_getusersbygroupid ||
+          item.bruno_getuseridwithemail;
+        if (userID) {
+          // Verifica se o ID de usuário não é nulo
+          uniqueUserIDs.add(userID);
+        }
+      });
+    };
+
+    try {
+      //https://www.w3schools.com/js/js_loop_forof.asp
+      for (const dept of department) {
+        const response = await fetch(
+          `/api/adminTrainings/getUsersByDepartmentID?id=${dept.value}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          extractUserIDs(responseData.departments);
+        }
+      }
+
+      for (const team of teams) {
+        const response = await fetch(
+          `/api/adminTrainings/getUsersByTeamID?id=${team.value}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          extractUserIDs(responseData.teams);
+        }
+      }
+
+      for (const group of groups) {
+        const response = await fetch(
+          `/api/adminTrainings/getUsersByGroupID?id=${group.value}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          extractUserIDs(responseData.groups);
+        }
+      }
+
+      for (const email of userEmail) {
+        const response = await fetch(
+          `/api/adminTrainings/getUserIDWithEmail?email=${email}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          extractUserIDs(responseData.emails);
+        }
+      }
+
+      userIDsArray.push(...uniqueUserIDs);
+
+      console.log("Final User IDs Array:", userIDsArray);
+      console.log("User email: ", userEmail);
+
       toast.success("Training Started");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        "An error occurred while initiating the training. Please try again later."
+      );
     }
   };
 
@@ -506,6 +588,17 @@ const AddTraining = () => {
                     returned={setDescription}
                   />
                 </div>
+
+                {/* <div className="col-span-4 ">
+                  <AddedUsersToTraining
+                    users={[
+                      { value: "1", label: "Bruno" },
+                      { value: "2", label: "Luis" },
+                      { value: "3", label: "Afonso" },
+                      { value: "4", label: "Lopes" },
+                    ]}
+                  />
+                </div> */}
               </>
             )}
 
