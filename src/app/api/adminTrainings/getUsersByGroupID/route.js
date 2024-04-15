@@ -13,7 +13,7 @@ export async function GET(request) {
     const result = await prisma.$queryRaw`
     SELECT bruno_getUsersByGroupId(${Number(id)})`;
 
-    if (result) {
+    if (result[0]) {
       return NextResponse.json({
         status: 200,
         message: "Group found",
