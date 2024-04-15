@@ -1,8 +1,5 @@
 "use client";
 
-// components/Formulario.tsx
-
-// pages/addNewTeam.tsx
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import Dropdown from "@/components/dropdownGetDepartment";
@@ -89,12 +86,12 @@ const Formulario = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ tid: teamToRemoveId }), // Enviar o ID da team a ser removida
+        body: JSON.stringify({ tid: teamToRemoveId }), // Enviar o ID da team que vai ser removida
       });
 
       if (response.ok) {
         fetchDepartments();
-        fetchTeams(); // Recarregar a lista de teams após a remoção
+        fetchTeams();
         toast.success("Team removed successfully!");
         setConfirmRemoveModal(false);
       } else {
@@ -132,9 +129,9 @@ const Formulario = () => {
       if (response.ok) {
         toast.success("Team registered successfully!");
         setTeamName("");
-        setTeams([]); // Limpa a lista de equipes antes de buscar os novos dados
+        setTeams([]); //LIMPA A LISTA DE EQUIPAS
         fetchDepartments();
-        fetchTeams(); //atualiza a tablea
+        fetchTeams(); //ATUALIZA A TABLEA
       } else {
         toast.error("Failed to register team.");
       }
@@ -218,7 +215,6 @@ const Formulario = () => {
           </button>
         </div>
       </div>
-      {/* Tabela de Equipes */}
       <div className="mt-2">
         <h2 className="text-xl font-semibold mb-4 text-center ">
           Teams and Respective Departments

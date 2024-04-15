@@ -9,7 +9,7 @@ export async function POST(request) {
   try {
     const { dname } = body;
 
-    // Chamar a função para inserir o departamento
+    //INSERIR O DEPARTAMENTO
     const result = await prisma.department.create({
       data: {
         dname: dname,
@@ -21,7 +21,7 @@ export async function POST(request) {
       return NextResponse.json({
         code: 200,
         message: "Department inserted successfully.",
-        department: result, // Opcional: retorna o departamento inserido
+        department: result, // RETORNA O DEPARTAMENTO INSERIDO
       });
     }
   } catch (error) {

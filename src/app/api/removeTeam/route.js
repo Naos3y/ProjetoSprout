@@ -9,7 +9,6 @@ export async function POST(request) {
   try {
     const { tid } = body;
 
-    // Chamar a função para remover o departamento
     const result = await prisma.team.delete({
       where: {
         tid: parseInt(tid),

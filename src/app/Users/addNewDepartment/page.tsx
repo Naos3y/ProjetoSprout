@@ -71,11 +71,11 @@ const AddNewDepartment = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ did: departmentToRemoveId }), // Enviar o ID do departamento a ser removido
+        body: JSON.stringify({ did: departmentToRemoveId }), //ID DO DEPARTAMENTO QUE VAI SER REMOVIDO
       });
 
       if (response.ok) {
-        fetchDepartments(); // Recarregar a lista de departamentos após a remoção
+        fetchDepartments(); // VOLTAR A CHAMAR A FUNÇÃO QUE RECARREGA A LISTA DE DEPARTAMENTOS QUE ESTÁ NA TABELA
         toast.success("Department removed successfully!");
         setConfirmRemoveModal(false);
       } else {
@@ -104,7 +104,7 @@ const AddNewDepartment = () => {
         <div className="w-full max-w-md mr-48">
           <CompleteName
             label={"Department Name"}
-            value={department} // Definir o valor do campo
+            value={department}
             returned={setDepartment}
           />
         </div>

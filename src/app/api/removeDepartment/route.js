@@ -9,14 +9,14 @@ export async function POST(request) {
   try {
     const { did } = body;
 
-    // Remover todas as equipes associadas ao departamento
+    // REMOVER PRIMEIRO TODAS AS EQUIPAS ASSOCIADAS AO DEPARTAMENTO
     await prisma.team.deleteMany({
       where: {
         departmentdid: parseInt(did),
       },
     });
 
-    // Remover o departamento
+    // REMOVER O DEPARTAMENTO
     await prisma.department.delete({
       where: {
         did: parseInt(did),
