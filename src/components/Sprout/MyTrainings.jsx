@@ -1,33 +1,68 @@
 import React, { Component, useState, useEffect } from "react";
+import { Toaster, toast } from "sonner";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import Dropdown from "../DropdownFilter";
 import { GrClearOption } from "react-icons/gr";
-import { decrypt } from "@/session/crypt";
-import { Toaster, toast } from "sonner";
 import cookies from "js-cookie";
-export default function IncomingLayout() {
-  const getTrainings = () => {
-    // pedido da api
-    // o body do pedido da api deve conter todas as formações a que essa pessoas está associada (já definido no ER)
-    // o dicionario deve estar corretamente formatado -> ainda a decidir como o cliente quer que sejam apresentadas
-    // -------------
-    //
-  };
+import { decrypt } from "@/session/crypt";
+export default function MyTrainings() {
+  // const formacoes = [
+  //   {
+  //     area: "area",
+  //     descricao: "descricao",
+  //     duracao: "duracao",
+  //     formador: "formador",
+  //     inicio: "inicio",
+  //     local: "local",
+  //     max: "max",
+  //     min: "min",
+  //     start: "start",
+  //     treino: "treino",
+  //   },
+  // ];
 
   const [formacoes, setFormacoes] = useState([]);
+  const [ruid, setRuid] = useState("");
   const [filter, setFilter] = useState("");
   const [expandedTrainings, setExpandedTrainings] = useState([]);
   const [prof, setProf] = useState("");
   const [type, setType] = useState("");
-  const [Mprof, setMProf] = useState("Professor");
-  const [Mtype, setMType] = useState("Type");
+  const [Mprof, setMProf] = useState("Instructor");
+  const [Mtype, setMType] = useState("Location");
+
+  async function tryGetUserRuid() {
+    try {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+
+      const url = new URL("http://localhost:3000/api/getruid");
+      url.searchParams.append("uid", decryptedSession.user.id);
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async function tryGetTrainingsData() {
     try {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL("http://localhost:3000/api/getalltrainingsdata");
+      const url = new URL("http://localhost:3000/api/gettrainingsdata");
+      url.searchParams.append("uid", decryptedSession.user.id);
 
       const response = await fetch(url.toString(), {
         method: "GET",
@@ -52,9 +87,9 @@ export default function IncomingLayout() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL(
-        "http://localhost:3000/api/getalloutsidetrainingsdata"
-      );
+      const url = new URL("http://localhost:3000/api/getoutsidetrainingsdata");
+      url.searchParams.append("uid", decryptedSession.user.id);
+
       const response = await fetch(url.toString(), {
         method: "GET",
         headers: {
