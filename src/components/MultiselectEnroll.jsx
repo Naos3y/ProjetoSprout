@@ -20,7 +20,6 @@ const MultiselectEnroll = ({ label, options, message, returned }) => {
   };
 
   const handleOpenSubmenu = (option) => {
-    // Simulate selection for hover effect (optional)
     setSelectedOptions([...selectedOptions, option]);
     setIsOpen(true);
   };
@@ -51,12 +50,11 @@ const MultiselectEnroll = ({ label, options, message, returned }) => {
               key={option.value}
               className="hover:bg-gray-300 p-2 cursor-pointer"
               onMouseEnter={() => handleOpenSubmenu(option)}
-              onMouseLeave={() => setSelectedOptions([])} // Reset selection on leave (optional)
+              onMouseLeave={() => setSelectedOptions([])}
             >
               <span className="ml-2">{option.label}</span>
-              {/* Submenu can be added here conditionally based on isOpen for the specific option */}
+
               {selectedOptions.some((op) => op.value === option.value) && (
-                // Your submenu content here (replace with your submenu component)
                 <div>Submenu content for {option.label}</div>
               )}
             </div>
