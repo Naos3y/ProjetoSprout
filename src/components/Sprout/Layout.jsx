@@ -236,7 +236,7 @@ export default function IncomingLayout() {
                           </div>
                           <div className="mt-1">
                             <label className="font-bold text-gray-800">
-                              Max. Participants:{" "}
+                              Description:{" "}
                             </label>
                             <span className="text-gray-600">
                               {training.descricao}
