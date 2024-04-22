@@ -1,10 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { sessionExpired, validSession } from "@/session/sessionUtils";
-import Navbar from "@/components/Navbar";
-import SessionExpired from "@/components/Session/SessionExpired";
-import Layout from "@/components/Sprout/Layout";
-import Footer from "@/components/Footer";
 import "@fontsource/proza-libre"; // Defaults to weight 400
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";

@@ -73,12 +73,84 @@ export default function IncomingLayout() {
     }
   }
 
+  async function tryGetOutsideTId() {
+    try {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+
+      const url = new URL("http://localhost:3000/api/outsidetid");
+      url.searchParams.append("uid", decryptedSession.user.id);
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function tryGetInsideTId() {
+    try {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+
+      const url = new URL("http://localhost:3000/api/insidetid");
+      url.searchParams.append("uid", decryptedSession.user.id);
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   useEffect(() => {
     const updateData = async () => {
       try {
-        const atrainings = await tryGetTrainingsData(); //array
-        const otrainings = await tryGetOutsideTrainingsData(); //array
-        const trainings = atrainings.message.concat(otrainings.message);
+        const atrainings = await tryGetTrainingsData();
+        atrainings.message.forEach((training) => {
+          training.who = "inside";
+        });
+        const otrainings = await tryGetOutsideTrainingsData();
+        otrainings.message.forEach((training) => {
+          training.who = "outside";
+        });
+        const oid = await tryGetOutsideTId();
+        const intOid = oid.message.map((object) => object.id);
+
+        const otrainingsFilter = otrainings.message.filter(
+          (objeto) => !intOid.message.includes(objeto.id)
+        );
+        const aid = await tryGetInsideTId();
+        const intAid = aid.message.map((object) => object.id);
+
+        const atrainingsFilter = atrainings.message.filter(
+          (objeto) => !intAid.includes(objeto.id)
+        );
+        const trainings = atrainingsFilter.concat(otrainingsFilter);
+
+        // const trainings = atrainings.message.concat(otrainings.message);
         setFormacoes(trainings);
       } catch (error) {
         toast.error("Something went wrong!");
@@ -174,12 +246,22 @@ export default function IncomingLayout() {
               <div
                 id={index}
                 key={index}
-                className="border-t border-gray-200 rounded-s"
+                className={`${
+                  training.who === "inside"
+                    ? "border-t border-gray-200 rounded-s"
+                    : "border-t border-blue-500 rounded-s"
+                }`}
               >
                 <div className="flex">
-                  <div className="w-4 h-auto">
-                    <div className="bg-green-200 block object-cover rounded-tl rounded-bl h-full w-full" />
-                  </div>
+                  {training.start == true ? (
+                    <div className="w-4 h-auto">
+                      <div className="bg-red-300 block object-cover rounded-tl rounded-bl h-full w-full" />
+                    </div>
+                  ) : (
+                    <div className="w-4 h-auto">
+                      <div className="bg-green-300 block object-cover rounded-tl rounded-bl h-full w-full" />
+                    </div>
+                  )}
                   <div className="flex-1 p-4 border-b">
                     <div className="text-l text-gray-600 font-bold text-left">
                       <div className="mt-1">

@@ -8,7 +8,7 @@ BEGIN
   RETURN crypt(password_text, salt); 
 END;
 $$ LANGUAGE plpgsql;
-
+    
 
 CREATE OR REPLACE FUNCTION before_insert_encrypt_password()
 RETURNS TRIGGER AS $$
@@ -169,6 +169,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION get_trainings_data(regular_user_id INT)
 RETURNS TABLE (
+	id INT,
     treino TEXT,
     inicio TEXT,
     duracao TEXT,
@@ -177,11 +178,13 @@ RETURNS TABLE (
     max TEXT,
     descricao TEXT,
     area TEXT,
-    start BOOLEAN
+    start BOOLEAN,
+    pending BOOLEAN
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT 
+		itid AS id,
         itname AS treino,
         itstartdate AS inicio,
         itnumofmin AS duracao,
@@ -190,7 +193,8 @@ BEGIN
         itmaxparticipants AS max,
         itdescription AS descricao,
         ittrainingarea AS area,
-        itstarted AS start
+        itstarted AS start,
+        uhitpending AS pending
     FROM
         public.regularuserhasinsidetrainings r
     JOIN
@@ -201,6 +205,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION get_all_trainings_data()
 RETURNS TABLE (
+	id INT,
     treino TEXT,
     inicio TEXT,
     duracao TEXT,
@@ -213,23 +218,26 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
     RETURN QUERY
-       SELECT
-        itname AS treino,
-        itstartdate AS inicio,
-        itnumofmin AS duracao,
-        iteventtype AS local,
-        itminparticipants AS min,
-        itmaxparticipants AS max,
-        itdescription AS descricao,
-        ittrainingarea AS area,
-        itstarted AS start
-    FROM
-        insidetrainings ;
+SELECT 
+	itid AS id,
+    itname AS treino,
+    itstartdate AS inicio,
+    itnumofmin AS duracao,
+    iteventtype AS local,
+    itminparticipants AS min,
+    itmaxparticipants AS max,
+    itdescription AS descricao,
+    ittrainingarea AS area,
+    itstarted AS start
+FROM
+    insidetrainings; 
+
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION get_outside_trainings_data(regular_user_id INT)
 RETURNS TABLE (
+	id INT,
     treino TEXT,
     inicio TEXT,
     duracao TEXT,
@@ -239,13 +247,14 @@ RETURNS TABLE (
 BEGIN
     RETURN QUERY
      SELECT 
+	 	otid AS id,
 	 	otname AS treino,
         otnumofmin AS inicio,
         oteventtype AS duracao,
         otminparticipants AS min,
         otmaxparticipants AS max
     FROM
-        public.regularuserhasoutsidetrainings t
+       public.regularuserhasoutsidetrainings t
     JOIN
         outsidetrainings o ON outsidetrainingsitid = outsideteacherotid
 	where regularuserruid = regular_user_id;
@@ -255,6 +264,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION get_all_outside_trainings_data()
 RETURNS TABLE (
+	id INT,
     treino TEXT,
     inicio TEXT,
     duracao TEXT,
@@ -265,6 +275,7 @@ RETURNS TABLE (
 BEGIN
     RETURN QUERY
      SELECT 
+	 	otid as id,
 	 	otname AS treino,
         otnumofmin AS inicio,
         oteventtype AS duracao,
@@ -277,6 +288,28 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE FUNCTION get_user_inside_training_id(Ruid INT)
+RETURNS TABLE (
+	id INT
+	) AS $$ 
+BEGIN 
+	RETURN QUERY
+	select insidetrainingsitid from regularuserhasinsidetrainings
+	where regularuserruid = Ruid;
+	END;
+	$$ LANGUAGE plpgsql;
+    
+	
+CREATE OR REPLACE FUNCTION get_user_outside_training_id(Ruid INT)
+RETURNS TABLE (
+	id INT
+	) AS $$ 
+BEGIN 
+	RETURN QUERY
+	select outsidetrainingsitid from regularuserhasoutsidetrainings
+	where regularuserruid = Ruid;
+	END;
+	$$ LANGUAGE plpgsql;
 
 
 -- TESTES

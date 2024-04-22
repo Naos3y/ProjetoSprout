@@ -111,8 +111,14 @@ export default function MyTrainings() {
   useEffect(() => {
     const updateData = async () => {
       try {
-        const atrainings = await tryGetTrainingsData(); //array
-        const otrainings = await tryGetOutsideTrainingsData(); //array
+        const atrainings = await tryGetTrainingsData();
+        atrainings.message.forEach((training) => {
+          training.who = "inside";
+        });
+        const otrainings = await tryGetOutsideTrainingsData();
+        otrainings.message.forEach((training) => {
+          training.who = "outside";
+        });
         const trainings = atrainings.message.concat(otrainings.message);
         setFormacoes(trainings);
       } catch (error) {
@@ -158,21 +164,18 @@ export default function MyTrainings() {
     { value: "", label: "All" },
     { value: "virtual", label: "Virtual" },
     { value: "onsite", label: "OnSite" },
-    { value: "offile", label: "Offile" },
+    { value: "offline", label: "Offline" },
   ];
 
   const filteredFormacoes = formacoes.filter((formacao) => {
     const nomeLowerCase = formacao.treino.toLowerCase();
-    // const tipoFormadorLowerCase = formacao.local.toLowerCase();
     const tipoLowerCase = formacao.local.toLowerCase();
 
     const filterLowerCase = filter.toLowerCase();
-    // const profLowerCase = typeof prof === "string" ? prof.toLowerCase() : "";
     const typeLowerCase = typeof type === "string" ? type.toLowerCase() : "";
 
     return (
       nomeLowerCase.includes(filterLowerCase) &&
-      // tipoFormadorLowerCase.includes(profLowerCase) &&
       tipoLowerCase.includes(typeLowerCase)
     );
   });
@@ -209,12 +212,33 @@ export default function MyTrainings() {
               <div
                 id={index}
                 key={index}
-                className="border-t border-gray-200 rounded-s"
+                className={`${
+                  training.who === "inside"
+                    ? "border-t border-gray-200 rounded-s"
+                    : "border-t border-blue-500 rounded-s"
+                }`}
               >
                 <div className="flex">
-                  <div className="w-4 h-auto">
-                    <div className="bg-green-200 block object-cover rounded-tl rounded-bl h-full w-full" />
-                  </div>
+                  {training.pending == true ? (
+                    training.start == true ? (
+                      <div className="w-4 h-auto">
+                        <div className="bg-red-300 block object-cover rounded-tl rounded-bl h-full w-full" />
+                      </div>
+                    ) : (
+                      <div className="w-4 h-auto">
+                        <div className="bg-blue-300 block object-cover rounded-tl rounded-bl h-full w-full" />
+                      </div>
+                    )
+                  ) : training.start == true ? (
+                    <div className="w-4 h-auto">
+                      <div className="bg-black block object-cover rounded-tl rounded-bl h-full w-full" />
+                    </div>
+                  ) : (
+                    <div className="w-4 h-auto">
+                      <div className="bg-green-200 block object-cover rounded-tl rounded-bl h-full w-full" />
+                    </div>
+                  )}
+
                   <div className="flex-1 p-4 border-b">
                     <div className="text-l text-gray-600 font-bold text-left">
                       <div className="mt-1">
@@ -271,18 +295,18 @@ export default function MyTrainings() {
                           </div>
                           <div className="mt-1">
                             <label className="font-bold text-gray-800">
-                              Max. Participants:{" "}
+                              Description:{" "}
                             </label>
                             <span className="text-gray-600">
                               {training.descricao}
                             </span>
                           </div>
-                          <button
+                          {/* <button
                             className="bg-[#DFDFDF] text-[#818181] font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
                             //onClick={() => handleAppyToTraining(index)}
                           >
                             Apply
-                          </button>
+                          </button> */}
                         </div>
                       )}
                     </div>
