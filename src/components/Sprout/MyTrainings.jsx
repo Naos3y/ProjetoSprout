@@ -1,26 +1,14 @@
 import React, { Component, useState, useEffect } from "react";
 import { Toaster, toast } from "sonner";
 import { IoMdInformationCircleOutline } from "react-icons/io";
+import { MdOutlineHelp } from "react-icons/md";
 import Dropdown from "../DropdownFilter";
 import { GrClearOption } from "react-icons/gr";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
-export default function MyTrainings() {
-  // const formacoes = [
-  //   {
-  //     area: "area",
-  //     descricao: "descricao",
-  //     duracao: "duracao",
-  //     formador: "formador",
-  //     inicio: "inicio",
-  //     local: "local",
-  //     max: "max",
-  //     min: "min",
-  //     start: "start",
-  //     treino: "treino",
-  //   },
-  // ];
+import ColorHelp from "./ColorInfor";
 
+export default function MyTrainings() {
   const [formacoes, setFormacoes] = useState([]);
   const [ruid, setRuid] = useState("");
   const [filter, setFilter] = useState("");
@@ -29,6 +17,7 @@ export default function MyTrainings() {
   const [type, setType] = useState("");
   const [Mprof, setMProf] = useState("Instructor");
   const [Mtype, setMType] = useState("Location");
+  const [showHelp, setShowHelp] = useState(false);
 
   async function tryGetUserRuid() {
     try {
@@ -182,6 +171,10 @@ export default function MyTrainings() {
     );
   });
 
+  const closeHelp = () => {
+    setShowHelp(false);
+  };
+
   return (
     <div className="border rounded mt-5 mb-5 max-w-screen">
       <div className="text-left border-b flex">
@@ -328,6 +321,15 @@ export default function MyTrainings() {
           })}
         </div>
       </div>
+      <div class="fixed bottom-4 right-4 p-4">
+        <button
+          className="bg-[#DFDFDF] text-[#818181]  rounded-full shadow-sm hover:bg-blue-500 hover:text-white active:bg-blue-500 text-2xl"
+          onClick={() => setShowHelp(true)}
+        >
+          <MdOutlineHelp />
+        </button>
+      </div>
+      {showHelp && <ColorHelp onClose={closeHelp} />}
     </div>
   );
 }

@@ -1,19 +1,15 @@
 import React, { Component, useState, useEffect } from "react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
+import { MdOutlineHelp } from "react-icons/md";
+
 import Dropdown from "../DropdownFilter";
 import { GrClearOption } from "react-icons/gr";
 import { decrypt } from "@/session/crypt";
 import { Toaster, toast } from "sonner";
 import cookies from "js-cookie";
-export default function IncomingLayout() {
-  const getTrainings = () => {
-    // pedido da api
-    // o body do pedido da api deve conter todas as formações a que essa pessoas está associada (já definido no ER)
-    // o dicionario deve estar corretamente formatado -> ainda a decidir como o cliente quer que sejam apresentadas
-    // -------------
-    //
-  };
+import ColorHelp from "./ColorInfor";
 
+export default function IncomingLayout() {
   const [formacoes, setFormacoes] = useState([]);
   const [filter, setFilter] = useState("");
   const [expandedTrainings, setExpandedTrainings] = useState([]);
@@ -21,7 +17,7 @@ export default function IncomingLayout() {
   const [type, setType] = useState("");
   const [Mprof, setMProf] = useState("Professor");
   const [Mtype, setMType] = useState("Type");
-
+  const [showHelp, setShowHelp] = useState(false);
   async function tryGetTrainingsData() {
     try {
       const token = cookies.get("session");
@@ -257,6 +253,10 @@ export default function IncomingLayout() {
     );
   });
 
+  const closeHelp = () => {
+    setShowHelp(false);
+  };
+
   return (
     <div className="border rounded mt-5 mb-5 max-w-screen">
       <div className="text-left border-b flex">
@@ -398,6 +398,15 @@ export default function IncomingLayout() {
           })}
         </div>
       </div>
+      <div class="fixed bottom-4 right-4 p-4">
+        <button
+          className="bg-[#DFDFDF] text-[#818181]  rounded-full shadow-sm hover:bg-blue-500 hover:text-white active:bg-blue-500 text-2xl"
+          onClick={() => setShowHelp(true)}
+        >
+          <MdOutlineHelp />
+        </button>
+      </div>
+      {showHelp && <ColorHelp onClose={closeHelp} />}
     </div>
   );
 }
