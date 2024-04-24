@@ -3,11 +3,12 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function GET(request) {
+export async function POST(request) {
   try {
     const url = new URL(request.url);
     const params = new URLSearchParams(url.searchParams);
-    const id = params.get("uid");
+    const uid = params.get("uid");
+    const tid = params.get("tid");
     const cookieHeader = request.headers.get("cookie");
     const sessionCookie =
       cookieHeader && cookieHeader.includes("session=")
@@ -15,13 +16,13 @@ export async function GET(request) {
         : "";
 
     if (sessionCookie) {
+      console.log(tid, uid);
       const data =
-        await prisma.$queryRaw`select * from get_user_inside_training_id(CAST(${id} AS INTEGER))`;
+        await prisma.$queryRaw`select * from training_request(CAST(${tid} AS INTEGER),CAST(${uid} AS INTEGER))`;
       console.log(data);
-
       return NextResponse.json({
         code: 200,
-        message: data,
+        message: "Success",
       });
     } else {
       return NextResponse.json({

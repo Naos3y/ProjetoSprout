@@ -312,6 +312,27 @@ BEGIN
 	$$ LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE FUNCTION training_request(trainingid INT, userid INT) RETURNS BOOLEAN AS $$
+DECLARE
+    success BOOLEAN := false;
+BEGIN
+    BEGIN
+        INSERT INTO public.regularuserhasinsidetrainings (regularuserruid, insidetrainingsitid)
+        VALUES (userid, trainingid);
+        success := true;
+    EXCEPTION
+        WHEN OTHERS THEN
+            success := false;
+    END;
+    
+    RETURN success;
+END;
+$$ LANGUAGE plpgsql;
+
+
+  
+
+
 -- TESTES
 
 select * from get_user_info(1)

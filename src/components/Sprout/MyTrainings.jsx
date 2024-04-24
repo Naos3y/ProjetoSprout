@@ -35,7 +35,7 @@ export default function MyTrainings() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL("http://localhost:3000/api/getruid");
+      const url = new URL("http://localhost:3000/api/sprout/getruid");
       url.searchParams.append("uid", decryptedSession.user.id);
 
       const response = await fetch(url.toString(), {
@@ -61,7 +61,7 @@ export default function MyTrainings() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL("http://localhost:3000/api/gettrainingsdata");
+      const url = new URL("http://localhost:3000/api/sprout/gettrainingsdata");
       url.searchParams.append("uid", decryptedSession.user.id);
 
       const response = await fetch(url.toString(), {
@@ -87,7 +87,9 @@ export default function MyTrainings() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL("http://localhost:3000/api/getoutsidetrainingsdata");
+      const url = new URL(
+        "http://localhost:3000/api/sprout/getoutsidetrainingsdata"
+      );
       url.searchParams.append("uid", decryptedSession.user.id);
 
       const response = await fetch(url.toString(), {

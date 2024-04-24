@@ -27,7 +27,7 @@ async function tryLogin(email, password) {
 
 async function tryGetEssentials(email) {
   try {
-    const url = new URL("http://localhost:3000/api/getessentials");
+    const url = new URL("http://localhost:3000/api/sprout/getessentials");
     url.searchParams.append("email", email);
 
     const response = await fetch(url.toString(), {

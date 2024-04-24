@@ -32,7 +32,7 @@ export default function ProfileLayout() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL("http://localhost:3000/api/getuserinfo");
+      const url = new URL("http://localhost:3000/api/sprout/getuserinfo");
       url.searchParams.append("uid", decryptedSession.user.id);
 
       const response = await fetch(url.toString(), {
@@ -58,7 +58,7 @@ export default function ProfileLayout() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL("http://localhost:3000/api/getteamdep");
+      const url = new URL("http://localhost:3000/api/sprout/getteamdep");
       url.searchParams.append("uid", decryptedSession.user.id);
 
       const response = await fetch(url.toString(), {
@@ -84,7 +84,7 @@ export default function ProfileLayout() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL("http://localhost:3000/api/getgroups");
+      const url = new URL("http://localhost:3000/api/sprout/getgroups");
       url.searchParams.append("uid", decryptedSession.user.id);
 
       const response = await fetch(url.toString(), {

@@ -78,17 +78,20 @@ export default function EditPassword() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const response = await fetch("http://localhost:3000/api/changepassword", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          id: decryptedSession.user.id,
-          password: password,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:3000/api/sprout/changepassword",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            id: decryptedSession.user.id,
+            password: password,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Something went wrong");

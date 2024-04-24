@@ -27,7 +27,9 @@ export default function IncomingLayout() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL("http://localhost:3000/api/getalltrainingsdata");
+      const url = new URL(
+        "http://localhost:3000/api/sprout/getalltrainingsdata"
+      );
 
       const response = await fetch(url.toString(), {
         method: "GET",
@@ -53,7 +55,7 @@ export default function IncomingLayout() {
       const decryptedSession = await decrypt(token);
 
       const url = new URL(
-        "http://localhost:3000/api/getalloutsidetrainingsdata"
+        "http://localhost:3000/api/sprout/getalloutsidetrainingsdata"
       );
       const response = await fetch(url.toString(), {
         method: "GET",
@@ -78,7 +80,7 @@ export default function IncomingLayout() {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL("http://localhost:3000/api/outsidetid");
+      const url = new URL("http://localhost:3000/api/sprout/outsidetid");
       url.searchParams.append("uid", decryptedSession.user.id);
 
       const response = await fetch(url.toString(), {
@@ -99,12 +101,51 @@ export default function IncomingLayout() {
     }
   }
 
+  async function tryTrainingRequest(index, type, arrIndex) {
+    try {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      console.log(index, type);
+      let tUrl;
+      if (type === "inside") {
+        tUrl = new URL("http://localhost:3000/api/sprout/trainingrequest");
+      } else {
+        tUrl = new URL("http://localhost:3000/api/sprout/trainingrequest");
+      }
+      const finalUrl = new URL(tUrl);
+      finalUrl.searchParams.append("uid", decryptedSession.user.id);
+      finalUrl.searchParams.append("tid", index);
+      const response = await fetch(finalUrl.toString(), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      const newFormacoes = formacoes.filter(
+        (objeto) => !(objeto.id == index && objeto.who == type)
+      );
+      handleExpand(arrIndex);
+      setFormacoes(newFormacoes);
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async function tryGetInsideTId() {
     try {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
 
-      const url = new URL("http://localhost:3000/api/insidetid");
+      const url = new URL("http://localhost:3000/api/sprout/insidetid");
       url.searchParams.append("uid", decryptedSession.user.id);
 
       const response = await fetch(url.toString(), {
@@ -136,20 +177,22 @@ export default function IncomingLayout() {
         otrainings.message.forEach((training) => {
           training.who = "outside";
         });
+
         const oid = await tryGetOutsideTId();
         const intOid = oid.message.map((object) => object.id);
 
         const otrainingsFilter = otrainings.message.filter(
           (objeto) => !intOid.message.includes(objeto.id)
         );
+
         const aid = await tryGetInsideTId();
         const intAid = aid.message.map((object) => object.id);
 
         const atrainingsFilter = atrainings.message.filter(
           (objeto) => !intAid.includes(objeto.id)
         );
-        const trainings = atrainingsFilter.concat(otrainingsFilter);
 
+        const trainings = atrainingsFilter.concat(otrainingsFilter);
         // const trainings = atrainings.message.concat(otrainings.message);
         setFormacoes(trainings);
       } catch (error) {
@@ -326,7 +369,13 @@ export default function IncomingLayout() {
                           </div>
                           <button
                             className="bg-[#DFDFDF] text-[#818181] font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
-                            //onClick={() => handleAppyToTraining(index)}
+                            onClick={() =>
+                              tryTrainingRequest(
+                                training.id,
+                                training.who,
+                                index
+                              )
+                            }
                           >
                             Apply
                           </button>
