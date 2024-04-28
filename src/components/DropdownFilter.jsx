@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { MdOutlineArrowDropDownCircle } from "react-icons/md";
 
 const Dropdown = ({ options, message, returned }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,11 +17,13 @@ const Dropdown = ({ options, message, returned }) => {
     <div className="relative ml-5 py-5 ">
       <button
         type="button"
-        className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between bg-white shadow-sm text-black"
+        className="border border-gray-300 focus:border-green-500 focus:outline-none pl-2 pr-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between bg-white shadow-sm text-black"
         onClick={() => setIsOpen(!isOpen)}
         // para ficar sobreposto
         style={{ zIndex: 1000 }}
       >
+        {" "}
+        <MdOutlineArrowDropDownCircle className="mr-2" />
         {selectedOption ? selectedOption.label : message}
       </button>
       {isOpen && (

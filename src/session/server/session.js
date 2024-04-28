@@ -67,7 +67,7 @@ export async function Login(credentials) {
         const id = essentials.message[0].uid;
         const name = essentials.message[0].name;
         const permission = parseInt(essentials.message[0].permission);
-
+        console.log(permission);
         const user = {
           id: id,
           name: name,
