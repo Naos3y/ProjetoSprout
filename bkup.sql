@@ -41,7 +41,8 @@ CREATE OR REPLACE FUNCTION get_essentials(
 RETURNS TABLE (
   uid INT,
   name TEXT,
-  permission INT
+  permission INT,
+  teamid INT
 )
 
 AS $$
@@ -51,7 +52,7 @@ BEGIN
   SELECT useruid INTO idu FROM login WHERE lemail = iemail;
 
   RETURN QUERY
-  SELECT u.uid, u.uname, u.uadminrights
+  SELECT u.uid, u.uname, u.uadminrights , u.teamtid
   FROM public."user" u
   JOIN login l ON u.uid = l.useruid
   WHERE u.uid = idu;
@@ -75,10 +76,12 @@ END;
 $$
 LANGUAGE plpgsql;
 
+
 CREATE OR REPLACE FUNCTION get_team_info(
   IN auid INT
 )
 RETURNS TABLE (
+	uid INT,
   dname TEXT,
   tname TEXT,
   uname TEXT,
@@ -88,12 +91,12 @@ RETURNS TABLE (
 AS $$
 BEGIN
   RETURN QUERY
-  SELECT d.dname, t.tname, u.uname, u.urole, l.lemail
+  SELECT u.uid,d.dname, t.tname, u.uname, u.urole, l.lemail
   FROM team t
   JOIN public."user" u ON u.teamtid = t.tid
   JOIN department d ON t.departmentdid = d.did
   JOIN login l ON l.useruid = u.uid
-  WHERE l.useruid = auid;
+  WHERE u.teamtid = 11;
 END;
 $$ LANGUAGE plpgsql;
 

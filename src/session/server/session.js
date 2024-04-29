@@ -67,11 +67,12 @@ export async function Login(credentials) {
         const id = essentials.message[0].uid;
         const name = essentials.message[0].name;
         const permission = parseInt(essentials.message[0].permission);
-        console.log(permission);
+        const team = parseInt(essentials.message[0].teamid);
         const user = {
           id: id,
           name: name,
           permission: permission,
+          team: team,
         };
         const expires = new Date(Date.now() + 30 * 60 * 1000);
         const session = await encrypt({ user, expires });

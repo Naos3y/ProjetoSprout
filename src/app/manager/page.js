@@ -9,7 +9,7 @@ import SessionExpired from "@/components/Session/SessionExpired";
 import Footer from "@/components/Footer";
 import "@fontsource/proza-libre";
 
-export default function Sprout() {
+export default function Manager() {
   const [control, setControl] = useState(-1);
   const [showExpired, setShowExpired] = useState(false);
 
@@ -54,7 +54,7 @@ export default function Sprout() {
       ) : control === 1 ? (
         <div>
           <nav>
-            <Navbar activeRoute="/sprout" />
+            <Navbar activeRoute="/manager" privilege={3} />
           </nav>
           <div className="justify-center items-center mr-5 ml-5">
             <Layout />

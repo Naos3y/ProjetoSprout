@@ -17,7 +17,7 @@ export async function GET(request) {
 
     if (sessionCookie) {
       const team =
-        await prisma.$queryRaw`SELECT * from getTeamInfo(CAST(${uid} AS INTEGER))`;
+        await prisma.$queryRaw`SELECT * from get_team_info(CAST(${uid} AS INTEGER))`;
 
       return NextResponse.json({
         code: 200,

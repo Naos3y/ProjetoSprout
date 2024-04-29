@@ -15,7 +15,7 @@ export default function TeamLayout() {
       const decryptedSession = await decrypt(token);
 
       const url = new URL("http://localhost:3000/api/sprout/myteam");
-      url.searchParams.append("uid", decryptedSession.user.id);
+      url.searchParams.append("uid", decryptedSession.user.teamid);
 
       const response = await fetch(url.toString(), {
         method: "GET",
