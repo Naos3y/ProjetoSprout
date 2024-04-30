@@ -42,11 +42,11 @@ const Formulario = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ gid: groupToRemoveId }), // Enviar o ID do grupo a ser removido
+        body: JSON.stringify({ gid: groupToRemoveId }),
       });
 
       if (response.ok) {
-        fetchGroups(); // Recarregar a lista de grupos após a remoção
+        fetchGroups();
         toast.success("Group removed successfully!");
         setConfirmRemoveModal(false);
       } else {
@@ -77,7 +77,7 @@ const Formulario = () => {
       if (response.ok) {
         toast.success("Group registered successfully!");
         setGroups([]);
-        setGroupName(""); // Limpa o campo do nome do grupo após o registro bem-sucedido
+        setGroupName("");
         fetchGroups();
       } else {
         toast.error(data.message || "Failed to register group.");

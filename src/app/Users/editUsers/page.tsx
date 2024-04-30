@@ -1,52 +1,64 @@
 "use client";
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
-import TextInput from "@/components/TextInput";
-import Dropdown from "@/components/Dropdown";
-import CompleteName from "@/components/CompleteName";
-import DatePicker from "@/components/DatePicker";
-import Multiselect from "@/components/MultiselectAddUser";
 import { Toaster, toast } from "sonner";
+import CompleteName from "@/components/CompleteName";
 
 const Formulario = () => {
-  const [userType, setUserType] = useState("");
-  const [adminRights, setAdminRights] = useState("");
-  const [employeeNumber, setEmployeeNumber] = useState("");
-  const [role, setRole] = useState("");
-  const [completeName, setCompleteName] = useState("");
-  const [seniority, setSeniority] = useState("");
-  const [photo, setPhoto] = useState("");
-  const [email, setEmail] = useState("");
-  const [team, setTeam] = useState("");
-  const [leader, setLeader] = useState("");
-  const [department, setDepartment] = useState("");
-  const [groups, setGroups] = useState("");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
-  const [day, setStartDate] = useState("");
-  const [associateTraining, setAssociateTraining] = useState("");
-  const [report, setReport] = useState("");
-  const [selectedTrainingPlans, setSelectedTrainingPlans] = useState([]);
+  const [usersName, setUsersName] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null); // Estado para o usuário selecionado
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar a exibição do modal
 
-  interface Option {
-    value: string;
-    label: string;
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/getUserGroupTeamDepartment");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setUsers(data.data);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch data");
+      }
+    };
+    fetchData();
+  }, []);
 
-  const handleAssociateTrainingChange = (option: Option) => {
-    setAssociateTraining(option.value);
-    // Se a opção for "No", limpa os planos de treinamento selecionados
-    if (option.value === "No") {
-      setSelectedTrainingPlans([]);
+  useEffect(() => {
+    if (usersName.trim() === "") {
+      setFilteredUsers(users);
+    } else {
+      const filtered = users.filter((user) =>
+        user.uname.toLowerCase().includes(usersName.toLowerCase())
+      );
+      setFilteredUsers(filtered);
     }
+  }, [usersName, users]);
+
+  // Função para abrir o modal e definir o usuário selecionado
+  const handleEditUser = (userId: number) => {
+    const user = filteredUsers.find((user) => user.id === userId);
+    if (user) {
+      setSelectedUser(user);
+      setIsModalOpen(true);
+    }
+  };
+
+  // Função para fechar o modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
   };
 
   return (
     <div>
       <div className="flex items-center ml-4">
         <Icon
-          icon="wpf:add-user"
+          icon="ic:outline-edit"
           width="19"
           height="19"
           className="text-green-500"
@@ -55,164 +67,104 @@ const Formulario = () => {
           Edit Users
         </span>
       </div>
-      <div className="flex flex-wrap">
-        <div className="flex flex-wrap">
+      <div className="flex justify-center mt-16">
+        <div className="w-full max-w-md mr-48">
           <div className="ml-10">
-            <CompleteName label={"Search Name"} returned={setCompleteName} />
-          </div>
-
-          <button
-            style={{ marginTop: "50px", marginBottom: "100px" }}
-            className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-            onClick={() => toast.success("Search actived")}
-          >
-            Search
-          </button>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap">
-        <div className="ml-10">
-          <Dropdown
-            label="Seniority"
-            options={[{ value: "Iniciante", label: "Iniciante" }]}
-            message="Select One"
-            returned={setSeniority}
-          />
-        </div>
-
-        {userType === "Leader" && (
-          <div className="ml-10">
-            <Dropdown
-              label="Report"
-              options={[{ value: "ola", label: "ola" }]}
-              message="Select One"
-              returned={setReport}
+            <CompleteName
+              label={"Search User Name"}
+              value={usersName}
+              returned={(value: string) => setUsersName(value)}
             />
           </div>
-        )}
-      </div>
-
-      <div className="flex flex-wrap">
-        <div className="ml-10">
-          <CompleteName label={"Email"} returned={setEmail} />
         </div>
       </div>
 
-      <div className="flex flex-wrap">
-        <div className="gap-4 ml-10">
-          <Dropdown
-            label="Leader"
-            options={[{ value: "Jorge", label: "Jorge" }]}
-            message="Select One"
-            returned={setLeader}
-          />
-        </div>
-
-        <div className="ml-10">
-          <Dropdown
-            label="Team"
-            options={[{ value: "Developers", label: "Developers" }]}
-            message="Select One"
-            returned={setTeam}
-          />
-        </div>
-
-        <div className="ml-10">
-          <TextInput label={"Department"} returned={setDepartment} />
-        </div>
-
-        <div className="ml-10">
-          <Dropdown
-            label="Groups"
-            options={[{ value: "Xbox", label: "Xbox" }]}
-            message="Select One"
-            returned={setGroups}
-          />
-        </div>
+      <div className="mt-10">
+        <h2 className="text-xl font-semibold mb-4 text-center ">
+          Table of Users to Edit
+        </h2>
+        <table className="mt-2 w-1/2 mx-auto border-collapse border border-gray-400 rounded-lg overflow-hidden bg-white">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="border border-gray-300 px-4 py-2 text-center">
+                Name
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-center">
+                Email
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-center">
+                Admin Rights
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-center">
+                Role
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-center">
+                Edit User
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUsers.map((user) => (
+              <tr key={user.id}>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  {user.uname}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  {user.login ? user.login.lemail : ""}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  {(() => {
+                    switch (user.uadminrights) {
+                      case 1:
+                        return "Admin";
+                      case 0:
+                        return "Admin";
+                      case 3:
+                        return "Manager";
+                      case 4:
+                        return "Sprout";
+                      default:
+                        return "";
+                    }
+                  })()}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  {user.urole}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-center">
+                  <div className="flex justify-center items-center">
+                    <Icon
+                      icon="fa-solid:user-edit"
+                      width="19"
+                      height="19"
+                      className="text-yellow-500 cursor-pointer"
+                      onClick={() => handleEditUser(user.id)}
+                    />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      <div className="flex flex-wrap">
-        <div className="ml-10">
-          <Dropdown
-            label="Country"
-            options={[{ value: "portugal", label: "Portugal" }]}
-            message="Select One"
-            returned={setCountry}
-          />
-        </div>
-
-        <div className="ml-10">
-          <Dropdown
-            label="City"
-            options={[{ value: "Santarem", label: "Santarem" }]}
-            message="Select One"
-            returned={setCity}
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-wrap">
-        <div className="ml-10">
-          {<DatePicker label={"Start Date"} returned={setStartDate} />}
-        </div>
-      </div>
-
-      <div className="flex flex-wrap">
-        <div className="gap-4 ml-10">
-          <Dropdown
-            label="Associate Training Plans?"
-            options={[
-              { value: "Yes", label: "Yes" },
-              { value: "No", label: "No" },
-            ]}
-            message="Select One"
-            returned={handleAssociateTrainingChange}
-          />
-        </div>
-
-        {/* Renderiza o componente Multiselect apenas se a opção for "Yes" */}
-        {associateTraining === "Yes" && (
-          <div className="ml-10">
-            <Multiselect
-              label="Select Training Plan"
-              options={[
-                { value: "all", label: "All" },
-                { value: "department", label: "Department" },
-                { value: "groups", label: "Groups" },
-                { value: "teams", label: "Teams" },
-                { value: "people", label: "People" },
-              ]}
-              message="Select One / Multi"
-              returned={setSelectedTrainingPlans}
-            />
+      {/* Modal simples */}
+      {isModalOpen && (
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-white bg-opacity-75">
+          <div className="bg-white p-8 rounded shadow-lg relative">
+            <h2>User Details</h2>
+            <button
+              className="modal-close absolute top-0 right-0 p-3 text-red-600"
+              onClick={closeModal}
+            >
+              <Icon icon="zondicons:close-solid" width="24" height="24" />
+            </button>
+            <p>Name: {selectedUser?.uname}</p>
+            <p>Email: {selectedUser?.login?.lemail}</p>
+            {/* Adicione mais detalhes do usuário conforme necessário */}
           </div>
-        )}
-      </div>
-
-      <div className="flex justify-center ">
-        <div className="flex flex-wrap ">
-          <Toaster richColors position="bottom-center" />
-          <button
-            style={{
-              marginTop: "50px",
-              marginRight: "10px",
-              marginBottom: "100px",
-            }}
-            className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-500 hover:text-white active:bg-gray-500"
-            onClick={() => toast.error("Registration Canceled!")}
-          >
-            Cancel
-          </button>
-          <button
-            style={{ marginTop: "50px", marginBottom: "100px" }}
-            className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-            onClick={() => toast.success("User registed successfully!")}
-          >
-            Regist New User
-          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 };

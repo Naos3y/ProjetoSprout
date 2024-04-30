@@ -1,5 +1,9 @@
 "use client";
 
+import { storage } from "./firebase";
+import { ref, uploadBytes } from "firebase/storage";
+import { v4 } from "uuid";
+
 import {
   getCountries,
   getStates,
@@ -26,6 +30,7 @@ const Formulario = () => {
   const [photo, setPhoto] = useState("");
   const [email, setEmail] = useState<string>("");
   const [day, setStartDate] = useState("");
+  const [ph, setph] = useState(null);
 
   //Dropdown do Report Team
   const [isOpenReportTeam, setIsOpenReportTeam] = useState(false);
@@ -249,6 +254,18 @@ const Formulario = () => {
       }
       console.log("Selected Team ID:", selectedTeamID);
 
+      const response3 = await fetch(photo, {
+        headers: {
+          Accept: "image/jpeg", // Especifique o tipo de conteúdo que você espera receber
+        },
+      });
+
+      const imageBlob = await response3.blob();
+
+      // Upload da imagem para o Firebase Storage
+      const imageRef = ref(storage, `images/${photo + v4()}`);
+      await uploadBytes(imageRef, imageBlob);
+
       const selectededReportTeamID = selectedReportTeamID || "";
       console.log("Selected ReportTeam ID:", selectededReportTeamID);
 
@@ -278,17 +295,14 @@ const Formulario = () => {
         body: JSON.stringify(userData),
       });
 
-      // Verificar se a requisição foi bem-sucedida
       if (response.ok) {
         const data = await response.json();
         console.log("User registered successfully:", data);
         toast.success("User registered successfully.");
-        // Aqui você pode redirecionar o u.suário para outra página ou realizar outra ação após o registro bem-sucedido
       } else {
         const errorData = await response.json();
         console.error("Failed to register user:", errorData);
         toast.error("Failed to register user: " + errorData.message);
-        // Aqui você pode exibir uma mensagem de erro para o usuário ou realizar outra ação em caso de falha no registro
       }
       resetForm();
       fetchLeader();
@@ -301,7 +315,6 @@ const Formulario = () => {
     } catch (error) {
       console.error("Error registering user:", error);
       toast.error("An error occurred while registering user.");
-      // Aqui você pode lidar com erros de rede ou outros erros que possam ocorrer durante a requisição
     }
   };
 
@@ -435,7 +448,7 @@ const Formulario = () => {
       <div className="flex flex-wrap">
         <div className="ml-10">
           <CompleteName
-            label={"Complete Name"}
+            label={"Full Name"}
             value={completeName}
             returned={setCompleteName}
           />

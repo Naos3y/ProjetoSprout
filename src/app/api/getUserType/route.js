@@ -7,7 +7,7 @@ export async function GET(request) {
   try {
     const users = await prisma.user.findMany({
       where: {
-        utype: "Leader", // Use um número, não uma string
+        utype: "Leader",
       },
     });
     return NextResponse.json({
