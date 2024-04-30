@@ -54,38 +54,29 @@ const Navbar = ({ activeRoute, privilege }) => {
                 activeRoute === "/manager" ? "tabs active-tabs" : "tabs"
               }
             >
-              Home
-            </div>
-          </Link>
-          <Link href="/manager/mytrainings">
-            <div
-              className={
-                activeRoute === "/manager/mytrainings"
-                  ? "tabs active-tabs"
-                  : "tabs"
-              }
-            >
-              My Trainigs
-            </div>
-          </Link>
-          <Link href="/manager/myteam">
-            <div
-              className={
-                activeRoute === "/manager/myteam" ? "tabs active-tabs" : "tabs"
-              }
-            >
               My Team
             </div>
           </Link>
-          <Link href="/manager/adminhub">
+          <Link href="/manager/TrainingRequests">
             <div
               className={
-                activeRoute === "/manager/adminhub"
+                activeRoute === "/manager/TrainingRequests"
                   ? "tabs active-tabs"
                   : "tabs"
               }
             >
-              Manager Hub
+              Training Requests
+            </div>
+          </Link>
+          <Link href="/manager/AddToTraining">
+            <div
+              className={
+                activeRoute === "/manager/AddToTraining"
+                  ? "tabs active-tabs"
+                  : "tabs"
+              }
+            >
+              Invite to Training
             </div>
           </Link>
         </div>

@@ -54,10 +54,10 @@ export default function Manager() {
       ) : control === 1 ? (
         <div>
           <nav>
-            <Navbar activeRoute="/manager" privilege={3} />
+            <Navbar activeRoute="/manager/TrainingRequests" privilege={3} />
           </nav>
           <div className="justify-center items-center mr-5 ml-5">
-            <Layout condition={false} />
+            <Layout condition={true} />
           </div>
         </div>
       ) : (

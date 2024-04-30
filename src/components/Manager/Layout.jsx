@@ -9,7 +9,7 @@ import ColorHelp from "../Sprout/ColorInfor";
 import { MdOutlineHelp } from "react-icons/md";
 import { act } from "react";
 
-function Layout() {
+function Layout(condition) {
   const [userFilter, setUserFilter] = useState("");
   const [trainingFilter, setTrainingFilter] = useState("");
   const [team, setTeam] = useState([]);
@@ -19,6 +19,7 @@ function Layout() {
   const [expandedTrainings, setExpandedTrainings] = useState([]);
   const [showHelp, setShowHelp] = useState(false);
   const [active, setActive] = useState("none");
+  const [ids, setIds] = useState([]);
 
   const closeHelp = () => {
     setShowHelp(false);
@@ -39,6 +40,7 @@ function Layout() {
   const resetTrainingFilter = () => {
     setTrainingFilter("");
   };
+
   const optionsType = [
     { value: "", label: "All" },
     { value: "virtual", label: "Virtual" },
@@ -52,7 +54,6 @@ function Layout() {
   const handleUserTrainings = async (e, name) => {
     try {
       if (active == "none") {
-        console.log("OK");
         let button = document.querySelector('[name="' + name + '"]');
         button.className =
           "border border-black rounded mb-4 ml-4 w-11/12 hover:bg-slate-100 focus:bg-gray-200 focus:border-black";
@@ -74,7 +75,6 @@ function Layout() {
       });
       const trainings = atrainings.message.concat(otrainings.message);
       setFormacoes(trainings);
-      console.log(trainings);
     } catch (error) {}
   };
 
@@ -94,11 +94,25 @@ function Layout() {
 
     const filterLowerCase = filter.toLowerCase();
     const typeLowerCase = typeof type === "string" ? type.toLowerCase() : "";
-
     return (
       nomeLowerCase.includes(filterLowerCase) &&
-      tipoLowerCase.includes(typeLowerCase)
+      tipoLowerCase.includes(typeLowerCase) &&
+      formacao.pending == condition.condition
     );
+  });
+
+  const filteredTeam = team.filter((member) => {
+    const nomeLowerCase = member.uname.toLowerCase();
+    const filterLowerCase = userFilter.toLowerCase();
+
+    console.log(condition.condition);
+    if (condition.condition) {
+      return (
+        nomeLowerCase.includes(filterLowerCase) && ids.includes(member.uid)
+      );
+    } else {
+      return nomeLowerCase.includes(filterLowerCase);
+    }
   });
 
   async function tryGetTrainingsData(uid) {
@@ -162,7 +176,6 @@ function Layout() {
 
       const url = new URL("http://localhost:3000/api/sprout/myteam");
       url.searchParams.append("uid", decryptedSession.user.team);
-      console.log(decryptedSession.user);
 
       const response = await fetch(url.toString(), {
         method: "GET",
@@ -179,7 +192,146 @@ function Layout() {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.log(error);
+      throw error;
+    }
+  }
+
+  // TODO #############################################################################################################################
+
+  async function tryAcceptTraining(index, type, arrIndex) {
+    try {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      let tUrl;
+      if (type === "inside") {
+        tUrl = new URL(
+          "http://localhost:3000/api/manager/useracceptinsidetraining"
+        );
+      } else {
+        tUrl = new URL(
+          "http://localhost:3000/api/manager/useracceptoutsidetraining"
+        );
+      }
+      const finalUrl = new URL(tUrl);
+      finalUrl.searchParams.append("uid", decryptedSession.user.id);
+      finalUrl.searchParams.append("tid", index);
+      const response = await fetch(finalUrl.toString(), {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      const newFormacoes = formacoes.filter(
+        (objeto) => !(objeto.id == index && objeto.who == type)
+      );
+      handleExpand(arrIndex);
+      setFormacoes(newFormacoes);
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function tryRefuseTraining(index, type, arrIndex) {
+    try {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      let tUrl;
+      if (type === "inside") {
+        tUrl = new URL(
+          "http://localhost:3000/api/manager/userdenyinsidetraining"
+        );
+      } else {
+        tUrl = new URL(
+          "http://localhost:3000/api/manager/userdenyoutsidetraining"
+        );
+      }
+      const finalUrl = new URL(tUrl);
+      finalUrl.searchParams.append("uid", decryptedSession.user.id);
+      finalUrl.searchParams.append("tid", index);
+      const response = await fetch(finalUrl.toString(), {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      const newFormacoes = formacoes.filter(
+        (objeto) => !(objeto.id == index && objeto.who == type)
+      );
+      handleExpand(arrIndex);
+      setFormacoes(newFormacoes);
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // TODO #############################################################################################################################
+
+  async function tryGetUserInsideRequest() {
+    try {
+      const token = cookies.get("session");
+
+      const finalUrl = new URL(
+        "http://localhost:3000/api/manager/userinsidetrainingrequest"
+      );
+      const response = await fetch(finalUrl.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function tryGetUserOutsideRequest() {
+    try {
+      const token = cookies.get("session");
+
+      const finalUrl = new URL(
+        "http://localhost:3000/api/manager/useroutsidetrainingrequest"
+      );
+      const response = await fetch(finalUrl.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
       throw error;
     }
   }
@@ -188,15 +340,29 @@ function Layout() {
     const updateData = async () => {
       try {
         const aTeam = await tryGetTeam();
-        console.log(aTeam);
+        const userrequestI = await tryGetUserInsideRequest();
+        const userrequestO = await tryGetUserOutsideRequest();
+        let iids = [];
+        let oids = [];
         setTeam(aTeam.message);
-      } catch (error) {}
+        if (condition.condition) {
+          if (userrequestI.message.length > 0)
+            iids = userrequestI.message.map((item) => item.regularuserruid);
+
+          if (userrequestO.message.length > 0)
+            oids = userrequestO.message.map((item) => item.regularuserruid);
+          const tempIds = iids.concat(oids);
+          setIds(tempIds);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     };
     updateData();
   }, []);
 
   return (
-    <div className="border rounded mt-5 mb-5">
+    <div className="border rounded mt-5 mb-5 h-screen">
       <div className="flex flex-col lg:flex-row rounded mt-1 mb-1">
         <div className="w-full lg:w-1/3 relative lg:border-r">
           <h2 className="text-Left text-green-700 text-3xl font-semibold ml-5 mt-5">
@@ -209,7 +375,7 @@ function Layout() {
               type="text"
               value={userFilter}
               onChange={handleUsernameFilterChange}
-              className="border-l border-t border-b p-2 lg:p-4 w-full rounded-tl rounded-bl border-gray-300 focus:outline-none focus:border-green-500 mt-5 mb-5 lg:max-w-lg text-black"
+              className="ml-4 border-l border-t border-b p-2 w-full rounded-tl rounded-bl border-gray-300 focus:outline-none focus:border-green-500 mt-5 mb-5 lg:max-w-lg text-black"
               placeholder="filter by username"
               required
             />
@@ -224,8 +390,8 @@ function Layout() {
             className="overflow-y-auto"
             style={{ maxHeight: `calc(100vh - 15vh)` }}
           >
-            {Array.isArray(team) && team.length > 0 ? (
-              team.map(function (user, index) {
+            {Array.isArray(filteredTeam) && filteredTeam.length > 0 ? (
+              filteredTeam.map(function (user, index) {
                 return (
                   <button
                     className="border border-gray-200 rounded mb-4 ml-4 w-11/12 hover:bg-slate-100 focus:bg-gray-200 focus:border-black"
@@ -290,7 +456,7 @@ function Layout() {
 
         <div className="w-full lg:w-2/3 relative mt-4 lg:mt-0">
           <h2 className="text-Left text-green-700 text-3xl font-semibold ml-5 mt-5">
-            Trainings
+            {!condition.condition ? "Trainings" : "Training Requests"}
           </h2>
           <div className="text-left flex">
             <input
@@ -298,7 +464,7 @@ function Layout() {
               type="text"
               value={trainingFilter}
               onChange={handleTrainingFilterChange}
-              className="border-l border-t border-b p-2 lg:p-4 w-full rounded-tl rounded-bl border-gray-300 focus:outline-none focus:border-green-500 mt-5 mb-5 lg:max-w-lg text-black"
+              className="ml-4 border-l border-t border-b p-2 w-full rounded-tl rounded-bl border-gray-300 focus:outline-none focus:border-green-500 mt-5 mb-5 lg:max-w-lg text-black"
               placeholder="Filter by training name"
               required
             />
@@ -413,7 +579,7 @@ function Layout() {
                                   {training.max}
                                 </span>
                               </div>
-                              <div className="mt-1">
+                              <div className="mt-1 mb-4">
                                 <label className="font-bold text-gray-800">
                                   Description:{" "}
                                 </label>
@@ -421,6 +587,31 @@ function Layout() {
                                   {training.descricao}
                                 </span>
                               </div>
+
+                              <button
+                                className="bg-red-400 text-black font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-red-500 hover:text-white active:bg-red-700"
+                                onClick={() =>
+                                  tryRefuseTraining(
+                                    training.id,
+                                    training.who,
+                                    index
+                                  )
+                                }
+                              >
+                                Refuse
+                              </button>
+                              <button
+                                className="bg-green-400 text-black ml-3 font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
+                                onClick={() =>
+                                  tryAcceptTraining(
+                                    training.id,
+                                    training.who,
+                                    index
+                                  )
+                                }
+                              >
+                                Accept
+                              </button>
                             </div>
                           )}
                         </div>
@@ -448,7 +639,7 @@ function Layout() {
           </div>
         </div>
       </div>
-      <div class="fixed bottom-4 right-4 p-4">
+      <div className="fixed bottom-4 right-4 p-4">
         <button
           className="bg-[#DFDFDF] text-[#818181]  rounded-full shadow-sm hover:bg-blue-500 hover:text-white active:bg-blue-500 text-2xl"
           onClick={() => setShowHelp(true)}
