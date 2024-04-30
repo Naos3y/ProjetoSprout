@@ -216,31 +216,74 @@ const AddTraining = () => {
 
       userIDsArray.push(...uniqueUserIDs);
 
-      const trainerIds = trainers.map((trainer) => trainer.value);
       try {
-        const response = await fetch(`/api/adminTrainings/startIT`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            trainingID: idTraining,
-            userIDs: userIDsArray,
-            teacherIDs: trainerIds,
-            startDate: date,
-          }),
-        });
-
+        const response = await fetch(
+          `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
+            userIDsArray
+          )}`
+        );
         const responseData = await response.json();
 
         if (response.ok) {
-          toast.success(responseData.message);
+          console.log("Entrou no if");
+          setFinalUserArray(responseData.userids);
+
+          try {
+            const trainerIds = trainers.map((trainer) => trainer.value);
+            const responseteacher = await fetch(
+              `/api/adminTrainings/getInsideTeacherByUserID?userids=${encodeURIComponent(
+                trainerIds
+              )}`
+            );
+            const responseDataTeacher = await responseteacher.json();
+
+            console.log(responseDataTeacher);
+            if (responseteacher.ok) {
+              console.log("teacher ids: ", responseDataTeacher.userids);
+              try {
+                const trainingResponse = await fetch(
+                  `/api/adminTrainings/startIT`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      trainingID: idTraining,
+                      userIDs: responseData.userids,
+                      teacherIDs: responseDataTeacher.userids,
+                      startDate: date,
+                    }),
+                  }
+                );
+
+                const trainingData = await trainingResponse.json();
+                console.log("trainingData: ", trainingData);
+
+                if (trainingResponse.ok) {
+                  toast.success(trainingData.message);
+                } else {
+                  toast.error(trainingData.message);
+                }
+              } catch (error) {
+                console.error("Error inserting training data:", error);
+                toast.error("An error occurred while inserting training data.");
+              }
+            } else {
+              toast.error(responseDataTeacher.message);
+            }
+          } catch (error) {
+            console.log(error);
+            toast.error(
+              "An error occurred while converting userIDs into teacher id."
+            );
+          }
         } else {
+          console.log("Entrou no else");
           toast.error(responseData.message);
         }
       } catch (error) {
-        console.error("Error inserting training data:", error);
-        toast.error("An error occurred while inserting training data.");
+        toast.error("An error occurred while converting userIDs.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -248,6 +291,8 @@ const AddTraining = () => {
         "An error occurred while initiating the training. Please try again later."
       );
     }
+
+    console.log(" final", finalUserArray);
   };
 
   const validateTrainingData = () => {

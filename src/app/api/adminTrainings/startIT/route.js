@@ -8,9 +8,21 @@ export async function POST(request) {
     const body = await request.json();
 
     const { trainingID, userIDs, teacherIDs, startDate } = body;
+    console.log("training id: ", trainingID, typeof trainingID);
+    console.log(
+      "user ids: ",
+      userIDs,
+      Array.isArray(userIDs) ? "Array" : typeof userIDs
+    );
+    console.log(
+      "teacherids: ",
+      teacherIDs,
+      Array.isArray(teacherIDs) ? "Array" : typeof teacherIDs
+    );
+    console.log("startdate: ", startDate, typeof startDate);
 
     const result = await prisma.$queryRaw`
-      SELECT bruno_startTraining(${trainingID}, ${userIDs}, ${teacherIDs}, ${startDate})`;
+      SELECT bruno_startInsideTrainingUpdated(${trainingID}, ${userIDs}, ${teacherIDs}, ${startDate})`;
 
     if (result) {
       return NextResponse.json({

@@ -1,0 +1,412 @@
+CREATE OR REPLACE FUNCTION public.bruno_addtrainerstoinsidetraining(
+	training_id bigint,
+	trainer_ids bigint[])
+    RETURNS boolean
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    trainer_id INT;
+BEGIN
+    FOR trainer_id IN SELECT unnest(trainer_ids)
+    LOOP
+        BEGIN
+            INSERT INTO public.insideteacherhasinsidestrainings (insideteacheritrid, insidestrainingsitid)
+            VALUES (trainer_id, training_id);
+            EXCEPTION
+                WHEN unique_violation THEN
+                    CONTINUE;
+        END;
+    END LOOP;
+    RETURN TRUE;
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN FALSE;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_addtrainerstoinsidetraining(bigint, bigint[])
+    OWNER TO "default";
+
+
+
+
+CREATE OR REPLACE FUNCTION public.bruno_adduserstoinsidetraining(
+	training_id bigint,
+	user_ids bigint[])
+    RETURNS boolean
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    user_id INT;
+BEGIN
+    FOR user_id IN SELECT unnest(user_ids)
+    LOOP
+        BEGIN
+            INSERT INTO public.regularuserhasinsidetrainings (regularuserruid, insidetrainingsitid)
+            VALUES (user_id, training_id);
+            EXCEPTION
+                WHEN unique_violation THEN
+                    CONTINUE;
+        END;
+    END LOOP;
+    RETURN TRUE;
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN FALSE;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_adduserstoinsidetraining(bigint, bigint[])
+    OWNER TO "default";
+
+
+
+CREATE OR REPLACE FUNCTION public.bruno_checkuseremail(
+	email text)
+    RETURNS boolean
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    emailFound BOOLEAN;
+BEGIN
+    SELECT EXISTS (SELECT 1 FROM public.login WHERE lemail = email) INTO emailFound;
+    
+    RETURN emailFound;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_checkuseremail(text)
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_checkusersintraining(
+	training_id integer)
+    RETURNS boolean
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    user_count integer;
+BEGIN
+    SELECT COUNT(*) INTO user_count
+    FROM regularuserhasinsidetrainings
+    WHERE insidetrainingsitid = training_id;
+    
+    RETURN user_count > 0;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_checkusersintraining(integer)
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_get_regular_users_by_ids(
+	user_ids bigint[])
+    RETURNS bigint[]
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+  regular_users_ids bigint[];
+  current_user_id bigint;
+BEGIN
+  FOR current_user_id IN SELECT UNNEST(user_ids) LOOP
+    IF EXISTS (SELECT 1 FROM public.regularuser WHERE useruid = current_user_id) THEN
+      regular_users_ids := array_append(regular_users_ids, current_user_id);
+    END IF;
+  END LOOP;
+
+  RETURN regular_users_ids;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_get_regular_users_by_ids(bigint[])
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_getalldepartments(
+	)
+    RETURNS TABLE(department_id integer, department_name text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+    RETURN QUERY SELECT did, dname FROM public.department;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_getalldepartments()
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_getallgroups(
+	)
+    RETURNS TABLE(group_id integer, group_name text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+    RETURN QUERY SELECT gid, gname FROM public."group";
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_getallgroups()
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_getallinsideteachernames(
+	)
+    RETURNS TABLE(user_id integer, teacher_name text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+    RETURN QUERY
+    SELECT u.uid, u.uname
+    FROM public.insideteacher it
+    INNER JOIN public."user" u ON it.useruid = u.uid;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_getallinsideteachernames()
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_getalloutsideteachers(
+	)
+    RETURNS TABLE(trainer_id integer, trainer_name text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+    RETURN QUERY
+    SELECT otrid, otname
+    FROM public.outsideteacher;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_getalloutsideteachers()
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_getallteams(
+	)
+    RETURNS TABLE(team_id integer, team_name text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+    RETURN QUERY SELECT tid, tname FROM public.team;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_getallteams()
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_getalltrainings(
+	)
+    RETURNS TABLE(itid integer, itname text, itnumofmin text, iteventtype text, itminparticipants text, itmaxparticipants text, ittrainingarea text, itdescription text, itstarted boolean, itstartdate timestamp without time zone) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+    RETURN QUERY SELECT * FROM public.insidetrainings;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_getalltrainings()
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_getuseridwithemail(
+	email character varying)
+    RETURNS integer
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    user_id INT;
+BEGIN
+    user_id := NULL;
+
+    SELECT useruid INTO user_id
+    FROM public.login
+    WHERE lemail = email;
+
+    RETURN user_id;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_getuseridwithemail(character varying)
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_getusersbydepartmentid(
+	departmentid bigint)
+    RETURNS TABLE(userid integer) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+    RETURN QUERY
+    SELECT u.uid
+    FROM public.user AS u
+    JOIN public.team AS t ON u.teamtid = t.tid
+    JOIN public.department AS d ON t.departmentdid = d.did
+    WHERE d.did = departmentId;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_getusersbydepartmentid(bigint)
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_getusersbygroupid(
+	groupid bigint)
+    RETURNS TABLE(userid integer) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+    RETURN QUERY
+    SELECT uhg.useruid
+    FROM public.userhasgroup AS uhg
+    WHERE uhg.groupgid = groupId;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_getusersbygroupid(bigint)
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_getusersbyteamid(
+	teamid bigint)
+    RETURNS TABLE(userid integer) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+BEGIN
+    RETURN QUERY
+    SELECT uid
+    FROM public.user
+    WHERE teamtid = teamId;
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_getusersbyteamid(bigint)
+    OWNER TO "default";
+
+
+CREATE OR REPLACE FUNCTION public.bruno_inserttraining(
+	in_name text,
+	in_num_of_min text,
+	in_event_type text,
+	in_min_participants text,
+	in_max_participants text,
+	in_training_area text,
+	in_description text)
+    RETURNS bigint
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    new_id bigint; 
+BEGIN
+    INSERT INTO public.insidetrainings (
+        itname,
+        itnumofmin,
+        iteventtype,
+        itminparticipants,
+        itmaxparticipants,
+        ittrainingarea,
+        itdescription
+    ) VALUES (
+        in_name,
+        in_num_of_min,
+        in_event_type,
+        in_min_participants,
+        in_max_participants,
+        in_training_area,
+        in_description
+    )
+    RETURNING itid INTO new_id; 
+
+    RETURN new_id;  
+EXCEPTION
+    WHEN others THEN
+        RETURN NULL;  
+END;
+$BODY$;
+
+ALTER FUNCTION public.bruno_inserttraining(text, text, text, text, text, text, text)
+    OWNER TO "default";
+
+
+
+CREATE OR REPLACE FUNCTION public.bruno_get_regular_users_by_ids_updated(user_uids INT[])
+    RETURNS INT[]
+    LANGUAGE SQL
+AS $$
+    SELECT ARRAY(
+        SELECT ruid
+        FROM regularuser
+        WHERE useruid = ANY($1)
+    );
+$$;
+
+
+CREATE OR REPLACE FUNCTION public.bruno_get_inside_trainers_by_user_ids(user_uids INT[])
+    RETURNS INT[]
+    LANGUAGE SQL
+AS $$
+    SELECT ARRAY(
+        SELECT itrid
+        FROM insideteacher
+        WHERE useruid = ANY($1)
+    );
+$$;
+
+
+
+
+
+
+
