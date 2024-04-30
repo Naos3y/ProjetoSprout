@@ -5,6 +5,9 @@ import Dropdown from "../DropdownFilter";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
 import { IoMdInformationCircleOutline } from "react-icons/io";
+import ColorHelp from "../Sprout/ColorInfor";
+import { MdOutlineHelp } from "react-icons/md";
+import { act } from "react";
 
 function Layout() {
   const [userFilter, setUserFilter] = useState("");
@@ -14,6 +17,12 @@ function Layout() {
   const [formacoes, setFormacoes] = useState([]);
   const [filter, setFilter] = useState("");
   const [expandedTrainings, setExpandedTrainings] = useState([]);
+  const [showHelp, setShowHelp] = useState(false);
+  const [active, setActive] = useState("none");
+
+  const closeHelp = () => {
+    setShowHelp(false);
+  };
 
   const handleUsernameFilterChange = (e) => {
     setUserFilter(e.target.value);
@@ -40,8 +49,21 @@ function Layout() {
     setType(e.value);
   };
 
-  const handleUserTrainings = async (e) => {
+  const handleUserTrainings = async (e, name) => {
     try {
+      if (active == "none") {
+        console.log("OK");
+        let button = document.querySelector('[name="' + name + '"]');
+        button.className =
+          "border border-black rounded mb-4 ml-4 w-11/12 hover:bg-slate-100 focus:bg-gray-200 focus:border-black";
+        setActive(name);
+      } else {
+        let button = document.querySelector('[name="' + active + '"]');
+        button.className =
+          "border border-gray-200  rounded mb-4 ml-4 w-11/12 hover:bg-slate-100 focus:bg-gray-200 focus:border-black";
+        setActive("none");
+      }
+
       const atrainings = await tryGetTrainingsData(e.uid);
       atrainings.message.forEach((training) => {
         training.who = "inside";
@@ -175,8 +197,8 @@ function Layout() {
 
   return (
     <div className="border rounded mt-5 mb-5">
-      <div className="flex h-screen rounded mt-1 mb-1">
-        <div className="w-1/3 relative border-r">
+      <div className="flex flex-col lg:flex-row rounded mt-1 mb-1">
+        <div className="w-full lg:w-1/3 relative lg:border-r">
           <h2 className="text-Left text-green-700 text-3xl font-semibold ml-5 mt-5">
             Sprouts
           </h2>
@@ -187,7 +209,7 @@ function Layout() {
               type="text"
               value={userFilter}
               onChange={handleUsernameFilterChange}
-              className="border-l border-t border-b p-2 w-full rounded-tl rounded-bl border-gray-300 focus:outline-none  focus:border-green-500 mt-5 mb-5 max-w-96 ml-4 text-black"
+              className="border-l border-t border-b p-2 lg:p-4 w-full rounded-tl rounded-bl border-gray-300 focus:outline-none focus:border-green-500 mt-5 mb-5 lg:max-w-lg text-black"
               placeholder="filter by username"
               required
             />
@@ -208,7 +230,8 @@ function Layout() {
                   <button
                     className="border border-gray-200 rounded mb-4 ml-4 w-11/12 hover:bg-slate-100 focus:bg-gray-200 focus:border-black"
                     key={index}
-                    onClick={() => handleUserTrainings(user)}
+                    name={"user" + index}
+                    onClick={() => handleUserTrainings(user, "user" + index)}
                   >
                     <div className="flex">
                       <div id={index} className="flex">
@@ -265,7 +288,7 @@ function Layout() {
           </div>
         </div>
 
-        <div className="w-2/3 relative">
+        <div className="w-full lg:w-2/3 relative mt-4 lg:mt-0">
           <h2 className="text-Left text-green-700 text-3xl font-semibold ml-5 mt-5">
             Trainings
           </h2>
@@ -275,7 +298,7 @@ function Layout() {
               type="text"
               value={trainingFilter}
               onChange={handleTrainingFilterChange}
-              className="border-l border-t border-b p-2 w-full rounded-tl rounded-bl border-gray-300 focus:outline-none  focus:border-green-500 mt-5 mb-5 max-w-96 ml-4 text-black"
+              className="border-l border-t border-b p-2 lg:p-4 w-full rounded-tl rounded-bl border-gray-300 focus:outline-none focus:border-green-500 mt-5 mb-5 lg:max-w-lg text-black"
               placeholder="Filter by training name"
               required
             />
@@ -300,7 +323,6 @@ function Layout() {
               filteredFormacoes.map(function (training, index) {
                 return (
                   <div
-                    id={index}
                     key={index}
                     className={`${
                       training.who === "inside"
@@ -399,12 +421,6 @@ function Layout() {
                                   {training.descricao}
                                 </span>
                               </div>
-                              {/* <button
-                            className="bg-[#DFDFDF] text-[#818181] font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
-                            //onClick={() => handleAppyToTraining(index)}
-                          >
-                            Apply
-                          </button> */}
                             </div>
                           )}
                         </div>
@@ -432,6 +448,15 @@ function Layout() {
           </div>
         </div>
       </div>
+      <div class="fixed bottom-4 right-4 p-4">
+        <button
+          className="bg-[#DFDFDF] text-[#818181]  rounded-full shadow-sm hover:bg-blue-500 hover:text-white active:bg-blue-500 text-2xl"
+          onClick={() => setShowHelp(true)}
+        >
+          <MdOutlineHelp />
+        </button>
+      </div>
+      {showHelp && <ColorHelp onClose={closeHelp} />}
     </div>
   );
 }
