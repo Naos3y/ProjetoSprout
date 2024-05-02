@@ -405,6 +405,104 @@ AS $$
 $$;
 
 
+CREATE OR REPLACE FUNCTION public.bruno_startinsidetrainingupdated_v2(
+	_inside_training_id integer,
+	_regular_user_ids bigint[],
+	_inside_teacher_ids bigint[],
+	_start_date text)
+    RETURNS text
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    _regular_user_id int;
+    _inside_teacher_id int;
+BEGIN
+    BEGIN
+        -- Tenta executar a primeira operação
+        PERFORM bruno_update_insidertraining(_inside_training_id, _start_date);
+    EXCEPTION
+        WHEN others THEN
+            RETURN 'Failed to update insider training :/';
+    END;
+
+    BEGIN
+        -- Tenta executar a segunda operação
+        PERFORM bruno_insert_regularuserhasinsidetrainings(ARRAY(SELECT unnest(_regular_user_ids)::int), _inside_training_id);
+    EXCEPTION
+        WHEN others THEN
+            RETURN 'Failed to insert regular user has insider trainings';
+    END;
+
+    BEGIN
+        -- Tenta executar a terceira operação
+        PERFORM bruno_insert_insideteacherhasinsidestrainings(ARRAY(SELECT unnest(_inside_teacher_ids)::int), _inside_training_id);
+    EXCEPTION
+        WHEN others THEN
+            RETURN 'Failed to insert insider teacher has insider trainings :/';
+    END;
+
+    -- Se todas as operações foram bem-sucedidas, retorna uma mensagem indicando sucesso
+    RETURN 'All operations succeeded';
+END;
+$BODY$;
+
+
+CREATE OR REPLACE FUNCTION public.bruno_update_insidertraining(
+	_inside_training_id integer,
+	_start_date text)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+BEGIN
+    UPDATE public.insidetrainings
+    SET itstartdate = _start_date,
+        itstarted = true
+    WHERE itid = _inside_training_id;
+END;
+$BODY$;
+
+
+CREATE OR REPLACE FUNCTION public.bruno_insert_insideteacherhasinsidestrainings(
+	_inside_teacher_ids integer[],
+	_inside_training_id integer)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    _inside_teacher_id bigint;
+BEGIN
+    FOREACH _inside_teacher_id IN ARRAY _inside_teacher_ids LOOP
+        INSERT INTO public.insideteacherhasinsidestrainings(insideteacheritrid, insidestrainingsitid)
+        VALUES (_inside_teacher_id, _inside_training_id);
+    END LOOP;
+END;
+$BODY$;
+
+
+CREATE OR REPLACE FUNCTION public.bruno_insert_regularuserhasinsidetrainings(
+	_regular_user_ids integer[],
+	_inside_training_id integer)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    _regular_user_id bigint;
+BEGIN
+    FOREACH _regular_user_id IN ARRAY _regular_user_ids LOOP
+        INSERT INTO public.regularuserhasinsidetrainings(regularuserruid, insidetrainingsitid, uhitpending)
+        VALUES (_regular_user_id, _inside_training_id, true);
+    END LOOP;
+END;
+$BODY$;
+
 
 
 

@@ -154,7 +154,7 @@ const AddTraining = () => {
     }
 
     // adaptado do chatGPT
-    const extractUserIDs = (responseData) => {
+    const extractUserIDs = async (responseData) => {
       responseData.forEach((item) => {
         const userID =
           item.bruno_getusersbydepartmentid ||
@@ -177,7 +177,7 @@ const AddTraining = () => {
         );
         if (response.ok) {
           const responseData = await response.json();
-          extractUserIDs(responseData.departments);
+          await extractUserIDs(responseData.departments);
         }
       }
 
@@ -188,7 +188,7 @@ const AddTraining = () => {
         );
         if (response.ok) {
           const responseData = await response.json();
-          extractUserIDs(responseData.teams);
+          await extractUserIDs(responseData.teams);
         }
       }
 
@@ -199,7 +199,7 @@ const AddTraining = () => {
         );
         if (response.ok) {
           const responseData = await response.json();
-          extractUserIDs(responseData.groups);
+          await extractUserIDs(responseData.groups);
         }
       }
 
@@ -210,7 +210,7 @@ const AddTraining = () => {
         );
         if (response.ok) {
           const responseData = await response.json();
-          extractUserIDs(responseData.emails);
+          await extractUserIDs(responseData.emails);
         }
       }
 
