@@ -24,10 +24,10 @@ const Counter = ({ label, returned }) => {
   };
 
   return (
-    <div className="relative py-5">
+    <div className="relative flex justify-center items-center py-5">
       <div>
         <label>{label}</label>
-        <div className="mt-2">
+        <div className="mt-2 flex justify-center items-center">
           <button
             onClick={handleDecrement}
             className="p-2 border-transparent text-lg font-bold"

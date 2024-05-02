@@ -17,11 +17,23 @@ export async function POST(request) {
       description,
     } = body;
 
+    console.log(
+      trainingName,
+      numMin,
+      eventType,
+      minParticipants,
+      maxParticipants,
+      trainingArea,
+      description
+    );
+
     const result = await prisma.$queryRaw`
       SELECT bruno_insertTraining(
         ${trainingName}, ${numMin}, ${eventType}, ${minParticipants},
         ${maxParticipants}, ${trainingArea}, ${description}
       ) AS id`;
+
+    console.log(result);
 
     const trainingId = result[0]?.id.toString();
     console.log("id obtido post: " + trainingId + " .");

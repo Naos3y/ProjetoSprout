@@ -14,6 +14,7 @@ import { Toaster, toast } from "sonner";
 import DropdownState from "@/components/DropdownState";
 import MultiselectSearch from "@/components/MultiselectSearch";
 import AddedUsersToTraining from "@/components/AddedUsersToTraining";
+import TimePicker from "@/components/TimePicker";
 
 const AddTraining = () => {
   // variaveis para o treino
@@ -25,6 +26,8 @@ const AddTraining = () => {
   const [minParticipants, setMinParticipants] = useState(null);
   const [maxParticipants, setMaxParticipants] = useState(null);
   const [trainingName, setTrainingName] = useState(null);
+  const [trainingStartTime, setStartTime] = useState(null);
+  const [location, setLocation] = useState(null);
 
   // para uso geral em componentes e afins
   const [showStartButton, setShowStartButton] = useState(false);
@@ -33,7 +36,9 @@ const AddTraining = () => {
   const [departmentOptions, setDepartmentOptions] = useState([]);
   const [groupOptions, setGroupOtions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
-  const [abreTimePicker, setAbreTimePicker] = useState(false);
+  const [showTrainingOptions, setShowTrainingOptions] = useState(false);
+  const [askIfWantToAddParticipants, setaskIfWantToAddParticipants] =
+    useState(false);
 
   // para adicionar pessoas ao treino
   const [department, setDepartments] = useState([]);
@@ -95,7 +100,9 @@ const AddTraining = () => {
         ...(emptyDescription ? {} : { description: description.toString() }),
       };
 
-      //console.log("training type: ", trainingType);
+      console.log("data to send", dataToSend);
+      console.log("training type: ", trainingType);
+
       if (trainingType.value == "internal") {
         try {
           const response = await fetch("/api/adminTrainings/add", {
@@ -106,15 +113,15 @@ const AddTraining = () => {
             body: JSON.stringify(dataToSend),
           });
 
+          console.log(response);
+
           if (response.ok) {
             const responseData = await response.json();
             setIdTraining(parseInt(responseData.id));
+            console.log("Training ID aqui:", responseData.id);
 
-            //console.log("Training ID aqui:", trainingId);
-            toast.success("Training Added");
+            setaskIfWantToAddParticipants(true);
             setShowStartButton(true);
-
-            //window.location.reload();
           } else {
             toast.error(
               "It wasn't possible to add the training. Please try again."
@@ -130,6 +137,11 @@ const AddTraining = () => {
         toast.error("treino externo por implementar");
       }
     }
+  };
+
+  const handleDontWantToAddUsersToTraining = () => {
+    setaskIfWantToAddParticipants(false);
+    window.location.reload();
   };
 
   const handleInitTraining = async () => {
@@ -409,7 +421,6 @@ const AddTraining = () => {
         }
       }
     } catch (error) {
-      toast.error("Training type is required");
       return [];
     }
   };
@@ -510,202 +521,307 @@ const AddTraining = () => {
         <div className="w-80 bg-gray-200 h-screen p-4 border-r border-gray-400">
           barra lateral
         </div>
-        {!abreTimePicker && (
-          <>
-            <div className="mx-auto max-w-6xl my-4 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-20 gap-y-3">
-                <div>
-                  <DropdownState
-                    label="Training Type"
-                    options={[
-                      { value: "internal", label: "Internal" },
-                      { value: "external", label: "External" },
-                    ]}
-                    message="Select One"
-                    returned={handleTrainingTypeSelect}
-                    disabled={trainingTypeSelected}
-                  />
+
+        <>
+          <div className="mx-auto max-w-6xl my-4 space-y-4">
+            {askIfWantToAddParticipants && (
+              <>
+                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                  <div className="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
+                      Training Added Successfully!
+                    </h2>
+                    <h2 className="text-center text-lg font-semibold mb-4">
+                      Do you want to add people to the training in order to
+                      start it right now?
+                    </h2>
+                    <p className="mb-4">
+                      After submitting the training details, if you choose not
+                      to add participants, the page will reload to ensure all
+                      operations are reset.
+                    </p>
+                    <div className="flex justify-center space-x-4">
+                      <button
+                        className="bg-green-500 text-white font-bold px-4 py-2 rounded-md shadow-sm w-40 hover:bg-green-600"
+                        onClick={() => {
+                          setShowTrainingOptions(true);
+                          setaskIfWantToAddParticipants(false);
+                        }}
+                      >
+                        Add Participants
+                      </button>
+                      <button
+                        className="bg-red-500 text-white font-bold px-4 py-2 rounded-md shadow-sm w-40 hover:bg-red-600"
+                        onClick={handleDontWantToAddUsersToTraining}
+                      >
+                        No
+                      </button>
+                    </div>
+                  </div>
                 </div>
+              </>
+            )}
 
-                {trainingType && (
-                  <>
-                    <div>
-                      <Dropdown
-                        label="Trainig Area"
-                        options={[
-                          { value: "p&c", label: "P&C" },
-                          { value: "itdevelopment", label: "IT Development" },
-                          { value: "sales", label: "Sales" },
-                          { value: "languages", label: "Languages" },
-                          { value: "product", label: "Product" },
-                          {
-                            value: "interpersonalskills",
-                            label: "Interpersonal Skills",
-                          },
-                          { value: "leadership", label: "Leadership" },
-                          { value: "h&s", label: "Health and Safety" },
-                          {
-                            value: "businesspracticess",
-                            label: "Business Practices",
-                          },
-                        ]}
-                        message="Select One"
-                        returned={setTrainingArea}
-                      />
-                    </div>
+            {showTrainingOptions && (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-20 gap-y-3">
+                  <div className="col-span-4">
+                    <span className="font-semibold text-green-500 text-lg ml-2 ">
+                      Add Users to Inside Training
+                    </span>
+                    <p>*Please fill out all fields before proceeding.</p>
+                  </div>
+                  <div>
+                    <MultiselectSearch
+                      label="Trainers"
+                      options={options}
+                      message="Select One / Multi"
+                      returned={setTrainers}
+                    />
+                  </div>
 
-                    <div>
-                      <Dropdown
-                        label="Event Type"
-                        options={[
-                          { value: "offline", label: "Offline" },
-                          { value: "onsite", label: "On Site" },
-                          { value: "virtual", label: "Virtual" },
-                          {
-                            value: "virtualonsite",
-                            label: "Virtual or Onsite",
-                          },
-                        ]}
-                        message="Select One"
-                        returned={setEventType}
-                      />
-                    </div>
+                  <div>
+                    <MultiselectSearch
+                      label="Enrolment for Department"
+                      options={departmentOptions}
+                      message="Select One / Multi"
+                      returned={setDepartments}
+                    />
+                  </div>
 
-                    <div>
-                      <MultiselectSearch
-                        label="Trainers"
-                        options={options}
-                        message="Select One / Multi"
-                        returned={setTrainers}
-                      />
-                    </div>
+                  <div>
+                    <MultiselectSearch
+                      label="Enrolment for Groups"
+                      options={groupOptions}
+                      message="Select One / Multi"
+                      returned={setGroups}
+                    />
+                  </div>
 
-                    <div>
-                      <MultiselectSearch
-                        label="Enrolment for Department"
-                        options={departmentOptions}
-                        message="Select One / Multi"
-                        returned={setDepartments}
-                      />
-                    </div>
+                  <div>
+                    <MultiselectSearch
+                      label="Enrolment for Teams"
+                      options={teamOptions}
+                      message="Select One / Multi"
+                      returned={setTeams}
+                    />
+                  </div>
 
-                    <div>
-                      <MultiselectSearch
-                        label="Enrolment for Groups"
-                        options={groupOptions}
-                        message="Select One / Multi"
-                        returned={setGroups}
-                      />
-                    </div>
-
-                    <div>
-                      <MultiselectSearch
-                        label="Enrolment for Teams"
-                        options={teamOptions}
-                        message="Select One / Multi"
-                        returned={setTeams}
-                      />
-                    </div>
-
-                    {/* <Multiselect
-                  label="Enrolement Open For"
-                  options={[
-                    { value: "all", label: "All" },
-                    { value: "department", label: "Department" },
-                    { value: "groups", label: "Groups" },
-                    { value: "teams", label: "Teams" },
-                  ]}
-                  message="Select One / Multi"
-                  returned={setOpenFor}
-                /> */}
-
-                    <div>
-                      <Counter
-                        label="Duration (Minutes)"
-                        returned={setNumMin}
-                      />
-                    </div>
-
-                    <div>
-                      <Counter
-                        label="Min Nº of Participants"
-                        returned={setMinParticipants}
-                      />
-                    </div>
-
-                    <div>
-                      <Counter
-                        label="Max Nº of Participants"
-                        returned={setMaxParticipants}
-                      />
-                    </div>
-
-                    <div className="col-span-2 ">
-                      <TableTextInput
-                        label={"Enroll"}
-                        returned={setUserEmail}
-                      />
-                    </div>
-
-                    <div className="col-span-2">
-                      <TextInput
-                        label={"Training Name"}
-                        returned={setTrainingName}
-                      />
-                    </div>
-
-                    <div className="col-span-2 ">
-                      <BigInput
-                        label={"Event | Training Description"}
-                        returned={setDescription}
-                      />
-                    </div>
-
-                    <div>
-                      <DatePicker
-                        label={"Training Start Date"}
-                        returned={setDate}
-                      />
-                    </div>
-
-                    {/* <div className="col-span-4 ">
-                  <AddedUsersToTraining
-                    users={[
-                      { value: "1", label: "Bruno" },
-                      { value: "2", label: "Luis" },
-                      { value: "3", label: "Afonso" },
-                      { value: "4", label: "Lopes" },
-                    ]}
-                  />
-                </div> */}
-                  </>
-                )}
-              </div>
-              <div className="flex justify-center">
-                <Toaster richColors position="bottom-center" />
-                {trainingType && (
-                  <>
-                    <button
-                      className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                      onClick={handleAddTraining}
-                    >
-                      Add Training
-                    </button>
-                  </>
-                )}
-
-                {showStartButton && (
+                  <div className="col-span-2 ">
+                    <TableTextInput label={"Enroll"} returned={setUserEmail} />
+                  </div>
+                  <div className="col-span-2 ">
+                    <TextInput label={"Location"} returned={setLocation} />
+                  </div>
+                  <div>
+                    <DatePicker
+                      label={"Training Start Date"}
+                      returned={setDate}
+                    />
+                  </div>
+                  <div>
+                    <TimePicker
+                      label={"Training Start Time"}
+                      returned={setStartTime}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <Toaster richColors position="bottom-center" />
                   <button
                     className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
                     onClick={handleInitTraining}
                   >
                     Initiate Training
                   </button>
-                )}
-              </div>
-            </div>
-          </>
-        )}
+                </div>
+              </>
+            )}
+
+            {!showTrainingOptions && (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-20 gap-y-3">
+                  {!trainingType && (
+                    <>
+                      <div className="col-span-3">
+                        <p className="text-lg font-bold text-red-500">NOTE:</p>
+                        <p className="text-lg font-bold">
+                          Please insert the Training Type. Keep in mind that
+                          this option will be locked further on.
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                  {trainingType && (
+                    <>
+                      <div className="col-span-3">
+                        <span className="font-semibold text-green-500 text-lg ml-2 ">
+                          Add Inside Training Data
+                        </span>
+                        <p>*Please fill out all fields before proceeding.</p>
+                      </div>
+                    </>
+                  )}
+
+                  <div>
+                    <DropdownState
+                      label="Training Type"
+                      options={[
+                        { value: "internal", label: "Internal" },
+                        { value: "external", label: "External" },
+                      ]}
+                      message="Select One"
+                      returned={handleTrainingTypeSelect}
+                      disabled={trainingTypeSelected}
+                    />
+                  </div>
+
+                  {trainingType && (
+                    <>
+                      <div>
+                        <Dropdown
+                          label="Trainig Area"
+                          options={[
+                            { value: "p&c", label: "P&C" },
+                            { value: "itdevelopment", label: "IT Development" },
+                            { value: "sales", label: "Sales" },
+                            { value: "languages", label: "Languages" },
+                            { value: "product", label: "Product" },
+                            {
+                              value: "interpersonalskills",
+                              label: "Interpersonal Skills",
+                            },
+                            { value: "leadership", label: "Leadership" },
+                            { value: "h&s", label: "Health and Safety" },
+                            {
+                              value: "businesspracticess",
+                              label: "Business Practices",
+                            },
+                          ]}
+                          message="Select One"
+                          returned={setTrainingArea}
+                        />
+                      </div>
+
+                      <div>
+                        <Dropdown
+                          label="Event Type"
+                          options={[
+                            { value: "offline", label: "Offline" },
+                            { value: "onsite", label: "On Site" },
+                            { value: "virtual", label: "Virtual" },
+                            {
+                              value: "virtualonsite",
+                              label: "Virtual or Onsite",
+                            },
+                          ]}
+                          message="Select One"
+                          returned={setEventType}
+                        />
+                      </div>
+
+                      {/* <div>
+                    <MultiselectSearch
+                      label="Trainers"
+                      options={options}
+                      message="Select One / Multi"
+                      returned={setTrainers}
+                    />
+                  </div>
+ 
+                  <div>
+                    <MultiselectSearch
+                      label="Enrolment for Department"
+                      options={departmentOptions}
+                      message="Select One / Multi"
+                      returned={setDepartments}
+                    />
+                  </div>
+
+                  <div>
+                    <MultiselectSearch
+                      label="Enrolment for Groups"
+                      options={groupOptions}
+                      message="Select One / Multi"
+                      returned={setGroups}
+                    />
+                  </div>
+
+                  <div>
+                    <MultiselectSearch
+                      label="Enrolment for Teams"
+                      options={teamOptions}
+                      message="Select One / Multi"
+                      returned={setTeams}
+                    />
+                  </div> */}
+
+                      <div>
+                        <Counter
+                          label="Duration (Minutes)"
+                          returned={setNumMin}
+                        />
+                      </div>
+
+                      <div>
+                        <Counter
+                          label="Min Nº of Participants"
+                          returned={setMinParticipants}
+                        />
+                      </div>
+
+                      <div>
+                        <Counter
+                          label="Max Nº of Participants"
+                          returned={setMaxParticipants}
+                        />
+                      </div>
+
+                      {/* <div className="col-span-2 ">
+                    <TableTextInput label={"Enroll"} returned={setUserEmail} />
+                  </div> */}
+
+                      <div>
+                        <TextInput
+                          label={"Training Name"}
+                          returned={setTrainingName}
+                        />
+                      </div>
+
+                      <div className="col-span-2 ">
+                        <BigInput
+                          label={"Event | Training Description (Optional)"}
+                          returned={setDescription}
+                        />
+                      </div>
+
+                      {/* <div>
+                    <DatePicker
+                      label={"Training Start Date"}
+                      returned={setDate}
+                    />
+                  </div> */}
+                    </>
+                  )}
+                </div>
+                <div className="flex justify-center">
+                  <Toaster richColors position="bottom-center" />
+                  {trainingType && (
+                    <>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={handleAddTraining}
+                      >
+                        Add Training
+                      </button>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </>
       </div>
     </div>
   );
