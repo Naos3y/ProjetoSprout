@@ -434,7 +434,7 @@ function Layout(condition) {
                           <div className="text-l text-gray-600 font-bold text-left">
                             Training hours:
                             <span className="text-black mt-1 ml-1">
-                              {user.thours}
+                              {user.nhoras}
                             </span>
                           </div>
                         </div>

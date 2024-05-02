@@ -91,17 +91,19 @@ RETURNS TABLE (
   tname TEXT,
   uname TEXT,
   urole TEXT,
-  lemail TEXT
+  lemail TEXT,
+  nhoras INT
 )
 AS $$
 BEGIN
   RETURN QUERY
-  SELECT u.uid,d.dname, t.tname, u.uname, u.urole, l.lemail
+  SELECT u.uid,d.dname, t.tname, u.uname, u.urole, l.lemail, r.nhoras
   FROM team t
   JOIN public."user" u ON u.teamtid = t.tid
   JOIN department d ON t.departmentdid = d.did
   JOIN login l ON l.useruid = u.uid
-  WHERE u.teamtid = 11;
+  JOIN regularuser r ON u.uid = r.useruid
+  WHERE u.teamtid = auid;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -116,16 +118,19 @@ RETURNS TABLE (
     number TEXT,
     photo TEXT,
     start TEXT,
-    seniority TEXT
+    seniority TEXT,
+	hours int
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT lemail AS email, uname AS name, ucity AS city, ucountry AS country, urole AS role,
            utype AS type, uemployeenumber AS number, uphoto AS photo,
-           ustartdate AS start, useniority AS seniority
-    FROM public."user", login l
-    JOIN login l ON uid = useruid
-    WHERE uid = user_idu
+           ustartdate AS start, useniority AS seniority,  nhoras as hours
+    FROM public."user", login l, regularuser r
+--     JOIN login l ON uid = useruid
+	where userruid = uid
+	AND useruid = uid
+    AND uid = user_idu;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -187,7 +192,8 @@ RETURNS TABLE (
     descricao TEXT,
     area TEXT,
     start BOOLEAN,
-    pending BOOLEAN
+    pending BOOLEAN,
+	hinicio TEXT
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -202,7 +208,8 @@ BEGIN
         itdescription AS descricao,
         ittrainingarea AS area,
         itstarted AS start,
-        uhitpending AS pending
+        uhitpending AS pending,
+		itstarttime AS inicio
     FROM
         public.regularuserhasinsidetrainings r
     JOIN
@@ -222,7 +229,9 @@ RETURNS TABLE (
     max TEXT,
     descricao TEXT,
     area TEXT,
-    start BOOLEAN
+    start BOOLEAN,
+	hinicio TEXT
+
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -236,7 +245,7 @@ SELECT
     itmaxparticipants AS max,
     itdescription AS descricao,
     ittrainingarea AS area,
-    itstarted AS start
+	itstarttime AS inicio
 FROM
     insidetrainings; 
 
@@ -250,7 +259,12 @@ RETURNS TABLE (
     inicio TEXT,
     duracao TEXT,
     min TEXT,
-    max TEXT
+    max TEXT,
+	descricao TEXT,
+    area TEXT,
+    start BOOLEAN,
+    pending BOOLEAN,
+	hinicio TEXT
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -260,7 +274,12 @@ BEGIN
         otnumofmin AS inicio,
         oteventtype AS duracao,
         otminparticipants AS min,
-        otmaxparticipants AS max
+        otmaxparticipants AS max,
+		otdescription AS descricao,
+        otrainingarea AS area,
+        otstarted AS start,
+        ohitpending AS pending,
+		otstarttime AS inicio
     FROM
        public.regularuserhasoutsidetrainings t
     JOIN
@@ -277,8 +296,12 @@ RETURNS TABLE (
     inicio TEXT,
     duracao TEXT,
     min TEXT,
-    max TEXT
-
+    max TEXT,
+	descricao TEXT,
+    area TEXT,
+    start BOOLEAN,
+    pending BOOLEAN,
+	hinicio TEXT
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -288,7 +311,12 @@ BEGIN
         otnumofmin AS inicio,
         oteventtype AS duracao,
         otminparticipants AS local,
-        otmaxparticipants AS max
+        otmaxparticipants AS max,
+		otdescription AS descricao,
+        ottrainingarea AS area,
+        otstarted AS start,
+        ohitpending AS pending,
+		otstarttime AS inicio
 
     from
         outsidetrainings;

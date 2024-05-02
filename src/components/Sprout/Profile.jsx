@@ -190,6 +190,10 @@ export default function ProfileLayout() {
                 <p>{user.start}</p>
               </div>
               <div className="col-span-1">
+                <p className="font-semibold">Formation time:</p>
+                <p>{user.hours}</p>
+              </div>
+              <div className="col-span-1">
                 <p className="font-semibold">Location:</p>
                 <p>
                   {user.country} - {user.city}
