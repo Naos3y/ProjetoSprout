@@ -68,12 +68,17 @@ export async function Login(credentials) {
         const name = essentials.message[0].name;
         const permission = parseInt(essentials.message[0].permission);
         const team = parseInt(essentials.message[0].teamid);
+        const first = parseInt(essentials.message[0].firsttime);
+
         const user = {
+          email: email,
           id: id,
           name: name,
           permission: permission,
           team: team,
+          first: first,
         };
+
         const expires = new Date(Date.now() + 30 * 60 * 1000);
         const session = await encrypt({ user, expires });
         cookies().set("session", session, { expires });

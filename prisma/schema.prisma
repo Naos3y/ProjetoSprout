@@ -26,6 +26,8 @@ model user {
   ucity           String
   uleader         String?
   useniority      String
+  ufirsttime      Boolean @default(true)
+
 
   team          team?           @relation(fields: [teamtid], references: [tid])
   login         login[]
@@ -75,6 +77,7 @@ model login {
 model regularuser {
   ruid    Int @id @default(autoincrement())
   useruid Int
+  nhoras  Int 
 
   user                           user                             @relation(fields: [useruid], references: [uid])
   trainingplan                   trainingplan?                    @relation(fields: [trainingplanTrpid], references: [trpid])
@@ -132,6 +135,8 @@ model insidetrainings {
   itdescription     String?
   itstarted         Boolean
   itstartdate       DateTime
+  itlocation        String?
+  itstarttime       String?
 
   insideteacherhasinsidestrainings insideteacherhasinsidestrainings[]
 
@@ -149,7 +154,12 @@ model outsidetrainings {
   oteventtype        String
   otminparticipants  String
   otmaxparticipants  String
-
+  otdescription     String?
+  otstarted         Boolean
+  otstartdate       DateTime
+  otlocation        String?
+  otstarttime       String?
+  
   outsideteacher outsideteacher @relation(fields: [outsideteacherotid], references: [otrid])
 
   regularuserhasoutsidetrainings          regularuserhasoutsidetrainings[]

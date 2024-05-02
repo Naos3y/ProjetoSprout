@@ -8,6 +8,7 @@ export default function Validation() {
   const [linkComponent, setLinkComponent] = useState(null);
   const [username, setUsername] = useState(null);
   const [control, setControl] = useState(-1);
+  const [first, setFirst] = useState(true);
 
   useEffect(() => {
     const getSession = async () => {
@@ -58,7 +59,9 @@ export default function Validation() {
           {control === -1
             ? "Validating your session... please wait ..."
             : control === 1
-            ? `Welcome ${username} 🌱 Change your password if this is your first time!`
+            ? first
+              ? `Welcome ${username} 🌱! Please, change your password!`
+              : `Welcome ${username}🌱`
             : "An unexpected error has occurred !"}
         </h2>
         <div className="max-w-screen">

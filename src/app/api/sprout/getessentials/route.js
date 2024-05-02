@@ -8,7 +8,7 @@ export async function GET(request) {
     const url = new URL(request.url);
     const params = new URLSearchParams(url.searchParams);
     const info =
-      await prisma.$queryRaw`SELECT * FROM getEssentials(${params.get(
+      await prisma.$queryRaw`SELECT * FROM get_essentials(${params.get(
         "email"
       )})`;
     return NextResponse.json({

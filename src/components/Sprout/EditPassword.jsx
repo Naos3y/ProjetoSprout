@@ -50,8 +50,11 @@ export default function EditPassword() {
     }
   }
 
-  async function validation(email, password) {
+  async function validation(password) {
     try {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      const email = decryptedSession.user[0].email;
       const response = await fetch("http://localhost:3000/api/login", {
         method: "POST",
         headers: {
@@ -111,9 +114,6 @@ export default function EditPassword() {
           Edit my Profile
         </div>
         <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded ">
-          <div className="max-w-96">
-            <TextInput type="email" label="Email" returned={handleEmail} />
-          </div>
           <div className="max-w-96">
             <TextInput
               type="password"

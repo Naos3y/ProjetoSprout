@@ -7,7 +7,7 @@ import { decrypt } from "@/session/crypt";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import ColorHelp from "../Sprout/ColorInfor";
 import { MdOutlineHelp } from "react-icons/md";
-import { act } from "react";
+import { react } from "react";
 
 function Layout(condition) {
   const [userFilter, setUserFilter] = useState("");
@@ -105,7 +105,6 @@ function Layout(condition) {
     const nomeLowerCase = member.uname.toLowerCase();
     const filterLowerCase = userFilter.toLowerCase();
 
-    console.log(condition.condition);
     if (condition.condition) {
       return (
         nomeLowerCase.includes(filterLowerCase) && ids.includes(member.uid)

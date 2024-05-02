@@ -1,4 +1,4 @@
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+    CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE OR REPLACE FUNCTION encrypt_password(password_text text) RETURNS text AS $$
 DECLARE
@@ -35,6 +35,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
 CREATE OR REPLACE FUNCTION get_essentials(
   IN iemail VARCHAR(255)
 )
@@ -42,7 +43,8 @@ RETURNS TABLE (
   uid INT,
   name TEXT,
   permission INT,
-  teamid INT
+  teamid INT,
+	firsttime Boolean
 )
 
 AS $$
@@ -52,7 +54,7 @@ BEGIN
   SELECT useruid INTO idu FROM login WHERE lemail = iemail;
 
   RETURN QUERY
-  SELECT u.uid, u.uname, u.uadminrights , u.teamtid
+  SELECT u.uid, u.uname, u.uadminrights , u.teamtid, u.ufirsttime
   FROM public."user" u
   JOIN login l ON u.uid = l.useruid
   WHERE u.uid = idu;
@@ -68,7 +70,10 @@ BEGIN
     WHERE useruid = uid;
 
     IF FOUND THEN
-        RETURN TRUE;
+		update public.user u
+		set u.ufirsttime = false
+		where u.uid = uid;
+		RETURN TRUE;
     ELSE
         RETURN FALSE;
     END IF;
