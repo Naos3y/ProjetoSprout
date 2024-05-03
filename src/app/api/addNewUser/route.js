@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import sendMailFunction from "./sendMail";
 
 const prisma = new PrismaClient();
 
@@ -52,35 +51,6 @@ export async function POST(request) {
     }
 
     const randomPassword = generateRandomPassword(10); // Exemplo: senha de 10 caracteres
-
-    // Extrair o provedor de e-mail do endereço de e-mail fornecido
-    const [, provider] = email.split("@"); // Dividindo o e-mail pelo "@" e pegando a segunda parte
-
-    // Determinar o serviço de e-mail com base no provedor extraído
-    let service;
-    switch (provider) {
-      case "gmail.com":
-        service = "gmail";
-        break;
-      case "hotmail.com":
-      case "outlook.com":
-        service = "hotmail";
-        break;
-      case "sapo.pt":
-        service = "sapo";
-        break;
-      default:
-        throw new Error("Serviço de e-mail não suportado");
-    }
-
-    // Enviar o e-mail com a senha
-    await sendMailFunction(
-      service,
-      email,
-      randomPassword,
-      "Nova password gerada",
-      `A sua nova password é: ${randomPassword}`
-    );
 
     // Inserir o novo utilizador
     const newUser = await prisma.user.create({

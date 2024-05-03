@@ -11,12 +11,12 @@ const Dropdown = (props: IDropdownProps) => {
     <div>
       <label>{label}</label>
       <div
-        className=" border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-[400px] bg-white shadow-sm w-50 mt-2"
+        className=" border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-[400px] bg-white shadow-sm w-50 mt-2"
         // para ficar sobreposto
         style={{ zIndex: 1000 }}
       >
         <select value={value} onChange={onChange}>
-          <option>Select {label}</option>
+          <option>{label} </option>
 
           {options.map((option) => {
             if (typeof option === "string") {

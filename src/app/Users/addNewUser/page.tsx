@@ -30,7 +30,6 @@ const Formulario = () => {
   const [photo, setPhoto] = useState("");
   const [email, setEmail] = useState<string>("");
   const [day, setStartDate] = useState("");
-  const [ph, setph] = useState(null);
 
   //Dropdown do Report Team
   const [isOpenReportTeam, setIsOpenReportTeam] = useState(false);
@@ -332,7 +331,7 @@ const Formulario = () => {
   };
 
   const setPhotos = (fileName: string) => {
-    // Atualize o estado da photo com o nome do arquivo
+    // Atualize o estado da photo com o nome do ficheiro
     setPhoto(fileName);
   };
 

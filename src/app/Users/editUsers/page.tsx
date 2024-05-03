@@ -1,15 +1,75 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { Toaster, toast } from "sonner";
 import CompleteName from "@/components/CompleteName";
+import Dropdown from "@/components/Dropdown";
+
+import DropdownCountry from "@/components/DropdownCoutryCity/DropdownCountry";
+import {
+  getCountries,
+  getStates,
+  getCities,
+} from "@/app/api/getCountryCity/api";
 
 const Formulario = () => {
   const [usersName, setUsersName] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
-  const [selectedUser, setSelectedUser] = useState<any | null>(null); // Estado para o usuário selecionado
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar a exibição do modal
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [userType, setUserType] = useState("");
+  const [adminRights, setAdminRights] = useState(0);
+  const [role, setRole] = useState("");
+  const [seniority, setSeniority] = useState("");
+  const [completeName, setCompleteName] = useState("");
+  const [selectedLeaderName, setSelectedLeaderName] = useState("");
+  const [selectedAdminRights, setSelectedAdminRights] = useState("");
+  const [selectedTeamName, setSelectedTeamName] = useState("");
+  const [selectedTeamIDNaoTrocado, setSelectedTeamIDNaoTrocado] = useState(0);
+  const [originalTeamIDNaoTrocado, setOriginalTeamIDNaoTrocado] = useState(0);
+  const [selectedCountrys, setSelectedCountrys] = useState("");
+  const [selectedCitys, setSelectedCitys] = useState("");
+  const [reloadData, setReloadData] = useState(false);
+
+  useEffect(() => {
+    if (isModalOpen && selectedUser) {
+      setOriginalTeamIDNaoTrocado(selectedUser.team.tid);
+      if (!selectedTeamID) {
+        setSelectedTeamId(selectedUser.team.tid);
+      }
+    }
+  }, [isModalOpen, selectedUser]);
+
+  useEffect(() => {
+    fetchLeader();
+    fetchTeam();
+    fetchGroups();
+  }, []);
+
+  const reloadUserData = async () => {
+    try {
+      const response = await fetch("/api/getUserGroupTeamDepartment");
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const data = await response.json();
+      setUsers(data.data);
+      setFilteredUsers(data.data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch data");
+    }
+  };
+
+  useEffect(() => {
+    if (reloadData) {
+      reloadUserData();
+      setReloadData(false);
+    }
+  }, [reloadData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,19 +99,277 @@ const Formulario = () => {
     }
   }, [usersName, users]);
 
-  // Função para abrir o modal e definir o usuário selecionado
   const handleEditUser = (userId: number) => {
     const user = filteredUsers.find((user) => user.id === userId);
     if (user) {
       setSelectedUser(user);
+      setUserType(user.utype);
+      setCompleteName(user.uname);
+      setSeniority(user.useniority);
+      setAdminRights(user.uadminrights);
+      setRole(user.urole);
+      setSelectedTeamIDNaoTrocado(user.team.tid);
+      setSelectedTeamId(user.teamtid);
+
+      switch (user.uadminrights) {
+        case 0:
+          setSelectedAdminRights("Admin");
+          break;
+        case 1:
+          setSelectedAdminRights("Admin");
+          break;
+        case 3:
+          setSelectedAdminRights("Manager");
+          break;
+        case 4:
+          setSelectedAdminRights("Sprout");
+          break;
+        default:
+          setSelectedAdminRights("Select One");
+          break;
+      }
+
+      if (user.groupName) {
+        setGroupSelectedName(user.groupName);
+      } else {
+        setGroupSelectedName("Select One");
+      }
+
+      if (user.leaderName) {
+        setSelectedLeaderName(user.leaderName);
+      } else {
+        setSelectedLeaderName("Select One");
+      }
+
+      if (user.team.tname) {
+        setSelectedTeamName(user.team.tname);
+      } else {
+        setSelectedTeamName("Select One");
+      }
+
+      if (user.ucountry) {
+        setSelectedCountrys(user.ucountry);
+      } else {
+        setSelectedCountrys("");
+      }
+
+      if (user.ucity) {
+        setSelectedCitys(user.ucity);
+      } else {
+        setSelectedCitys("");
+      }
+
       setIsModalOpen(true);
     }
   };
 
-  // Função para fechar o modal
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedUser(null);
+    setCompleteName("");
+  };
+
+  const handleSelectAdminRights = (option: { value: string }) => {
+    const adminRightsValue = parseInt(option.value);
+    setAdminRights(adminRightsValue);
+  };
+
+  const handleSelectRole = (option: { value: string }) => {
+    setRole(option.value);
+  };
+
+  const handleSelectSeniority = (option: { value: string }) => {
+    setSeniority(option.value);
+  };
+
+  //Dropdown do Leader
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedLeaderID, setSelectedDepartmentId] = useState<number>();
+  const [leaderType, setLeaderType] = useState<
+    { uid: number; uname: string }[]
+  >([]);
+
+  //Dropdown dos Groups
+  const [isOpenGroup, setIsOpenGroup] = useState(false);
+  const [selectedGroupID, setSelectedGroupId] = useState<number>();
+  const [groupSelectedName, setGroupSelectedName] = useState<String>();
+  const [groupsName, setGroupsName] = useState<
+    { gid: number; gname: string }[]
+  >([]);
+
+  //Dropdown das Teams
+  const [isOpenTeam, setIsOpenTeam] = useState(false);
+  const [selectedTeamID, setSelectedTeamId] = useState<number>();
+  const [teamDrop, setTeamDrop] = useState<
+    {
+      tid: number;
+      departmentdid: number;
+      dname: string;
+      tname: string;
+      department?: { did: number; dname: string };
+    }[]
+  >([]);
+
+  interface Option {
+    value: number;
+    label: string;
+  }
+
+  const handleSelect = (option: Option) => {
+    setSelectedDepartmentId(option.value);
+    setIsOpen(false);
+  };
+
+  const handleSelectGroup = (option: Option) => {
+    setSelectedGroupId(option.value);
+    setIsOpenGroup(false);
+  };
+
+  const handleSelectTeam = async (option: Option) => {
+    setSelectedTeamId(option.value);
+    setIsOpenTeam(false);
+  };
+
+  const fetchLeader = async () => {
+    try {
+      const response = await fetch("/api/getUserType");
+      if (response.ok) {
+        const data = await response.json();
+        setLeaderType(data.data);
+      } else {
+        toast.error("Failed to fetch leaders.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while fetching leaders.");
+    }
+  };
+
+  const fetchTeam = async () => {
+    try {
+      const response = await fetch("/api/getReportTeams");
+      if (response.ok) {
+        const data = await response.json();
+        setTeamDrop(data.data);
+      } else {
+        toast.error("Failed to fetch report teams.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while fetching report teams.");
+    }
+  };
+
+  const fetchGroups = async () => {
+    try {
+      const response = await fetch("/api/getGroups");
+      if (response.ok) {
+        const data = await response.json();
+        setGroupsName(data.data);
+      } else {
+        toast.error("Failed to fetch Groups.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while fetching groups.");
+    }
+  };
+
+  //COUNTRY CITY AND STATE
+
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
+
+  const [countryStates, setCountryStates] = useState([]);
+  const [selectedState, setSelectedState] = useState<string>("");
+
+  const [cities, setCities] = useState([]);
+
+  useEffect(() => {
+    getCountries().then((result) => {
+      setCountries(result.data.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log(selectedCountry);
+    if (selectedCountry !== "Select Country") {
+      getStates(selectedCountry).then((result) => {
+        setCountryStates(result.data.data.states);
+      });
+    }
+  }, [selectedCountry]);
+
+  useEffect(() => {
+    console.log(selectedState);
+    if (selectedState !== "Select State" && selectedCountry) {
+      getCities(selectedCountry, selectedState).then((result) => {
+        setCities(result.data.data);
+      });
+    }
+  }, [selectedState]);
+
+  const handleCountryChange = (
+    event: React.SyntheticEvent<HTMLSelectElement>
+  ) => {
+    setSelectedCountry(event.currentTarget.value);
+  };
+
+  const handleStateChange = (
+    event: React.SyntheticEvent<HTMLSelectElement>
+  ) => {
+    setSelectedState(event.currentTarget.value);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      let countryToSend = selectedCountry;
+      let teamID = Number(selectedTeamIDNaoTrocado);
+
+      if (
+        selectedTeamID !== undefined &&
+        selectedTeamID !== 0 &&
+        selectedTeamID !== selectedTeamIDNaoTrocado
+      ) {
+        teamID = selectedTeamID;
+      }
+
+      // Verificar se o país foi alterado
+      if (selectedCountry === "") {
+        countryToSend = selectedCountrys;
+      }
+
+      const response = await fetch("/api/editUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: selectedUser.id,
+          userType,
+          adminRights,
+          role,
+          seniority,
+          completeName,
+          selectedLeaderID,
+          teamID,
+          selectedGroupID,
+          selectedCountry: countryToSend,
+          selectedCitys,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update user");
+      }
+
+      toast.success("User updated successfully");
+      setReloadData(true);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update user");
+    }
   };
 
   return (
@@ -148,20 +466,207 @@ const Formulario = () => {
         </table>
       </div>
 
-      {/* Modal simples */}
       {isModalOpen && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-white bg-opacity-75">
           <div className="bg-white p-8 rounded shadow-lg relative">
-            <h2>User Details</h2>
+            <div className="flex items-center ml-4">
+              <Icon
+                icon="ic:outline-edit"
+                width="19"
+                height="19"
+                className="text-green-500"
+              />
+              <span className="font-semibold text-green-500 text-lg ml-2">
+                Edit User: {selectedUser?.uname}
+              </span>
+            </div>
             <button
               className="modal-close absolute top-0 right-0 p-3 text-red-600"
               onClick={closeModal}
             >
               <Icon icon="zondicons:close-solid" width="24" height="24" />
             </button>
-            <p>Name: {selectedUser?.uname}</p>
-            <p>Email: {selectedUser?.login?.lemail}</p>
-            {/* Adicione mais detalhes do usuário conforme necessário */}
+
+            <div className="flex flex-wrap">
+              <div className="gap-4 ml-10">
+                <Dropdown
+                  label="User Type"
+                  options={[
+                    { value: "IC", label: "IC" },
+                    { value: "Leader", label: "Leader" },
+                  ]}
+                  message={userType}
+                  returned={(option: { value: string }) =>
+                    setUserType(option.value)
+                  }
+                />
+              </div>
+              <div className="ml-10">
+                <Dropdown
+                  label="Seniority"
+                  options={[
+                    { value: "Senior", label: "Senior" },
+                    { value: "Junior", label: "Junior" },
+                    { value: "Mid", label: "Mid" },
+                  ]}
+                  message={seniority}
+                  returned={handleSelectSeniority}
+                />
+              </div>
+              <div className="gap-4 ml-10">
+                <Dropdown
+                  label="Admin Rights"
+                  options={[
+                    { value: "4", label: "Sprout" },
+                    { value: "3", label: "Manager" },
+                    { value: "0", label: "Admin" },
+                  ]}
+                  message={selectedAdminRights}
+                  returned={handleSelectAdminRights}
+                />
+              </div>
+              <div className="ml-10">
+                <Dropdown
+                  label="Role"
+                  options={[
+                    { value: "Backend Engineer", label: "Backend Engineer" },
+                    { value: "Frontend Engineer", label: "Frontend Engineer" },
+                    {
+                      value: "Fullstack Engineer",
+                      label: "Fullstack Engineer",
+                    },
+                    { value: "Data Engineer", label: "Data Engineer" },
+                    {
+                      value: "Talent Acquisition Specialist",
+                      label: "Talent Acquisition Specialist",
+                    },
+                    { value: "People Ops", label: "People Ops" },
+                    { value: "Technical Support", label: "Technical Support" },
+                    {
+                      value: "Costumer Service Representative",
+                      label: "Costumer Service Representative",
+                    },
+                    { value: "Agile Coach", label: "Agile Coach" },
+                    { value: "Devops Engineer", label: "Devops Engineer" },
+                    { value: "Technical Advisor", label: "Technical Advisor" },
+                    {
+                      value: "Marketing Specialist",
+                      label: "Marketing Specialist",
+                    },
+                    {
+                      value: "IT Sales Representative",
+                      label: "IT Sales Representative",
+                    },
+                  ]}
+                  message={role}
+                  returned={handleSelectRole}
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap">
+              <div className="ml-10">
+                <CompleteName
+                  label={"Full Name"}
+                  value={completeName}
+                  returned={setCompleteName}
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap">
+              <div className="gap-4 ml-10">
+                <Dropdown
+                  label="Leader"
+                  options={
+                    leaderType && leaderType.length > 0
+                      ? leaderType.map((user) => ({
+                          value: user.uid,
+                          label: user.uname,
+                        }))
+                      : []
+                  }
+                  message={selectedLeaderName}
+                  returned={handleSelect}
+                />
+              </div>
+              <div className="ml-10">
+                <Dropdown
+                  label="Team"
+                  options={
+                    teamDrop && teamDrop.length > 0
+                      ? teamDrop.map((team) => ({
+                          value: team.tid,
+                          label: team.tname,
+                        }))
+                      : []
+                  }
+                  message={selectedTeamName}
+                  returned={handleSelectTeam}
+                />
+              </div>
+
+              <div className="ml-10">
+                <Dropdown
+                  label="Groups"
+                  options={
+                    groupsName && groupsName.length > 0
+                      ? groupsName.map((team) => ({
+                          value: team.gid,
+                          label: team.gname,
+                        }))
+                      : []
+                  }
+                  message={groupSelectedName}
+                  returned={handleSelectGroup}
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap">
+              <div className="mt-6 ml-20">
+                <DropdownCountry
+                  label={"Country: " + selectedCountrys}
+                  options={countries}
+                  customValueKey="name"
+                  onChange={handleCountryChange}
+                />
+              </div>
+              <div className="mt-6 ml-20">
+                <DropdownCountry
+                  label="State: "
+                  options={countryStates}
+                  customValueKey="name"
+                  onChange={handleStateChange}
+                />
+              </div>
+              <div className="mt-6 ml-20">
+                <DropdownCountry
+                  label={"City: " + selectedCitys}
+                  options={cities}
+                />
+              </div>
+            </div>
+            <div className="flex justify-center ">
+              <div className="flex flex-wrap ">
+                <Toaster richColors position="bottom-center" />
+                <button
+                  style={{
+                    marginTop: "100px",
+                    marginRight: "10px",
+                    marginBottom: "100px",
+                  }}
+                  className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-500 hover:text-white active:bg-gray-500"
+                  onClick={() => toast.error("Registration Canceled!")}
+                >
+                  Cancel
+                </button>
+                <button
+                  style={{ marginTop: "100px", marginBottom: "100px" }}
+                  className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                  onClick={handleSubmit}
+                >
+                  Confirm Changes
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

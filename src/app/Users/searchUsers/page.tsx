@@ -11,11 +11,10 @@ const Formulario = () => {
   const [selectedColumns, setSelectedColumns] = useState([
     "Full Name",
     "User Type",
-  ]); // Adicionando "Full Name" e "User Type" como colunas inicialmente selecionadas
+  ]);
   const [users, setUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
 
-  // Função para buscar os dados dos usuários da API ao carregar a página
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,10 +32,9 @@ const Formulario = () => {
     fetchData();
   }, []);
 
-  // Função para filtrar os usuários com base no nome digitado
   useEffect(() => {
     if (completeName.trim() === "") {
-      setFilteredUsers(users); // Se o campo de pesquisa estiver vazio, exibe todos os usuários
+      setFilteredUsers(users);
     } else {
       const filtered = users.filter((user) =>
         user.uname.toLowerCase().includes(completeName.toLowerCase())
@@ -45,7 +43,6 @@ const Formulario = () => {
     }
   }, [completeName, users]);
 
-  // Função para renderizar a tabela com as colunas selecionadas
   const renderTable = () => {
     return (
       <div className="flex justify-center mt-8">
@@ -60,26 +57,25 @@ const Formulario = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map((user) => (
-              <tr key={user.id}>
-                {selectedColumns.map((column) => (
-                  <td
-                    key={column}
-                    className="border border-gray-400 p-2 whitespace-nowrap"
-                  >
-                    {/* Ajuste para exibir o valor correto para cada coluna */}
-                    {getColumnValue(user, column)}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {filteredUsers &&
+              filteredUsers.map((user) => (
+                <tr key={user.id}>
+                  {selectedColumns.map((column) => (
+                    <td
+                      key={column}
+                      className="border border-gray-400 p-2 whitespace-nowrap"
+                    >
+                      {getColumnValue(user, column)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
     );
   };
 
-  // Função para obter o valor correto para cada coluna
   const getColumnValue = (user: any, column: any) => {
     switch (column) {
       case "Full Name":
@@ -147,7 +143,7 @@ const Formulario = () => {
             <CompleteName
               label={"Search User Name"}
               value={completeName}
-              returned={(value: string) => setCompleteName(value)} // Usar a propriedade 'returned' para passar uma função de retorno de chamada
+              returned={(value: string) => setCompleteName(value)}
             />
           </div>
         </div>
@@ -178,7 +174,6 @@ const Formulario = () => {
         </div>
       </div>
 
-      {/* Renderiza a tabela somente se houver colunas selecionadas */}
       {selectedColumns.length > 0 && renderTable()}
     </div>
   );

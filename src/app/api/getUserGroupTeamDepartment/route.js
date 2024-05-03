@@ -14,21 +14,19 @@ export async function GET(request) {
                 department: true,
               },
             },
-            userhasgroup: true, // Inclui os dados de userhasgroup diretamente
+            userhasgroup: true,
           },
         },
       },
     });
 
-    // Mapear os resultados para formatar os dados como desejado
     const formattedUsers = logins.map(async (login) => {
       const user = login.user;
-      let departmentName = ""; // Inicializa o nome do departamento como uma string vazia
-      let leaderName = ""; // Inicializa o nome do líder como uma string vazia
+      let departmentName = "";
+      let leaderName = "";
+      let groupName = "";
 
-      // Verifica se o usuário tem um líder associado
       if (user.uleader) {
-        // Faça uma segunda pesquisa para obter o nome do líder com base no ID do líder
         const leader = await prisma.user.findUnique({
           where: {
             uid: parseInt(user.uleader),
@@ -37,17 +35,11 @@ export async function GET(request) {
             uname: true,
           },
         });
-        // Se o líder existir, atribui o nome do líder à variável leaderName
-        if (leader) {
-          leaderName = leader.uname;
-        } else {
-          leaderName = "";
-        }
+
+        leaderName = leader ? leader.uname : "";
       }
 
-      // Verifica se o usuário tem um departamento associado à equipe
       if (user.team && user.team.departmentdid) {
-        // Faça uma consulta para obter o nome do departamento com base no departmentdid
         const dept = await prisma.department.findUnique({
           where: {
             did: parseInt(user.team.departmentdid),
@@ -56,45 +48,26 @@ export async function GET(request) {
             dname: true,
           },
         });
-        // Se o departamento existir, atribui o nome do departamento à variável departmentName
-        if (dept) {
-          departmentName = dept.dname;
-        }
+
+        departmentName = dept ? dept.dname : "";
       }
 
-      let userhasgroupIDgroup = "";
-      let groupName = "";
+      let userGroupName = "";
       if (user.uid) {
-        // Faça uma segunda pesquisa para obter o nome do líder com base no ID do líder
-        const userhasgrp = await prisma.userhasgroup.findUnique({
+        const userhasgrp = await prisma.userhasgroup.findFirst({
           where: {
             useruid: parseInt(user.uid),
           },
           select: {
-            groupgid: true,
+            group: {
+              select: {
+                gname: true,
+              },
+            },
           },
         });
-        // Se o líder existir, atribui o nome do líder à variável leaderName
-        if (userhasgrp) {
-          userhasgroupIDgroup = userhasgrp.groupgid;
 
-          const group = await prisma.group.findUnique({
-            where: {
-              gid: parseInt(userhasgrp.groupgid),
-            },
-            select: {
-              gname: true,
-            },
-          });
-
-          if (group) {
-            groupName = group.gname;
-          } else {
-            groupName = "";
-          }
-        } else {
-          userhasgroupIDgroup = "";
-        }
+        userGroupName = userhasgrp ? userhasgrp.group.gname : "";
       }
 
       return {
@@ -111,22 +84,21 @@ export async function GET(request) {
         ucity: user.ucity,
         ustartdate: user.ustartdate,
         team: {
+          tid: user.team ? user.team.tid : 0,
           tname: user.team ? user.team.tname : "",
           departmentdid: user.team ? user.team.departmentdid : "",
         },
-        leaderName: leaderName,
+        leaderName,
         login: {
           lemail: login.lemail ? login.lemail : "",
         },
-        departmentName: departmentName,
-        groupName: groupName,
+        departmentName,
+        groupName: userGroupName,
       };
     });
 
-    // Aguardar a resolução de todas as promises dentro do mapeamento
     const resolvedUsers = await Promise.all(formattedUsers);
 
-    // Armazenar os dados em uma variável
     const userData = {
       code: 200,
       data: resolvedUsers,
