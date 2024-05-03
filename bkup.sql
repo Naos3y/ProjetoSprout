@@ -366,7 +366,82 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-  
+CREATE OR REPLACE FUNCTION accept_training_request(trainingid INT, userid INT) RETURNS BOOLEAN AS $$
+DECLARE
+    success BOOLEAN := false;
+BEGIN
+    BEGIN
+        UPDATE public.regularuserhasinsidetrainings
+        set uhitpending = false
+		where regularuserruid = userid
+		and insidetrainingsitid = trainingid;
+        success := true;
+    EXCEPTION
+        WHEN OTHERS THEN
+            success := false;
+    END;
+    
+    RETURN success;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION accept_outside_training_request(trainingid INT, userid INT) RETURNS BOOLEAN AS $$
+DECLARE
+    success BOOLEAN := false;
+BEGIN
+    BEGIN
+        UPDATE public.regularuserhasoutsidetrainings
+        set uhitpending = false
+		where regularuserruid = userid
+		and outsidetrainingsitid = trainingid;
+        success := true;
+    EXCEPTION
+        WHEN OTHERS THEN
+            success := false;
+    END;
+    
+    RETURN success;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION deny_outside_training_request(trainingid INT, userid INT) RETURNS BOOLEAN AS $$
+DECLARE
+    success BOOLEAN := false;
+BEGIN
+    BEGIN
+        DELETE from public.regularuserhasoutsidetrainings
+		where regularuserruid = userid
+		and outsidetrainingsitid = trainingid;
+        success := true;
+    EXCEPTION
+        WHEN OTHERS THEN
+            success := false;
+    END;
+    
+    RETURN success;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION deny_training_request(trainingid INT, userid INT) RETURNS BOOLEAN AS $$
+DECLARE
+    success BOOLEAN := false;
+BEGIN
+    BEGIN
+        DELETE FROM public.regularuserhasinsidetrainings
+		where regularuserruid = userid
+		and insidetrainingsitid = trainingid;
+        success := true;
+    EXCEPTION
+        WHEN OTHERS THEN
+            success := false;
+    END;
+    
+    RETURN success;
+END;
+$$ LANGUAGE plpgsql;
 
 
 -- TESTES

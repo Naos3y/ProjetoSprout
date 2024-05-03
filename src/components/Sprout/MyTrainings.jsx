@@ -321,7 +321,7 @@ export default function MyTrainings() {
           })}
         </div>
       </div>
-      <div class="fixed bottom-4 right-4 p-4">
+      <div className="fixed bottom-4 right-4 p-4">
         <button
           className="bg-[#DFDFDF] text-[#818181]  rounded-full shadow-sm hover:bg-blue-500 hover:text-white active:bg-blue-500 text-2xl"
           onClick={() => setShowHelp(true)}

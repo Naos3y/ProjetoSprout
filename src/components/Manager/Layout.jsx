@@ -8,6 +8,7 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import ColorHelp from "../Sprout/ColorInfor";
 import { MdOutlineHelp } from "react-icons/md";
 import { react } from "react";
+import { Toaster, toast } from "sonner";
 
 function Layout(condition) {
   const [userFilter, setUserFilter] = useState("");
@@ -20,6 +21,7 @@ function Layout(condition) {
   const [showHelp, setShowHelp] = useState(false);
   const [active, setActive] = useState("none");
   const [ids, setIds] = useState([]);
+  const [currUser, setCurrUser] = useState(0);
 
   const closeHelp = () => {
     setShowHelp(false);
@@ -53,6 +55,7 @@ function Layout(condition) {
 
   const handleUserTrainings = async (e, name) => {
     try {
+      setCurrUser(e.uid);
       if (active == "none") {
         let button = document.querySelector('[name="' + name + '"]');
         button.className =
@@ -212,7 +215,7 @@ function Layout(condition) {
         );
       }
       const finalUrl = new URL(tUrl);
-      finalUrl.searchParams.append("uid", decryptedSession.user.id);
+      finalUrl.searchParams.append("uid", currUser);
       finalUrl.searchParams.append("tid", index);
       const response = await fetch(finalUrl.toString(), {
         method: "PATCH",
@@ -221,8 +224,8 @@ function Layout(condition) {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (!response.ok) {
+        toast.error("Something went wrong!");
         throw new Error("Something went wrong");
       }
 
@@ -232,9 +235,11 @@ function Layout(condition) {
       handleExpand(arrIndex);
       setFormacoes(newFormacoes);
 
+      toast.success("Success!");
       const data = await response.json();
       return data;
     } catch (error) {
+      toast.error("Something went wrong!");
       throw error;
     }
   }
@@ -254,7 +259,7 @@ function Layout(condition) {
         );
       }
       const finalUrl = new URL(tUrl);
-      finalUrl.searchParams.append("uid", decryptedSession.user.id);
+      finalUrl.searchParams.append("uid", currUser);
       finalUrl.searchParams.append("tid", index);
       const response = await fetch(finalUrl.toString(), {
         method: "DELETE",
@@ -265,6 +270,7 @@ function Layout(condition) {
       });
 
       if (!response.ok) {
+        toast.error("Something went wrong!");
         throw new Error("Something went wrong");
       }
 
@@ -273,15 +279,15 @@ function Layout(condition) {
       );
       handleExpand(arrIndex);
       setFormacoes(newFormacoes);
+      toast.success("Success!");
 
       const data = await response.json();
       return data;
     } catch (error) {
+      toast.error("Something went wrong!");
       throw error;
     }
   }
-
-  // TODO #############################################################################################################################
 
   async function tryGetUserInsideRequest() {
     try {
@@ -362,6 +368,7 @@ function Layout(condition) {
 
   return (
     <div className="border rounded mt-5 mb-5 h-screen">
+      <Toaster richColors position="bottom-center" />
       <div className="flex flex-col lg:flex-row rounded mt-1 mb-1">
         <div className="w-full lg:w-1/3 relative lg:border-r">
           <h2 className="text-Left text-green-700 text-3xl font-semibold ml-5 mt-5">

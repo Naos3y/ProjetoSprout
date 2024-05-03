@@ -119,6 +119,7 @@ export default function IncomingLayout() {
       });
 
       if (!response.ok) {
+        toast.error("Something went wrong!");
         throw new Error("Something went wrong");
       }
 
@@ -127,10 +128,12 @@ export default function IncomingLayout() {
       );
       handleExpand(arrIndex);
       setFormacoes(newFormacoes);
+      toast.success("Success!");
 
       const data = await response.json();
       return data;
     } catch (error) {
+      toast.error("Something went wrong!");
       throw error;
     }
   }
@@ -258,6 +261,8 @@ export default function IncomingLayout() {
 
   return (
     <div className="border rounded mt-5 mb-5 max-w-screen">
+      <Toaster richColors position="bottom-center" />
+
       <div className="text-left border-b flex">
         <input
           name="filter"
@@ -397,7 +402,7 @@ export default function IncomingLayout() {
           })}
         </div>
       </div>
-      <div class="fixed bottom-4 right-4 p-4">
+      <div className="fixed bottom-4 right-4 p-4">
         <button
           className="bg-[#DFDFDF] text-[#818181]  rounded-full shadow-sm hover:bg-blue-500 hover:text-white active:bg-blue-500 text-2xl"
           onClick={() => setShowHelp(true)}

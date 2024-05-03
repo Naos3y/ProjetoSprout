@@ -3,19 +3,22 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function POST(request) {
+export async function PATCH(request) {
   try {
     const cookieHeader = request.headers.get("cookie");
+    const url = new URL(request.url);
+    const params = new URLSearchParams(url.searchParams);
+    const tid = params.get("tid");
+    const uid = params.get("uid");
     const sessionCookie =
       cookieHeader && cookieHeader.includes("session=")
         ? cookieHeader.split("session=")[1].split(";")[0]
         : "";
 
     if (sessionCookie) {
-      console.log(tid, uid);
       const data =
-        await prisma.$queryRaw`select regularuserruid from regularuserhasinsidetrainings`;
-      console.log(data);
+        await prisma.$queryRaw`select * from accept_training_request(CAST(${tid} AS INTEGER), CAST(${uid} AS INTEGER))
+        `;
       return NextResponse.json({
         code: 200,
         message: "Success",
