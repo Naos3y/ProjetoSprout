@@ -60,7 +60,7 @@ export default function MyTeam() {
             <Navbar activeRoute="/sprout/myteam" />
           </nav>
           <div className="justify-center items-center mr-5 ml-5">
-            <TeamLayout />
+            <TeamLayout condition={false} />
           </div>
         </div>
       ) : (

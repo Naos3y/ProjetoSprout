@@ -7,8 +7,10 @@ import cookies from "js-cookie";
 import { useEffect } from "react";
 import { decrypt } from "@/session/crypt";
 
-export default function TeamLayout() {
+export default function TeamLayout(condition) {
   const [team, setTeam] = useState([]);
+  const [userFilter, setUserFilter] = useState("");
+  const [currUser, setCurrUser] = useState(0);
   async function tryGetTeam() {
     try {
       const token = cookies.get("session");
@@ -37,6 +39,55 @@ export default function TeamLayout() {
     }
   }
 
+  const handleUserTrainings = async (e, name) => {
+    try {
+      setCurrUser(e.uid);
+      // if (active == "none") {
+      //   let button = document.querySelector('[name="' + name + '"]');
+      //   button.className =
+      //     "border border-black rounded mb-4 ml-4 w-11/12 hover:bg-slate-100 focus:bg-gray-200 focus:border-black";
+      //   setActive(name);
+      // } else {
+      //   let button = document.querySelector('[name="' + active + '"]');
+      //   button.className =
+      //     "border border-gray-200  rounded mb-4 ml-4 w-11/12 hover:bg-slate-100 focus:bg-gray-200 focus:border-black";
+      //   setActive("none");
+      // }
+
+      // const atrainings = await tryGetTrainingsData(e.uid);
+      // atrainings.message.forEach((training) => {
+      //   training.who = "inside";
+      // });
+      // const otrainings = await tryGetOutsideTrainingsData(e.uid);
+      // otrainings.message.forEach((training) => {
+      //   training.who = "outside";
+      // });
+      // const trainings = atrainings.message.concat(otrainings.message);
+      // setFormacoes(trainings);
+    } catch (error) {}
+  };
+
+  const filteredTeam = team.filter((member) => {
+    const nomeLowerCase = member.uname.toLowerCase();
+    const filterLowerCase = userFilter.toLowerCase();
+
+    if (condition.condition) {
+      return (
+        nomeLowerCase.includes(filterLowerCase) && ids.includes(member.uid)
+      );
+    } else {
+      return nomeLowerCase.includes(filterLowerCase);
+    }
+  });
+
+  const resetUsernameFilter = () => {
+    setUserFilter("");
+  };
+
+  const handleUsernameFilterChange = (e) => {
+    setUserFilter(e.target.value);
+  };
+
   useEffect(() => {
     const updateData = async () => {
       try {
@@ -48,15 +99,41 @@ export default function TeamLayout() {
     };
     updateData();
   }, []);
+
   return (
     <div className="border rounded-s mt-5 mb-5 max-w-screen">
       <Toaster richColors position="bottom-center" />
-      <div className="h-screen">
-        <div className="max-h-screen overflow-y-auto max-w-screen grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 p-6">
-          {Array.isArray(team) && team.length > 0 ? (
-            team.map(function (user, index) {
+      <div className="flex flex-col lg:flex-row rounded mt-1 mb-1">
+        <div className="text-left flex">
+          <input
+            name="filter"
+            type="text"
+            value={userFilter}
+            onChange={handleUsernameFilterChange}
+            className="ml-4 border-l border-t border-b p-2 w-full rounded-tl rounded-bl border-gray-300 focus:outline-none focus:border-green-500 mt-5 mb-5 lg:max-w-lg text-black"
+            placeholder="filter by username"
+            required
+          />
+          <button
+            onClick={resetUsernameFilter}
+            className="p-2 w-max-100 mt-5 mb-5 border rounded-tr rounded-br border-gray-300 hover:border-green-500 focus:outline-none  cursor-pointer font-bold flex items-center justify-between bg-white shadow-sm text-black"
+          >
+            <GrClearOption />
+          </button>
+        </div>
+        <div
+          className="overflow-y-auto"
+          style={{ maxHeight: `calc(100vh - 15vh)` }}
+        >
+          {Array.isArray(filteredTeam) && filteredTeam.length > 0 ? (
+            filteredTeam.map(function (user, index) {
               return (
-                <div className="border border-gray-200 rounded">
+                <button
+                  className="border border-gray-200 rounded"
+                  key={index}
+                  name={"user" + index}
+                  onClick={() => handleUserTrainings(user, "user" + index)}
+                >
                   <div id={index} key={index} className="flex">
                     <div className="w-4 h-auto">
                       <div className="bg-gray-200 block object-cover rounded-tl rounded-bl h-full w-full" />
@@ -92,9 +169,19 @@ export default function TeamLayout() {
                           {user.dname}
                         </span>
                       </div>
+                      {condition.condition ? (
+                        <div className="text-l text-gray-600 font-bold text-left">
+                          Training hours:
+                          <span className="text-black mt-1 ml-1">
+                            {user.nhoras}
+                          </span>
+                        </div>
+                      ) : (
+                        <div> </div>
+                      )}
                     </div>
                   </div>
-                </div>
+                </button>
               );
             })
           ) : (
