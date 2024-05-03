@@ -32,7 +32,7 @@ const MultiselectSearch = ({ label, options, message, returned }) => {
       <label>{label}</label>
       <button
         type="button"
-        className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-[200px] bg-white shadow-sm mt-2"
+        className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-full bg-white shadow-sm mt-2"
         onClick={() => setIsOpen(!isOpen)}
         style={{ zIndex: 1000 }}
       >
@@ -45,7 +45,7 @@ const MultiselectSearch = ({ label, options, message, returned }) => {
       </button>
       {isOpen && (
         <div
-          className="absolute rounded border border-gray-300 bg-white top-full w-[200px] shadow-md"
+          className="absolute rounded border border-gray-300 bg-white top-full w-full shadow-md"
           style={{ zIndex: 1000 }}
         >
           <div className="px-2 py-1 border-b border-gray-300">

@@ -15,6 +15,7 @@ import DropdownState from "@/components/DropdownState";
 import MultiselectSearch from "@/components/MultiselectSearch";
 import AddedUsersToTraining from "@/components/AddedUsersToTraining";
 import TimePicker from "@/components/TimePicker";
+import { FiHelpCircle } from "react-icons/fi";
 
 const AddTraining = () => {
   // variaveis para o treino
@@ -37,8 +38,7 @@ const AddTraining = () => {
   const [groupOptions, setGroupOtions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
   const [showTrainingOptions, setShowTrainingOptions] = useState(false);
-  const [askIfWantToAddParticipants, setaskIfWantToAddParticipants] =
-    useState(false);
+  const [addTrainingInfo, setaddTrainingInfo] = useState(false);
 
   // para adicionar pessoas ao treino
   const [department, setDepartments] = useState([]);
@@ -118,10 +118,7 @@ const AddTraining = () => {
           if (response.ok) {
             const responseData = await response.json();
             setIdTraining(parseInt(responseData.id));
-            console.log("Training ID aqui:", responseData.id);
-
-            setaskIfWantToAddParticipants(true);
-            setShowStartButton(true);
+            toast.success("The Training was added to the database!");
           } else {
             toast.error(
               "It wasn't possible to add the training. Please try again."
@@ -514,6 +511,10 @@ const AddTraining = () => {
     }
   };
 
+  const handleAddTrainingInfo = () => {
+    setaddTrainingInfo(true);
+  };
+
   return (
     <div>
       <Navbar activeRoute="/admin/adminhub" />
@@ -524,37 +525,60 @@ const AddTraining = () => {
 
         <>
           <div className="mx-auto max-w-6xl my-4 space-y-4">
-            {askIfWantToAddParticipants && (
+            {addTrainingInfo && (
               <>
                 <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
                   <div className="bg-white p-8 rounded-lg shadow-lg">
                     <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
-                      Training Added Successfully!
+                      Help
                     </h2>
-                    <h2 className="text-center text-lg font-semibold mb-4">
-                      Do you want to add people to the training in order to
-                      start it right now?
+                    <h2 className="text-left text-black text-lg font-semibold mb-4">
+                      Adding a Training:
                     </h2>
-                    <p className="mb-4">
-                      After submitting the training details, if you choose not
-                      to add participants, the page will reload to ensure all
-                      operations are reset.
+                    <p>
+                      - On this page, you can
+                      <strong> add a new training</strong>. It is essential to
+                      complete all fields (description not mandatory) related to
+                      the training.
                     </p>
-                    <div className="flex justify-center space-x-4">
+                    <p>
+                      - <strong> After all fields are filled in</strong>, you
+                      can press the
+                      <strong> Add Training</strong> button
+                      <strong> to save it</strong>.
+                    </p>
+
+                    <h2 className="text-left text-black text-lg font-semibold mb-4 pt-5">
+                      Adding People to the Training:
+                    </h2>
+                    <p>
+                      - <strong>In this section</strong>, you can specify
+                      <strong> which users are teachers</strong> and
+                      <strong> which ones can attend the training</strong>.
+                    </p>
+                    <p>
+                      - <strong>You can enroll users</strong> by selecting a
+                      <strong> Department, Group, or Team</strong>.
+                      <strong> You can choose all options</strong> that you
+                      want.
+                      <strong> All users</strong> that belong to the fields
+                      selected will be associated
+                      <strong> with the training</strong>.
+                    </p>
+                    <p>
+                      - <strong>It is also possible</strong> to
+                      <strong> enroll a user by inserting their email </strong>
+                      in the <strong> "Enroll"</strong> field.
+                    </p>
+
+                    <div className="flex justify-center space-x-4 pt-5">
                       <button
-                        className="bg-green-500 text-white font-bold px-4 py-2 rounded-md shadow-sm w-40 hover:bg-green-600"
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
                         onClick={() => {
-                          setShowTrainingOptions(true);
-                          setaskIfWantToAddParticipants(false);
+                          setaddTrainingInfo(false);
                         }}
                       >
-                        Add Participants
-                      </button>
-                      <button
-                        className="bg-red-500 text-white font-bold px-4 py-2 rounded-md shadow-sm w-40 hover:bg-red-600"
-                        onClick={handleDontWantToAddUsersToTraining}
-                      >
-                        No
+                        Ok
                       </button>
                     </div>
                   </div>
@@ -562,12 +586,200 @@ const AddTraining = () => {
               </>
             )}
 
-            {showTrainingOptions && (
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-20 gap-y-3">
+              {!trainingType && (
+                <>
+                  <div className="col-span-3">
+                    <p className="text-lg font-bold text-red-500">NOTE:</p>
+                    <p className="text-lg font-bold">
+                      Please insert the Training Type. Keep in mind that this
+                      option will be locked further on.
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {trainingType && (
+                <>
+                  <div className="col-span-2">
+                    <span className="font-semibold text-green-500 text-lg ml-2 ">
+                      Add Inside Training Data (Required)
+                    </span>
+                    <p className="w-full">
+                      *Please fill out all fields before proceeding.
+                    </p>
+                  </div>
+                  <div className="flex justify-end">
+                    <span className="font-semibold text-green-500 text-lg pr-2">
+                      Help
+                    </span>
+                    <FiHelpCircle
+                      onClick={handleAddTrainingInfo}
+                      style={{ cursor: "pointer" }}
+                    />
+                  </div>
+                </>
+              )}
+
+              <div>
+                <DropdownState
+                  label="Training Type"
+                  options={[
+                    { value: "internal", label: "Internal" },
+                    { value: "external", label: "External" },
+                  ]}
+                  message="Select One"
+                  returned={handleTrainingTypeSelect}
+                  disabled={trainingTypeSelected}
+                />
+              </div>
+
+              {trainingType && (
+                <>
+                  <div>
+                    <Dropdown
+                      label="Trainig Area"
+                      options={[
+                        { value: "p&c", label: "P&C" },
+                        { value: "itdevelopment", label: "IT Development" },
+                        { value: "sales", label: "Sales" },
+                        { value: "languages", label: "Languages" },
+                        { value: "product", label: "Product" },
+                        {
+                          value: "interpersonalskills",
+                          label: "Interpersonal Skills",
+                        },
+                        { value: "leadership", label: "Leadership" },
+                        { value: "h&s", label: "Health and Safety" },
+                        {
+                          value: "businesspracticess",
+                          label: "Business Practices",
+                        },
+                      ]}
+                      message="Select One"
+                      returned={setTrainingArea}
+                    />
+                  </div>
+
+                  <div>
+                    <Dropdown
+                      label="Event Type"
+                      options={[
+                        { value: "offline", label: "Offline" },
+                        { value: "onsite", label: "On Site" },
+                        { value: "virtual", label: "Virtual" },
+                        {
+                          value: "virtualonsite",
+                          label: "Virtual or Onsite",
+                        },
+                      ]}
+                      message="Select One"
+                      returned={setEventType}
+                    />
+                  </div>
+
+                  {/* <div>
+                    <MultiselectSearch
+                      label="Trainers"
+                      options={options}
+                      message="Select One / Multi"
+                      returned={setTrainers}
+                    />
+                  </div>
+ 
+                  <div>
+                    <MultiselectSearch
+                      label="Enrolment for Department"
+                      options={departmentOptions}
+                      message="Select One / Multi"
+                      returned={setDepartments}
+                    />
+                  </div>
+
+                  <div>
+                    <MultiselectSearch
+                      label="Enrolment for Groups"
+                      options={groupOptions}
+                      message="Select One / Multi"
+                      returned={setGroups}
+                    />
+                  </div>
+
+                  <div>
+                    <MultiselectSearch
+                      label="Enrolment for Teams"
+                      options={teamOptions}
+                      message="Select One / Multi"
+                      returned={setTeams}
+                    />
+                  </div> */}
+
+                  <div>
+                    <Counter label="Duration (Minutes)" returned={setNumMin} />
+                  </div>
+
+                  <div>
+                    <Counter
+                      label="Min Nº of Participants"
+                      returned={setMinParticipants}
+                    />
+                  </div>
+
+                  <div>
+                    <Counter
+                      label="Max Nº of Participants"
+                      returned={setMaxParticipants}
+                    />
+                  </div>
+
+                  {/* <div className="col-span-2 ">
+                    <TableTextInput label={"Enroll"} returned={setUserEmail} />
+                  </div> */}
+
+                  <div>
+                    <TextInput
+                      label={"Training Name"}
+                      returned={setTrainingName}
+                    />
+                  </div>
+
+                  <div className="col-span-2 ">
+                    <BigInput
+                      label={"Event | Training Description (Optional)"}
+                      returned={setDescription}
+                    />
+                  </div>
+
+                  {/* <div>
+                    <DatePicker
+                      label={"Training Start Date"}
+                      returned={setDate}
+                    />
+                  </div> */}
+                </>
+              )}
+            </div>
+            <div className="flex justify-center">
+              <Toaster richColors position="bottom-center" />
+              {trainingType && (
+                <>
+                  <button
+                    className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                    onClick={handleAddTraining}
+                  >
+                    Add Training
+                  </button>
+                </>
+              )}
+            </div>
+
+            {trainingType && (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-20 gap-y-3">
+                  <div className="col-span-4 pt-10"></div>
                   <div className="col-span-4">
                     <span className="font-semibold text-green-500 text-lg ml-2 ">
-                      Add Users to Inside Training
+                      Add Users and Trainers to Inside Training (Optional)
                     </span>
                     <p>*Please fill out all fields before proceeding.</p>
                   </div>
@@ -607,10 +819,10 @@ const AddTraining = () => {
                     />
                   </div>
 
-                  <div className="col-span-2 ">
+                  <div className="col-span-4 ">
                     <TableTextInput label={"Enroll"} returned={setUserEmail} />
                   </div>
-                  <div className="col-span-2 ">
+                  {/*  <div className="col-span-2 ">
                     <TextInput label={"Location"} returned={setLocation} />
                   </div>
                   <div>
@@ -624,7 +836,7 @@ const AddTraining = () => {
                       label={"Training Start Time"}
                       returned={setStartTime}
                     />
-                  </div>
+                  </div> */}
                 </div>
                 <div className="flex justify-center">
                   <Toaster richColors position="bottom-center" />
@@ -632,191 +844,8 @@ const AddTraining = () => {
                     className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
                     onClick={handleInitTraining}
                   >
-                    Initiate Training
+                    Associate Users
                   </button>
-                </div>
-              </>
-            )}
-
-            {!showTrainingOptions && (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-20 gap-y-3">
-                  {!trainingType && (
-                    <>
-                      <div className="col-span-3">
-                        <p className="text-lg font-bold text-red-500">NOTE:</p>
-                        <p className="text-lg font-bold">
-                          Please insert the Training Type. Keep in mind that
-                          this option will be locked further on.
-                        </p>
-                      </div>
-                    </>
-                  )}
-
-                  {trainingType && (
-                    <>
-                      <div className="col-span-3">
-                        <span className="font-semibold text-green-500 text-lg ml-2 ">
-                          Add Inside Training Data
-                        </span>
-                        <p>*Please fill out all fields before proceeding.</p>
-                      </div>
-                    </>
-                  )}
-
-                  <div>
-                    <DropdownState
-                      label="Training Type"
-                      options={[
-                        { value: "internal", label: "Internal" },
-                        { value: "external", label: "External" },
-                      ]}
-                      message="Select One"
-                      returned={handleTrainingTypeSelect}
-                      disabled={trainingTypeSelected}
-                    />
-                  </div>
-
-                  {trainingType && (
-                    <>
-                      <div>
-                        <Dropdown
-                          label="Trainig Area"
-                          options={[
-                            { value: "p&c", label: "P&C" },
-                            { value: "itdevelopment", label: "IT Development" },
-                            { value: "sales", label: "Sales" },
-                            { value: "languages", label: "Languages" },
-                            { value: "product", label: "Product" },
-                            {
-                              value: "interpersonalskills",
-                              label: "Interpersonal Skills",
-                            },
-                            { value: "leadership", label: "Leadership" },
-                            { value: "h&s", label: "Health and Safety" },
-                            {
-                              value: "businesspracticess",
-                              label: "Business Practices",
-                            },
-                          ]}
-                          message="Select One"
-                          returned={setTrainingArea}
-                        />
-                      </div>
-
-                      <div>
-                        <Dropdown
-                          label="Event Type"
-                          options={[
-                            { value: "offline", label: "Offline" },
-                            { value: "onsite", label: "On Site" },
-                            { value: "virtual", label: "Virtual" },
-                            {
-                              value: "virtualonsite",
-                              label: "Virtual or Onsite",
-                            },
-                          ]}
-                          message="Select One"
-                          returned={setEventType}
-                        />
-                      </div>
-
-                      {/* <div>
-                    <MultiselectSearch
-                      label="Trainers"
-                      options={options}
-                      message="Select One / Multi"
-                      returned={setTrainers}
-                    />
-                  </div>
- 
-                  <div>
-                    <MultiselectSearch
-                      label="Enrolment for Department"
-                      options={departmentOptions}
-                      message="Select One / Multi"
-                      returned={setDepartments}
-                    />
-                  </div>
-
-                  <div>
-                    <MultiselectSearch
-                      label="Enrolment for Groups"
-                      options={groupOptions}
-                      message="Select One / Multi"
-                      returned={setGroups}
-                    />
-                  </div>
-
-                  <div>
-                    <MultiselectSearch
-                      label="Enrolment for Teams"
-                      options={teamOptions}
-                      message="Select One / Multi"
-                      returned={setTeams}
-                    />
-                  </div> */}
-
-                      <div>
-                        <Counter
-                          label="Duration (Minutes)"
-                          returned={setNumMin}
-                        />
-                      </div>
-
-                      <div>
-                        <Counter
-                          label="Min Nº of Participants"
-                          returned={setMinParticipants}
-                        />
-                      </div>
-
-                      <div>
-                        <Counter
-                          label="Max Nº of Participants"
-                          returned={setMaxParticipants}
-                        />
-                      </div>
-
-                      {/* <div className="col-span-2 ">
-                    <TableTextInput label={"Enroll"} returned={setUserEmail} />
-                  </div> */}
-
-                      <div>
-                        <TextInput
-                          label={"Training Name"}
-                          returned={setTrainingName}
-                        />
-                      </div>
-
-                      <div className="col-span-2 ">
-                        <BigInput
-                          label={"Event | Training Description (Optional)"}
-                          returned={setDescription}
-                        />
-                      </div>
-
-                      {/* <div>
-                    <DatePicker
-                      label={"Training Start Date"}
-                      returned={setDate}
-                    />
-                  </div> */}
-                    </>
-                  )}
-                </div>
-                <div className="flex justify-center">
-                  <Toaster richColors position="bottom-center" />
-                  {trainingType && (
-                    <>
-                      <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                        onClick={handleAddTraining}
-                      >
-                        Add Training
-                      </button>
-                    </>
-                  )}
                 </div>
               </>
             )}
