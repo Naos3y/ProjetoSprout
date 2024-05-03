@@ -26,7 +26,7 @@ model user {
   ucity           String
   uleader         String?
   useniority      String
-  ufirsttime      Boolean @default(true)
+  ufirsttime      Boolean? @default(true)
 
 
   team          team?           @relation(fields: [teamtid], references: [tid])
@@ -77,7 +77,7 @@ model login {
 model regularuser {
   ruid    Int @id @default(autoincrement())
   useruid Int
-  nhoras  Int 
+  nhoras  Int?
 
   user                           user                             @relation(fields: [useruid], references: [uid])
   trainingplan                   trainingplan?                    @relation(fields: [trainingplanTrpid], references: [trpid])
@@ -183,6 +183,7 @@ model regularuserhasoutsidetrainings {
   outsidetrainingsitid Int
   rotstartdate         String?
   uhitpending         Boolean? @default(true)
+  rotflag             Boolean? @default(false)
 
   regularuser      regularuser      @relation(fields: [regularuserruid], references: [ruid])
   outsidetrainings outsidetrainings @relation(fields: [outsidetrainingsitid], references: [otid])
@@ -205,6 +206,7 @@ model regularuserhasinsidetrainings {
   insidetrainingsitid Int
   uhitmandatory       Boolean? @default(false)
   uhitpending         Boolean? @default(true)
+  ritflag             Boolean? @default(false)
 
   regularuser     regularuser     @relation(fields: [regularuserruid], references: [ruid])
   insidetrainings insidetrainings @relation(fields: [insidetrainingsitid], references: [itid])
