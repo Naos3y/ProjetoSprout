@@ -17,6 +17,7 @@ export async function POST(request) {
       selectedLeaderID,
       teamID,
       selectedGroupID,
+      groupAtual,
       selectedCountry,
       selectedCitys,
     } = body;
@@ -42,7 +43,20 @@ export async function POST(request) {
       },
     });
 
+    const updatedUserHasGroup = await prisma.userhasgroup.update({
+      where: {
+        useruid_groupgid: {
+          useruid: parseInt(id),
+          groupgid: parseInt(groupAtual),
+        },
+      },
+      data: {
+        groupgid: parseInt(selectedGroupID), // Novo groupgid que você deseja definir
+      },
+    });
+
     console.log("User updated:", updatedUser);
+    console.log("group user updated:", updatedUserHasGroup);
 
     return NextResponse.json({
       code: 200,

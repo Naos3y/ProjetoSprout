@@ -45,6 +45,11 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
           <Icon icon="clarity:employee-group-solid" width="17" height="17" />
         ),
       },
+      {
+        title: "Associate Inside Teacher",
+        path: "/Users/associateInsideTeacher",
+        icon: <Icon icon="la:chalkboard-teacher" width="17" height="17" />,
+      },
     ],
   },
   {

@@ -9,12 +9,14 @@ const getCountries = async () => {
 
 const getStates = async (country: string) => {
   const url = `/states/q?country=${country}`;
-  return await axios.get(url);
+  const states = await axios.get(url);
+  return states;
 };
 
 const getCities = async (country: string, state: string) => {
   const url = `/state/cities/q?country=${country}&state=${state}`;
-  return await axios.get(url);
+  const cities = await axios.get(url);
+  return cities;
 };
 
 export { getCountries, getStates, getCities };

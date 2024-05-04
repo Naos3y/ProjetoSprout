@@ -38,24 +38,6 @@ const Formulario = () => {
     { tid: number; tname: string }[]
   >([]);
 
-  const resetForm = () => {
-    setUserType("");
-    setAdminRights(0);
-    setEmployeeNumber("");
-    setRole("");
-    setCompleteName("");
-    setSeniority("");
-    setPhoto("");
-    setEmail("");
-    setStartDate("");
-    setSelectedReportTeamId("");
-    setSelectedTeamId(0);
-    setSelectedDepartmentId(0);
-    setSelectedGroupId(0);
-    setSelectedCountry("Select Country");
-    setSelectedState("Select State");
-  };
-
   //Dropdown das Teams
   const [isOpenTeam, setIsOpenTeam] = useState(false);
   const [selectedTeamID, setSelectedTeamId] = useState<number>();
@@ -298,12 +280,14 @@ const Formulario = () => {
         const data = await response.json();
         console.log("User registered successfully:", data);
         toast.success("User registered successfully.");
+
+        window.location.reload();
       } else {
         const errorData = await response.json();
         console.error("Failed to register user:", errorData);
         toast.error("Failed to register user: " + errorData.message);
       }
-      resetForm();
+
       fetchLeader();
       fetchReportTeam();
       fetchTeam();

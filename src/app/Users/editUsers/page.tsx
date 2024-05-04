@@ -29,19 +29,11 @@ const Formulario = () => {
   const [selectedAdminRights, setSelectedAdminRights] = useState("");
   const [selectedTeamName, setSelectedTeamName] = useState("");
   const [selectedTeamIDNaoTrocado, setSelectedTeamIDNaoTrocado] = useState(0);
-  const [originalTeamIDNaoTrocado, setOriginalTeamIDNaoTrocado] = useState(0);
+  const [selectedGroupNaoTrocado, setSelectedGroupNaoTrocado] = useState(0);
+
   const [selectedCountrys, setSelectedCountrys] = useState("");
   const [selectedCitys, setSelectedCitys] = useState("");
   const [reloadData, setReloadData] = useState(false);
-
-  useEffect(() => {
-    if (isModalOpen && selectedUser) {
-      setOriginalTeamIDNaoTrocado(selectedUser.team.tid);
-      if (!selectedTeamID) {
-        setSelectedTeamId(selectedUser.team.tid);
-      }
-    }
-  }, [isModalOpen, selectedUser]);
 
   useEffect(() => {
     fetchLeader();
@@ -110,6 +102,7 @@ const Formulario = () => {
       setRole(user.urole);
       setSelectedTeamIDNaoTrocado(user.team.tid);
       setSelectedTeamId(user.teamtid);
+      setSelectedGroupNaoTrocado(user.groupID);
 
       switch (user.uadminrights) {
         case 0:
@@ -325,6 +318,8 @@ const Formulario = () => {
     try {
       let countryToSend = selectedCountry;
       let teamID = Number(selectedTeamIDNaoTrocado);
+      let groupID = Number(0);
+      let groupAtual = Number(selectedGroupNaoTrocado);
 
       if (
         selectedTeamID !== undefined &&
@@ -332,6 +327,16 @@ const Formulario = () => {
         selectedTeamID !== selectedTeamIDNaoTrocado
       ) {
         teamID = selectedTeamID;
+      }
+
+      if (
+        selectedGroupID !== undefined &&
+        selectedGroupID !== 0 &&
+        selectedGroupID !== selectedGroupNaoTrocado
+      ) {
+        groupID = selectedGroupID;
+      } else {
+        groupID = selectedGroupNaoTrocado;
       }
 
       // Verificar se o país foi alterado
@@ -353,7 +358,8 @@ const Formulario = () => {
           completeName,
           selectedLeaderID,
           teamID,
-          selectedGroupID,
+          selectedGroupID: groupID,
+          groupAtual,
           selectedCountry: countryToSend,
           selectedCitys,
         }),
@@ -386,7 +392,7 @@ const Formulario = () => {
         </span>
       </div>
       <div className="flex justify-center mt-16">
-        <div className="w-full max-w-md mr-48">
+        <div className="w-full max-w-md mr-64">
           <div className="ml-10">
             <CompleteName
               label={"Search User Name"}
@@ -654,7 +660,10 @@ const Formulario = () => {
                     marginBottom: "100px",
                   }}
                   className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-500 hover:text-white active:bg-gray-500"
-                  onClick={() => toast.error("Registration Canceled!")}
+                  onClick={() => {
+                    toast.error("Update Canceled!");
+                    closeModal();
+                  }}
                 >
                   Cancel
                 </button>
@@ -663,7 +672,7 @@ const Formulario = () => {
                   className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
                   onClick={handleSubmit}
                 >
-                  Confirm Changes
+                  Confirm Update
                 </button>
               </div>
             </div>

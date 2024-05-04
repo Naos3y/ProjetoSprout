@@ -25,6 +25,7 @@ export async function GET(request) {
       let departmentName = "";
       let leaderName = "";
       let groupName = "";
+      let userGroupID = 0;
 
       if (user.uleader) {
         const leader = await prisma.user.findUnique({
@@ -61,6 +62,7 @@ export async function GET(request) {
           select: {
             group: {
               select: {
+                gid: true,
                 gname: true,
               },
             },
@@ -68,6 +70,7 @@ export async function GET(request) {
         });
 
         userGroupName = userhasgrp ? userhasgrp.group.gname : "";
+        userGroupID = userhasgrp ? userhasgrp.group.gid : 0;
       }
 
       return {
@@ -94,6 +97,7 @@ export async function GET(request) {
         },
         departmentName,
         groupName: userGroupName,
+        groupID: userGroupID,
       };
     });
 
