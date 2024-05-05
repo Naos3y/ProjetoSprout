@@ -31,18 +31,18 @@ const AddTraining = () => {
   const [location, setLocation] = useState(null);
 
   // para uso geral em componentes e afins
-  const [showStartButton, setShowStartButton] = useState(false);
   const [options, setOptions] = useState([]);
   const [trainingTypeSelected, setTrainingTypeSelected] = useState(false);
   const [departmentOptions, setDepartmentOptions] = useState([]);
   const [groupOptions, setGroupOtions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
-  const [showTrainingOptions, setShowTrainingOptions] = useState(false);
   const [addTrainingInfo, setaddTrainingInfo] = useState(false);
   const [showAddTrainingConfirmation, setShowAddTrainingConfirmation] =
     useState(false);
   const [confirmTrainingAdded, setConfirmTrainingAdded] = useState(false);
   const [usersAssociated, setUsersAssociated] = useState(false);
+  const [showAssociatedUsersConfirmation, setShowAssociatedUsersConfirmation] =
+    useState(false);
 
   // para adicionar pessoas ao treino
   const [department, setDepartments] = useState([]);
@@ -343,6 +343,27 @@ const AddTraining = () => {
     }
 
     return isEmpty;
+  };
+
+  const validateAssociatedUsers = () => {
+    if (trainers.length === 0) {
+      toast.error("Please add at least one teacher.");
+      return false;
+    }
+
+    if (
+      department.length > 0 ||
+      groups.length > 0 ||
+      teams.length > 0 ||
+      userEmail.length > 0
+    ) {
+      return true;
+    }
+
+    toast.error(
+      "You must add users to the training. Check the help button for more information."
+    );
+    return false;
   };
 
   const validateDescription = () => {
@@ -672,6 +693,19 @@ const AddTraining = () => {
     setUsersAssociated(true);
   };
 
+  const confirmTrainigData = () => {
+    const isEmpty = validateTrainingData();
+    if (!isEmpty) {
+      setShowAddTrainingConfirmation(true);
+    }
+  };
+
+  const confirmAssociatedUsers = () => {
+    if (validateAssociatedUsers()) {
+      setShowAssociatedUsersConfirmation(true);
+    }
+  };
+
   return (
     <div>
       <Navbar activeRoute="/admin/adminhub" />
@@ -731,6 +765,14 @@ const AddTraining = () => {
                       <strong> All users</strong> that belong to the fields
                       selected will be associated
                       <strong> with the training</strong>.
+                    </p>
+                    <p>
+                      - <strong>It is mandatory </strong> that you{" "}
+                      <strong>
+                        {" "}
+                        choose at least one teacher and one of the other fields
+                      </strong>{" "}
+                      .
                     </p>
                     <p>
                       - <strong>It is also possible</strong> to
@@ -801,6 +843,119 @@ const AddTraining = () => {
                         className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
                         onClick={() => {
                           setShowAddTrainingConfirmation(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {showAssociatedUsersConfirmation && (
+              <>
+                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                  <div className="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
+                      Associated Users
+                    </h2>
+                    <h2 className="text-left text-black text-lg font-semibold mb-4">
+                      Please review the associated users before adding this
+                      information to the database.
+                    </h2>
+
+                    {/* Tabela para os nomes dos treinadores */}
+                    {trainers.length > 0 && (
+                      <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                        <thead>
+                          <tr>
+                            <th className="border border-gray-200 p-2">
+                              Trainer Names
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {trainers.map((trainer) => (
+                            <tr key={trainer.id}>
+                              <td className="border border-gray-200 p-2">
+                                {trainer.label}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+
+                    {/* Tabela para os departamentos, grupos e times */}
+                    {(department.length > 0 ||
+                      groups.length > 0 ||
+                      teams.length > 0) && (
+                      <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                        <thead>
+                          <tr>
+                            <th className="border border-gray-200 p-2">
+                              Associated Departments
+                            </th>
+                            <th className="border border-gray-200 p-2">
+                              Associated Groups
+                            </th>
+                            <th className="border border-gray-200 p-2">
+                              Associated Teams
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {department.map((department, index) => (
+                            <tr key={index}>
+                              <td className="border border-gray-200 p-2">
+                                {department.label}
+                              </td>
+                              <td className="border border-gray-200 p-2">
+                                {groups[index]?.label}
+                              </td>
+                              <td className="border border-gray-200 p-2">
+                                {teams[index]?.label}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+
+                    {/* Tabela para os emails dos usuários inscritos */}
+                    {userEmail.length > 0 && (
+                      <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                        <thead>
+                          <tr>
+                            <th className="border border-gray-200 p-2">
+                              Enrolled Users
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {userEmail.map((email, index) => (
+                            <tr key={index}>
+                              <td className="border border-gray-200 p-2">
+                                {email}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+
+                    <div className="flex justify-center space-x-4 pt-5">
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={handleAssociateUsers}
+                      >
+                        It's Correct!
+                      </button>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
+                        onClick={() => {
+                          setShowAssociatedUsersConfirmation(false);
                         }}
                       >
                         Cancel
@@ -903,42 +1058,6 @@ const AddTraining = () => {
                     />
                   </div>
 
-                  {/* <div>
-                    <MultiselectSearch
-                      label="Trainers"
-                      options={options}
-                      message="Select One / Multi"
-                      returned={setTrainers}
-                    />
-                  </div>
- 
-                  <div>
-                    <MultiselectSearch
-                      label="Enrolment for Department"
-                      options={departmentOptions}
-                      message="Select One / Multi"
-                      returned={setDepartments}
-                    />
-                  </div>
-
-                  <div>
-                    <MultiselectSearch
-                      label="Enrolment for Groups"
-                      options={groupOptions}
-                      message="Select One / Multi"
-                      returned={setGroups}
-                    />
-                  </div>
-
-                  <div>
-                    <MultiselectSearch
-                      label="Enrolment for Teams"
-                      options={teamOptions}
-                      message="Select One / Multi"
-                      returned={setTeams}
-                    />
-                  </div> */}
-
                   <div>
                     <Counter label="Duration (Minutes)" returned={setNumMin} />
                   </div>
@@ -957,10 +1076,6 @@ const AddTraining = () => {
                     />
                   </div>
 
-                  {/* <div className="col-span-2 ">
-                    <TableTextInput label={"Enroll"} returned={setUserEmail} />
-                  </div> */}
-
                   <div>
                     <TextInput
                       label={"Training Name"}
@@ -974,13 +1089,6 @@ const AddTraining = () => {
                       returned={setDescription}
                     />
                   </div>
-
-                  {/* <div>
-                    <DatePicker
-                      label={"Training Start Date"}
-                      returned={setDate}
-                    />
-                  </div> */}
                 </>
               )}
             </div>
@@ -990,9 +1098,7 @@ const AddTraining = () => {
                 <>
                   <button
                     className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                    onClick={() => {
-                      setShowAddTrainingConfirmation(true);
-                    }}
+                    onClick={confirmTrainigData}
                   >
                     Add Training
                   </button>
@@ -1062,21 +1168,6 @@ const AddTraining = () => {
                   <div className="col-span-4 ">
                     <TableTextInput label={"Enroll"} returned={setUserEmail} />
                   </div>
-                  {/*  <div className="col-span-2 ">
-                    <TextInput label={"Location"} returned={setLocation} />
-                  </div>
-                  <div>
-                    <DatePicker
-                      label={"Training Start Date"}
-                      returned={setDate}
-                    />
-                  </div>
-                  <div>
-                    <TimePicker
-                      label={"Training Start Time"}
-                      returned={setStartTime}
-                    />
-                  </div> */}
                 </div>
                 <div className="flex justify-center">
                   <Toaster richColors position="bottom-center" />
@@ -1096,7 +1187,7 @@ const AddTraining = () => {
                     <>
                       <button
                         className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                        onClick={handleAssociateUsers}
+                        onClick={confirmAssociatedUsers}
                       >
                         Associate Users
                       </button>
