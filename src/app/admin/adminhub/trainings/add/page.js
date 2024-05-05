@@ -39,6 +39,10 @@ const AddTraining = () => {
   const [teamOptions, setTeamOptions] = useState([]);
   const [showTrainingOptions, setShowTrainingOptions] = useState(false);
   const [addTrainingInfo, setaddTrainingInfo] = useState(false);
+  const [showAddTrainingConfirmation, setShowAddTrainingConfirmation] =
+    useState(false);
+  const [confirmTrainingAdded, setConfirmTrainingAdded] = useState(false);
+  const [usersAssociated, setUsersAssociated] = useState(false);
 
   // para adicionar pessoas ao treino
   const [department, setDepartments] = useState([]);
@@ -100,9 +104,6 @@ const AddTraining = () => {
         ...(emptyDescription ? {} : { description: description.toString() }),
       };
 
-      console.log("data to send", dataToSend);
-      console.log("training type: ", trainingType);
-
       if (trainingType.value == "internal") {
         try {
           const response = await fetch("/api/adminTrainings/add", {
@@ -134,6 +135,8 @@ const AddTraining = () => {
         toast.error("treino externo por implementar");
       }
     }
+    setShowAddTrainingConfirmation(false);
+    setConfirmTrainingAdded(true);
   };
 
   const handleDontWantToAddUsersToTraining = () => {
@@ -515,6 +518,160 @@ const AddTraining = () => {
     setaddTrainingInfo(true);
   };
 
+  const handleAssociateUsers = async () => {
+    const userIDsArray = [];
+    const uniqueUserIDs = new Set();
+
+    if (
+      department.length === 0 &&
+      groups.length === 0 &&
+      teams.length === 0 &&
+      userEmail.length === 0
+    ) {
+      toast.error(
+        "Unable to initiate training. Please ensure participants are added to the training session."
+      );
+      return;
+    }
+
+    // adaptado do chatGPT
+    const extractUserIDs = async (responseData) => {
+      responseData.forEach((item) => {
+        const userID =
+          item.bruno_getusersbydepartmentid ||
+          item.bruno_getusersbyteamid ||
+          item.bruno_getusersbygroupid ||
+          item.bruno_getuseridwithemail;
+        if (userID) {
+          // Verifica se o ID de usuário não é nulo
+          uniqueUserIDs.add(userID);
+        }
+      });
+    };
+
+    try {
+      //https://www.w3schools.com/js/js_loop_forof.asp
+      for (const dept of department) {
+        const response = await fetch(
+          `/api/adminTrainings/getUsersByDepartmentID?id=${dept.value}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          await extractUserIDs(responseData.departments);
+        }
+      }
+
+      for (const team of teams) {
+        const response = await fetch(
+          `/api/adminTrainings/getUsersByTeamID?id=${team.value}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          await extractUserIDs(responseData.teams);
+        }
+      }
+
+      for (const group of groups) {
+        const response = await fetch(
+          `/api/adminTrainings/getUsersByGroupID?id=${group.value}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          await extractUserIDs(responseData.groups);
+        }
+      }
+
+      for (const email of userEmail) {
+        const response = await fetch(
+          `/api/adminTrainings/getUserIDWithEmail?email=${email}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          await extractUserIDs(responseData.emails);
+        }
+      }
+
+      userIDsArray.push(...uniqueUserIDs);
+
+      try {
+        const response = await fetch(
+          `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
+            userIDsArray
+          )}`
+        );
+        const responseData = await response.json();
+
+        if (response.ok) {
+          console.log("Entrou no if");
+          setFinalUserArray(responseData.userids);
+
+          try {
+            const trainerIds = trainers.map((trainer) => trainer.value);
+            const responseteacher = await fetch(
+              `/api/adminTrainings/getInsideTeacherByUserID?userids=${encodeURIComponent(
+                trainerIds
+              )}`
+            );
+            const responseDataTeacher = await responseteacher.json();
+
+            console.log(responseDataTeacher);
+            if (responseteacher.ok) {
+              console.log("teacher ids: ", responseDataTeacher.userids);
+              try {
+                const trainingResponse = await fetch(
+                  `/api/adminTrainings/associateUsersToTraining`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      trainingID: idTraining,
+                      userIDs: responseData.userids,
+                      teacherIDs: responseDataTeacher.userids,
+                    }),
+                  }
+                );
+
+                const trainingData = await trainingResponse.json();
+                console.log("trainingData: ", trainingData);
+
+                if (trainingResponse.ok) {
+                  toast.success(trainingData.message);
+                } else {
+                  toast.error(trainingData.message);
+                }
+              } catch (error) {
+                console.error("Error inserting training data:", error);
+                toast.error("An error occurred while inserting training data.");
+              }
+            } else {
+              toast.error(responseDataTeacher.message);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          console.log("Entrou no else");
+          toast.error(responseData.message);
+        }
+      } catch (error) {
+        toast.error("An error occurred while converting userIDs.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        "An error occurred while associating users to the training. Please try again later."
+      );
+    }
+
+    setUsersAssociated(true);
+  };
+
   return (
     <div>
       <Navbar activeRoute="/admin/adminhub" />
@@ -546,6 +703,16 @@ const AddTraining = () => {
                       can press the
                       <strong> Add Training</strong> button
                       <strong> to save it</strong>.
+                    </p>
+                    <p>
+                      <strong>
+                        - After adding a training, you can only edit it on the
+                        Edit Page.
+                      </strong>
+                    </p>
+                    <p>
+                      - Afer adding a training a new button will show up at the
+                      top right corner. You can press it to add a new training{" "}
                     </p>
 
                     <h2 className="text-left text-black text-lg font-semibold mb-4 pt-5">
@@ -579,6 +746,64 @@ const AddTraining = () => {
                         }}
                       >
                         Ok
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {showAddTrainingConfirmation && (
+              <>
+                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                  <div className="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
+                      Add Training
+                    </h2>
+                    <h2 className="text-left text-black text-lg font-semibold mb-4">
+                      Please review the details of the training before adding
+                      it:
+                    </h2>
+                    <p>
+                      <strong>Training Name: </strong> {trainingName.toString()}
+                    </p>
+                    <p className="pt-2">
+                      <strong>Number of Minutes: </strong> {numMin.toString()}
+                    </p>
+                    <p className="pt-2">
+                      <strong>Event Type: </strong> {eventType.value.toString()}
+                    </p>
+                    <p className="pt-2">
+                      <strong>Minimum Participants: </strong>{" "}
+                      {minParticipants.toString()}
+                    </p>
+                    <p className="pt-2">
+                      <strong>Maximum Participants: </strong>{" "}
+                      {maxParticipants.toString()}
+                    </p>
+                    <p className="pt-2">
+                      <strong>Training Area: </strong>{" "}
+                      {trainingArea.value.toString()}
+                    </p>
+                    {description && (
+                      <p className="pt-2">
+                        <strong>Description: </strong> {description.toString()}
+                      </p>
+                    )}
+                    <div className="flex justify-center space-x-4 pt-5">
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={handleAddTraining}
+                      >
+                        It's Correct!
+                      </button>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
+                        onClick={() => {
+                          setShowAddTrainingConfirmation(false);
+                        }}
+                      >
+                        Cancel
                       </button>
                     </div>
                   </div>
@@ -761,11 +986,26 @@ const AddTraining = () => {
             </div>
             <div className="flex justify-center">
               <Toaster richColors position="bottom-center" />
-              {trainingType && (
+              {trainingType && !confirmTrainingAdded && (
                 <>
                   <button
                     className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                    onClick={handleAddTraining}
+                    onClick={() => {
+                      setShowAddTrainingConfirmation(true);
+                    }}
+                  >
+                    Add Training
+                  </button>
+                </>
+              )}
+
+              {confirmTrainingAdded && (
+                <>
+                  <button
+                    className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                    onClick={() => {
+                      toast.info("Training Already Added");
+                    }}
                   >
                     Add Training
                   </button>
@@ -840,12 +1080,28 @@ const AddTraining = () => {
                 </div>
                 <div className="flex justify-center">
                   <Toaster richColors position="bottom-center" />
-                  <button
-                    className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                    onClick={handleInitTraining}
-                  >
-                    Associate Users
-                  </button>
+                  {usersAssociated && (
+                    <>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={() => {
+                          toast.info("Users already Associated");
+                        }}
+                      >
+                        Associate Users
+                      </button>
+                    </>
+                  )}
+                  {!usersAssociated && (
+                    <>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={handleAssociateUsers}
+                      >
+                        Associate Users
+                      </button>
+                    </>
+                  )}
                 </div>
               </>
             )}
