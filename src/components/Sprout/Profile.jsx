@@ -164,7 +164,7 @@ export default function ProfileLayout() {
                 <div className="h-40 w-40 bg-gray-200 rounded-md flex justify-center items-center">
                   <img
                     className="h-full w-full object-cover rounded-md"
-                    src={user.photo}
+                    // src={user.photo}
                     alt="User Photo"
                   />
                 </div>

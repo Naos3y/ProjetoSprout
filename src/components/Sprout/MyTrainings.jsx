@@ -102,17 +102,36 @@ export default function MyTrainings() {
   useEffect(() => {
     const updateData = async () => {
       try {
-        const atrainings = await tryGetTrainingsData();
-        atrainings.message.forEach((training) => {
-          training.who = "inside";
-        });
-        const otrainings = await tryGetOutsideTrainingsData();
-        otrainings.message.forEach((training) => {
-          training.who = "outside";
-        });
-        const trainings = atrainings.message.concat(otrainings.message);
-        setFormacoes(trainings);
+        let atrainings = [];
+        let otrainings = [];
+        let trainings = [];
+        try {
+          atrainings = await tryGetTrainingsData();
+          atrainings.message.forEach((training) => {
+            training.who = "inside";
+          });
+        } catch (error) {}
+        try {
+          otrainings = await tryGetOutsideTrainingsData();
+          otrainings.message.forEach((training) => {
+            training.who = "outside";
+          });
+        } catch (error) {}
+        console.log(atrainings);
+        try {
+          if (atrainings.message.length > 0 && otrainings.message.length > 0)
+            trainings = atrainings.message.concat(otrainings.message);
+          else if (
+            atrainings.message.length > 0 &&
+            otrainings.message.length <= 0
+          )
+            trainings = atrainings.message.concat(otrainings.message);
+          else trainings = atrainings.message.concat(otrainings.message);
+          console.log(trainings);
+          setFormacoes(trainings);
+        } catch (error) {}
       } catch (error) {
+        console.log(error);
         toast.error("Something went wrong!");
       }
     };
@@ -159,16 +178,19 @@ export default function MyTrainings() {
   ];
 
   const filteredFormacoes = formacoes.filter((formacao) => {
-    const nomeLowerCase = formacao.treino.toLowerCase();
-    const tipoLowerCase = formacao.local.toLowerCase();
+    try {
+      const nomeLowerCase = formacao.treino.toLowerCase();
+      const tipoLowerCase = formacao.local.toLowerCase();
 
-    const filterLowerCase = filter.toLowerCase();
-    const typeLowerCase = typeof type === "string" ? type.toLowerCase() : "";
-
-    return (
-      nomeLowerCase.includes(filterLowerCase) &&
-      tipoLowerCase.includes(typeLowerCase)
-    );
+      const filterLowerCase = filter.toLowerCase();
+      const typeLowerCase = typeof type === "string" ? type.toLowerCase() : "";
+      return (
+        nomeLowerCase.includes(filterLowerCase) &&
+        tipoLowerCase.includes(typeLowerCase)
+      );
+    } catch (error) {
+      return formacoes;
+    }
   });
 
   const closeHelp = () => {
@@ -226,11 +248,11 @@ export default function MyTrainings() {
                     )
                   ) : training.start == true ? (
                     <div className="w-4 h-auto">
-                      <div className="bg-black block object-cover rounded-tl rounded-bl h-full w-full" />
+                      <div className="bg-green-200 block object-cover rounded-tl rounded-bl h-full w-full" />
                     </div>
                   ) : (
                     <div className="w-4 h-auto">
-                      <div className="bg-green-200 block object-cover rounded-tl rounded-bl h-full w-full" />
+                      <div className="bg-black block object-cover rounded-tl rounded-bl h-full w-full" />
                     </div>
                   )}
 
@@ -260,7 +282,9 @@ export default function MyTrainings() {
                         <label className="font-bold text-gray-800">
                           Location:{" "}
                         </label>
-                        <span className="text-gray-600">{training.local}</span>
+                        <span className="text-gray-600">
+                          {training.local} {training.sala}
+                        </span>
                       </div>
                       {expandedTrainings.includes(index) && (
                         <div className="text-l text-gray-600 font-bold text-left">

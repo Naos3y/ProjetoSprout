@@ -126,11 +126,11 @@ BEGIN
     SELECT lemail AS email, uname AS name, ucity AS city, ucountry AS country, urole AS role,
            utype AS type, uemployeenumber AS number, uphoto AS photo,
            ustartdate AS start, useniority AS seniority,  nhoras as hours
-    FROM public."user", login l, regularuser r
+    FROM public."user" u, login l, regularuser r
 --     JOIN login l ON uid = useruid
-	where userruid = uid
-	AND useruid = uid
-    AND uid = user_idu;
+	where l.useruid = uid
+	AND r.useruid = uid
+    AND uid = user_id;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -225,12 +225,14 @@ RETURNS TABLE (
     inicio TEXT,
     duracao TEXT,
     local TEXT,
+	sala TEXT
     min TEXT,
     max TEXT,
     descricao TEXT,
     area TEXT,
     start BOOLEAN,
-	hinicio TEXT
+	hinicio TEXT,
+
 
 ) AS $$
 BEGIN
@@ -241,14 +243,51 @@ SELECT
     itstartdate AS inicio,
     itnumofmin AS duracao,
     iteventtype AS local,
+	itlocation AS sala,
     itminparticipants AS min,
     itmaxparticipants AS max,
     itdescription AS descricao,
     ittrainingarea AS area,
+	itstarted AS start,
 	itstarttime AS inicio
 FROM
     insidetrainings; 
 
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_all_outside_trainings_data()
+RETURNS TABLE (
+	id INT,
+    treino TEXT,
+    inicio TEXT,
+    duracao TEXT,
+    local TEXT,
+	sala TEXT,
+    min TEXT,
+    max TEXT,
+    descricao TEXT,
+    start BOOLEAN,
+	hinicio TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+     SELECT 
+	 	otid as id,
+	 	otname AS treino,
+		otstartdate AS inicio,
+        otnumofmin AS duracao,
+        oteventtype AS local,
+		otlocation AS sala,
+        otminparticipants AS min,
+        otmaxparticipants AS max,
+		otdescription AS descricao,
+        otstarted AS start,
+		otstarttime AS inicio
+
+    from
+        outsidetrainings;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -258,27 +297,27 @@ RETURNS TABLE (
     treino TEXT,
     inicio TEXT,
     duracao TEXT,
+    local TEXT,
+	sala TEXT,
     min TEXT,
     max TEXT,
-	descricao TEXT,
-    area TEXT,
+    descricao TEXT,
     start BOOLEAN,
-    pending BOOLEAN,
 	hinicio TEXT
 ) AS $$
 BEGIN
     RETURN QUERY
-     SELECT 
+SELECT 
 	 	otid AS id,
 	 	otname AS treino,
         otnumofmin AS inicio,
         oteventtype AS duracao,
+        oteventtype AS local,
+		otlocation AS sala,
         otminparticipants AS min,
         otmaxparticipants AS max,
 		otdescription AS descricao,
-        otrainingarea AS area,
         otstarted AS start,
-        ohitpending AS pending,
 		otstarttime AS inicio
     FROM
        public.regularuserhasoutsidetrainings t
@@ -289,39 +328,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION get_all_outside_trainings_data()
-RETURNS TABLE (
-	id INT,
-    treino TEXT,
-    inicio TEXT,
-    duracao TEXT,
-    min TEXT,
-    max TEXT,
-	descricao TEXT,
-    area TEXT,
-    start BOOLEAN,
-    pending BOOLEAN,
-	hinicio TEXT
-) AS $$
-BEGIN
-    RETURN QUERY
-     SELECT 
-	 	otid as id,
-	 	otname AS treino,
-        otnumofmin AS inicio,
-        oteventtype AS duracao,
-        otminparticipants AS local,
-        otmaxparticipants AS max,
-		otdescription AS descricao,
-        ottrainingarea AS area,
-        otstarted AS start,
-        ohitpending AS pending,
-		otstarttime AS inicio
 
-    from
-        outsidetrainings;
-END;
-$$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION get_user_inside_training_id(Ruid INT)

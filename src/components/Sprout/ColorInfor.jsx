@@ -25,13 +25,13 @@ export default function ColorHelp({ onClose }) {
         <label className="text-black text-center font-bold  mt-1">
           Black Banner
         </label>
-        <p>Training already completed</p>
+        <p>Training has not started yet</p>
       </div>
       <div className="p-2">
         <label className="text-green-400 text-center font-bold  mt-1">
           Light Gree Banner
         </label>
-        <p>Incoming Training</p>
+        <p>Training has started</p>
       </div>
       <div className="p-2 border-gray-300 border mb-1 rounded-sm">
         <label className="text-gray-500 text-center font-bold  mt-1">

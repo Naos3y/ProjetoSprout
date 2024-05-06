@@ -68,8 +68,8 @@ export async function Login(credentials) {
         const name = essentials.message[0].name;
         const permission = parseInt(essentials.message[0].permission);
         const team = parseInt(essentials.message[0].teamid);
-        const first = parseInt(essentials.message[0].firsttime);
-
+        const first = essentials.message[0].firsttime;
+        console.log(first);
         const user = {
           email: email,
           id: id,

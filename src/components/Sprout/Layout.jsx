@@ -171,6 +171,7 @@ export default function IncomingLayout() {
         atrainings.message.forEach((training) => {
           training.who = "inside";
         });
+
         const otrainings = await tryGetOutsideTrainingsData();
         otrainings.message.forEach((training) => {
           training.who = "outside";
@@ -194,7 +195,7 @@ export default function IncomingLayout() {
         // const trainings = atrainings.message.concat(otrainings.message);
         setFormacoes(trainings);
       } catch (error) {
-        toast.error("Something went wrong!");
+        toast.error("There's no trainings here ...");
       }
     };
     updateData();
@@ -279,11 +280,7 @@ export default function IncomingLayout() {
         >
           <GrClearOption />
         </button>
-        {/* <Dropdown
-          options={optionsProf}
-          message="Instructor"
-          returned={handleProf}
-        /> */}
+
         <Dropdown options={optionsType} message="Type" returned={handleType} />
       </div>
       <div className="h-screen">

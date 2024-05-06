@@ -5,12 +5,14 @@ import Navbar from "@/components/Navbar";
 import SessionExpired from "@/components/Session/SessionExpired";
 import ProfileLayout from "@/components/Sprout/Profile";
 import Footer from "@/components/Footer";
-import "@fontsource/proza-libre"; // Defaults to weight 400
+import "@fontsource/proza-libre";
+import cookies from "js-cookie";
+import { decrypt } from "@/session/crypt";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);
   const [showExpired, setShowExpired] = useState(false);
-
+  const [perm, setPerm] = useState();
   //control
   // -1 Verificar a sessão
   //  0 Acesso negado
@@ -19,14 +21,19 @@ export default function Sprout() {
   useEffect(() => {
     let flag = true;
     let sessionStatus;
+
     const getSession = async () => {
+      const sessionCookie = cookies.get("session");
+      const decryptedSession = await decrypt(sessionCookie);
+      const tPerm = decryptedSession.user.permission;
+      setPerm(tPerm);
       if (!flag) {
         const expired = await sessionExpired();
         if (sessionStatus === 1 && expired === 1 && !showExpired) {
           setShowExpired(true);
         }
       } else if (flag) {
-        sessionStatus = await validSession(4);
+        sessionStatus = await validSession(0, 3, 4);
         setControl(sessionStatus);
         flag = !flag;
       }
@@ -57,7 +64,7 @@ export default function Sprout() {
       ) : control === 1 ? (
         <div>
           <nav>
-            <Navbar activeRoute="/profile" />
+            <Navbar activeRoute="/profile" privilege={perm} />
           </nav>
           <div className="justify-center items-center mr-5 ml-5">
             <ProfileLayout />

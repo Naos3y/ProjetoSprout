@@ -33,19 +33,20 @@ export default function EditPassword() {
   };
   async function saveProfile() {
     try {
-      console.log(email.length);
-      if (email.length > 0 && currentPassword > 0 && newPassword > 0) {
-        const validAttempt = await validation(email, currentPassword);
+      if (currentPassword > 0 && newPassword > 0) {
+        const validAttempt = await validation(currentPassword);
         if (validAttempt.code == 200) {
           const response = await changePassword(newPassword);
+          console.log(response);
           toast.success("Success.");
         } else {
-          toast.success("Invalid Credentials!");
+          toast.error("Invalid Credentials!");
         }
       } else {
-        toast.erro("Invalid Credentials");
+        toast.error("Invalid Credentials");
       }
     } catch (error) {
+      console.log(error);
       toast.error("Something went wrong!");
     }
   }
@@ -54,7 +55,7 @@ export default function EditPassword() {
     try {
       const token = cookies.get("session");
       const decryptedSession = await decrypt(token);
-      const email = decryptedSession.user[0].email;
+      const email = decryptedSession.user.email;
       const response = await fetch("http://localhost:3000/api/login", {
         method: "POST",
         headers: {
@@ -116,6 +117,7 @@ export default function EditPassword() {
         <div className="text-left ml-2 mr-2 mb-2 border p-5 m-2 rounded ">
           <div className="max-w-96">
             <TextInput
+              id={"old"}
               type="password"
               label="Current Password"
               returned={handleOldPassword}
@@ -123,6 +125,7 @@ export default function EditPassword() {
           </div>
           <div className="max-w-96">
             <TextInput
+              id={"new"}
               type="password"
               label="New Password"
               returned={handleNewPassword}
