@@ -764,7 +764,15 @@ const AddTraining = () => {
                     <h2 className="text-left text-black text-lg font-semibold mb-4 pt-5">
                       Enrolment Open For:
                     </h2>
+                    <p className="text-lg font-bold text-red-500">NOTE:</p>
                     <p>
+                      ** If you want to{" "}
+                      <strong> directly associate users to the training</strong>{" "}
+                      , you must do so in the <strong> start training</strong>{" "}
+                      page.
+                    </p>
+
+                    <p className="pt-3">
                       - <strong>In this section</strong>, you can specify
                       <strong> which users are teachers</strong> and
                       <strong> which ones can attend the training</strong>.
