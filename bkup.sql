@@ -451,6 +451,42 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE FUNCTION add_to_training(tid INT,uid INT)
+RETURNS BOOLEAN AS $$
+DECLARE
+    success BOOLEAN := false;
+BEGIN 
+	BEGIN
+	Insert into regularuserhasinsidetrainings(regularuserruid,insidetrainingsitid,uhitpending)
+	values(uid,tid,false);
+	        success := true;
+    EXCEPTION
+        WHEN OTHERS THEN
+            success := false;
+    END;
+    
+    RETURN success;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION add_to_outside_training(tid INT,uid INT)
+RETURNS BOOLEAN AS $$
+DECLARE
+    success BOOLEAN := false;
+BEGIN 
+	BEGIN
+	Insert into regularuserhasoutsidetrainings(regularuserruid,outsidetrainingsitid,uhitpending)
+	values(uid,tid,false);
+	        success := true;
+    EXCEPTION
+        WHEN OTHERS THEN
+            success := false;
+    END;
+    
+    RETURN success;
+END;
+$$ LANGUAGE plpgsql;
+
 -- TESTES
 
 select * from get_user_info(1)

@@ -14,6 +14,7 @@ export default function TeamLayout(condition) {
   const [userFilter, setUserFilter] = useState("");
   const [currUser, setCurrUser] = useState(0);
   const [ModalState, setModalState] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   async function tryGetTeam() {
     try {
@@ -64,7 +65,9 @@ export default function TeamLayout(condition) {
 
   const toggleModal = (e) => {
     setCurrUser(e.uid);
+    console.log(e.uid);
     setModalState(!ModalState);
+    setModalOpen(!modalOpen);
   };
 
   const doNothing = () => {};
@@ -112,7 +115,13 @@ export default function TeamLayout(condition) {
                     className="border border-gray-200 rounded"
                     key={index}
                     name={"user" + index}
-                    onClick={condition.condition ? toggleModal : doNothing}
+                    onClick={() => {
+                      if (condition.condition) {
+                        toggleModal(user);
+                      } else {
+                        doNothing();
+                      }
+                    }}
                   >
                     <div id={index} key={index} className="flex">
                       <div className="w-4 h-auto">
@@ -174,11 +183,13 @@ export default function TeamLayout(condition) {
           ) : (
             <div> </div>
           )}
-          <TrainingModal
-            isOpen={ModalState}
-            onRequestClose={toggleModal}
-            userid={currUser}
-          />
+          {modalOpen && (
+            <TrainingModal
+              isOpen={ModalState}
+              onRequestClose={toggleModal}
+              userid={currUser}
+            />
+          )}
         </div>
       </div>
     </div>

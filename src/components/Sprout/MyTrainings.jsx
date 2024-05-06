@@ -127,7 +127,6 @@ export default function MyTrainings() {
           )
             trainings = atrainings.message.concat(otrainings.message);
           else trainings = atrainings.message.concat(otrainings.message);
-          console.log(trainings);
           setFormacoes(trainings);
         } catch (error) {}
       } catch (error) {

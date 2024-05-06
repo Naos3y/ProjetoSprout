@@ -12,6 +12,7 @@ const TrainingModal = ({ isOpen, onRequestClose, userid }) => {
   const [expandedTrainings, setExpandedTrainings] = useState([]);
   const [prof, setProf] = useState("");
   const [type, setType] = useState("");
+  const [stop, setStop] = useState(false);
 
   async function tryGetTrainingsData() {
     try {
@@ -118,48 +119,49 @@ const TrainingModal = ({ isOpen, onRequestClose, userid }) => {
     }
   }
 
-  useEffect(() => {
-    const updateData = async () => {
-      try {
-        const atrainings = await tryGetTrainingsData();
-        atrainings.message.forEach((training) => {
-          training.who = "inside";
-        });
-        const otrainings = await tryGetOutsideTrainingsData();
-        otrainings.message.forEach((training) => {
-          training.who = "outside";
-        });
+  async function tryAddToTraining(tid, type, index) {
+    try {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      let url;
+      if (type == "inside")
+        url = new URL("http://localhost:3000/api/manager/addtotraining");
+      else
+        url = new URL("http://localhost:3000/api/manager/addtooutsidetraining");
 
-        const oid = await tryGetOutsideTId();
-        const intOid = oid.message.map((object) => object.id);
+      url.searchParams.append("uid", userid);
+      url.searchParams.append("tid", tid);
 
-        const otrainingsFilter = otrainings.message.filter(
-          (objeto) => !intOid.message.includes(objeto.id)
-        );
+      const response = await fetch(url.toString(), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        const aid = await tryGetInsideTId();
-        const intAid = aid.message.map((object) => object.id);
-
-        const atrainingsFilter = atrainings.message.filter(
-          (objeto) => !intAid.includes(objeto.id)
-        );
-
-        const trainings = atrainingsFilter.concat(otrainingsFilter);
-        // const trainings = atrainings.message.concat(otrainings.message);
-        setFormacoes(trainings);
-      } catch (error) {
-        toast.error("There's no trainings here ...");
+      if (!response.ok) {
+        toast.error("Something went wrong!");
+        throw new Error("Something went wrong");
       }
-    };
-    updateData();
-  }, []);
+
+      const newFormacoes = formacoes.filter(
+        (objeto) => !(objeto.id == tid && objeto.who == type)
+      );
+      handleExpand(index);
+      setFormacoes(newFormacoes);
+      toast.success("Success!");
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      toast.error("Something went wrong!");
+      throw error;
+    }
+  }
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
-  };
-
-  const handleProf = (e) => {
-    setProf(e.value);
   };
 
   const handleType = (e) => {
@@ -204,7 +206,7 @@ const TrainingModal = ({ isOpen, onRequestClose, userid }) => {
   });
 
   useEffect(() => {
-    const updateData = async () => {
+    const updateDataModel = async () => {
       try {
         let atrainings = [];
         let otrainings = [];
@@ -214,12 +216,11 @@ const TrainingModal = ({ isOpen, onRequestClose, userid }) => {
         let intAid = [];
         let otrainingsFilter = [];
         let atrainingsFilter = [];
+
         atrainings = await tryGetTrainingsData();
-        console.log(atrainings);
         atrainings.message.forEach((training) => {
           training.who = "inside";
         });
-
         otrainings = await tryGetOutsideTrainingsData();
         otrainings.message.forEach((training) => {
           training.who = "outside";
@@ -238,15 +239,17 @@ const TrainingModal = ({ isOpen, onRequestClose, userid }) => {
         atrainingsFilter = atrainings.message.filter(
           (objeto) => !intAid.includes(objeto.id)
         );
+
         const trainings = atrainingsFilter.concat(otrainingsFilter);
         setFormacoes(trainings);
+        setStop(true);
       } catch (error) {
         console.log(error);
-        // toast.error("There's no trainings here ...");
       }
     };
-    updateData();
-  });
+
+    updateDataModel();
+  }, [stop]);
 
   return (
     <Modal

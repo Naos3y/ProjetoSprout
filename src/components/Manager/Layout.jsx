@@ -198,8 +198,6 @@ function Layout(condition) {
     }
   }
 
-  // TODO #############################################################################################################################
-
   async function tryAcceptTraining(index, type, arrIndex) {
     try {
       const token = cookies.get("session");
