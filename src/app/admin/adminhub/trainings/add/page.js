@@ -762,7 +762,7 @@ const AddTraining = () => {
                     </p>
 
                     <h2 className="text-left text-black text-lg font-semibold mb-4 pt-5">
-                      Adding People to the Training:
+                      Enrolment Open For:
                     </h2>
                     <p>
                       - <strong>In this section</strong>, you can specify
@@ -770,26 +770,29 @@ const AddTraining = () => {
                       <strong> which ones can attend the training</strong>.
                     </p>
                     <p>
-                      - <strong>You can enroll users</strong> by selecting a
+                      - <strong>You can select which users</strong> can apply to
+                      a training by selecting a
                       <strong> Department, Group, or Team</strong>.
                       <strong> You can choose all options</strong> that you
                       want.
                       <strong> All users</strong> that belong to the fields
-                      selected will be associated
-                      <strong> with the training</strong>.
+                      selected can request to participate in the training.
                     </p>
                     <p>
-                      - <strong>It is mandatory </strong> that you{" "}
+                      - <strong>It is mandatory</strong> that you
                       <strong>
                         {" "}
                         choose at least one teacher and one of the other fields
-                      </strong>{" "}
+                      </strong>
                       .
                     </p>
                     <p>
                       - <strong>It is also possible</strong> to
-                      <strong> enroll a user by inserting their email </strong>
-                      in the <strong> "Enroll"</strong> field.
+                      <strong>
+                        {" "}
+                        search for a user by inserting their email
+                      </strong>
+                      in the <strong>"Enroll"</strong> field.
                     </p>
 
                     <div className="flex justify-center space-x-4 pt-5">
@@ -1189,9 +1192,8 @@ const AddTraining = () => {
                   <div className="col-span-4 pt-10"></div>
                   <div className="col-span-4">
                     <span className="font-semibold text-green-500 text-lg ml-2 ">
-                      Add Users and Trainers to Inside Training (Optional)
+                      Enrolment Open For (Optional)
                     </span>
-                    <p>*Please fill out all fields before proceeding.</p>
                   </div>
                   <div>
                     <MultiselectSearch
