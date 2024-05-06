@@ -16,6 +16,7 @@ import MultiselectSearch from "@/components/MultiselectSearch";
 import AddedUsersToTraining from "@/components/AddedUsersToTraining";
 import TimePicker from "@/components/TimePicker";
 import { FiHelpCircle } from "react-icons/fi";
+import { FiPlusCircle } from "react-icons/fi";
 
 const AddTraining = () => {
   // variaveis para o treino
@@ -43,6 +44,8 @@ const AddTraining = () => {
   const [usersAssociated, setUsersAssociated] = useState(false);
   const [showAssociatedUsersConfirmation, setShowAssociatedUsersConfirmation] =
     useState(false);
+  const [addNewTraining, setAddNewTraining] = useState(false);
+  const [showRefreshConfirmation, setShowConfirmFefreshPage] = useState(false);
 
   // para adicionar pessoas ao treino
   const [department, setDepartments] = useState([]);
@@ -137,6 +140,7 @@ const AddTraining = () => {
     }
     setShowAddTrainingConfirmation(false);
     setConfirmTrainingAdded(true);
+    setAddNewTraining(true);
   };
 
   const handleDontWantToAddUsersToTraining = () => {
@@ -341,7 +345,6 @@ const AddTraining = () => {
       isEmpty = true;
       toast.error("Please enter a training name.");
     }
-
     return isEmpty;
   };
 
@@ -691,6 +694,7 @@ const AddTraining = () => {
     }
 
     setUsersAssociated(true);
+    setShowAssociatedUsersConfirmation(false);
   };
 
   const confirmTrainigData = () => {
@@ -701,9 +705,17 @@ const AddTraining = () => {
   };
 
   const confirmAssociatedUsers = () => {
-    if (validateAssociatedUsers()) {
+    if (idTraining == 0) {
+      toast.error("Please add a training first.");
+    } else if (validateAssociatedUsers()) {
       setShowAssociatedUsersConfirmation(true);
+    } else {
+      return;
     }
+  };
+
+  const refreshPage = () => {
+    window.location.reload();
   };
 
   return (
@@ -853,6 +865,38 @@ const AddTraining = () => {
               </>
             )}
 
+            {showRefreshConfirmation && (
+              <>
+                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                  <div className="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
+                      Add New Training
+                    </h2>
+                    <h2 className="text-center text-black text-lg font-semibold mb-4">
+                      Are you sure that you want to add a new training? The page
+                      will refresh after confirming.
+                    </h2>
+                    <div className="flex justify-center space-x-4 pt-5">
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={refreshPage}
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
+                        onClick={() => {
+                          setShowConfirmFefreshPage(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
             {showAssociatedUsersConfirmation && (
               <>
                 <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
@@ -865,7 +909,7 @@ const AddTraining = () => {
                       information to the database.
                     </h2>
 
-                    {/* Tabela para os nomes dos treinadores */}
+                    {/* Tabela adaptada do gpt */}
                     {trainers.length > 0 && (
                       <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
                         <thead>
@@ -887,7 +931,6 @@ const AddTraining = () => {
                       </table>
                     )}
 
-                    {/* Tabela para os departamentos, grupos e times */}
                     {(department.length > 0 ||
                       groups.length > 0 ||
                       teams.length > 0) && (
@@ -906,10 +949,18 @@ const AddTraining = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {department.map((department, index) => (
+                          {[
+                            ...Array(
+                              Math.max(
+                                department.length,
+                                groups.length,
+                                teams.length
+                              )
+                            ).keys(),
+                          ].map((index) => (
                             <tr key={index}>
                               <td className="border border-gray-200 p-2">
-                                {department.label}
+                                {department[index]?.label}
                               </td>
                               <td className="border border-gray-200 p-2">
                                 {groups[index]?.label}
@@ -923,7 +974,6 @@ const AddTraining = () => {
                       </table>
                     )}
 
-                    {/* Tabela para os emails dos usuários inscritos */}
                     {userEmail.length > 0 && (
                       <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
                         <thead>
@@ -990,7 +1040,21 @@ const AddTraining = () => {
                     </p>
                   </div>
                   <div className="flex justify-end">
-                    <span className="font-semibold text-green-500 text-lg pr-2">
+                    {addNewTraining && (
+                      <>
+                        <span className="font-semibold text-green-500 text-lg pr-2">
+                          Add New Training
+                        </span>
+                        <FiPlusCircle
+                          onClick={() => {
+                            setShowConfirmFefreshPage(true);
+                          }}
+                          style={{ cursor: "pointer" }}
+                        />
+                      </>
+                    )}
+
+                    <span className="font-semibold text-green-500 text-lg pr-2 pl-10">
                       Help
                     </span>
                     <FiHelpCircle
