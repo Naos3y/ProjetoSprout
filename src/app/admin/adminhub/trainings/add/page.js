@@ -55,6 +55,8 @@ const AddTraining = () => {
   const [date, setDate] = useState(null);
   const [trainers, setTrainers] = useState([]);
   const [userEmail, setUserEmail] = useState([]);
+  const [finalEnrolledUserArray, setFinalEnrolledUserArray] = useState([]);
+  const [enrolledUsers, setEnrolledUsers] = useState([]);
   const [finalUserArray, setFinalUserArray] = useState([]);
 
   // useEffect obtido através do gemini
@@ -608,17 +610,7 @@ const AddTraining = () => {
         }
       }
 
-      for (const email of userEmail) {
-        const response = await fetch(
-          `/api/adminTrainings/getUserIDWithEmail?email=${email}`,
-          { method: "GET" }
-        );
-        if (response.ok) {
-          const responseData = await response.json();
-          await extractUserIDs(responseData.emails);
-        }
-      }
-
+      // trata dos utilizadores que se podem inscrever
       userIDsArray.push(...uniqueUserIDs);
 
       try {
@@ -693,6 +685,63 @@ const AddTraining = () => {
       );
     }
 
+    // trata dos utilizadores que são incritos automaticamente no enroll
+    for (const email of userEmail) {
+      const response = await fetch(
+        `/api/adminTrainings/getUserIDWithEmail?email=${email}`,
+        { method: "GET" }
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        // await extractUserIDs(responseData.emails);
+        //setEnrolledUsers(responseData.bruno_getuseridwithemail);
+        console.log("responseData ", responseData);
+
+        try {
+          const responseEnroll = await fetch(
+            `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
+              enrolledUsers
+            )}`
+          );
+          const responseDataEnroll = await responseEnroll.json();
+          console.log("Id regular user do user email: ", responseDataEnroll);
+
+          if (responseEnroll.ok) {
+            try {
+              const trainingResponse = await fetch(
+                `/api/adminTrainings/enrollUsers`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    trainingID: idTraining,
+                    userIDs: responseData.emails,
+                  }),
+                }
+              );
+
+              const trainingData = await trainingResponse.json();
+
+              if (trainingResponse.ok) {
+                toast.success(trainingData.message);
+              } else {
+                toast.error(trainingData.message);
+              }
+            } catch (error) {
+              console.error("Error inserting training data!:", error);
+              toast.error("An error occurred while inserting training data.");
+            }
+          } else {
+            toast.error("An error occurred. Try again later.");
+          }
+        } catch (error) {
+          toast.error("An error occurred. Try again later.");
+        }
+      }
+    }
+
     setUsersAssociated(true);
     setShowAssociatedUsersConfirmation(false);
   };
@@ -739,68 +788,58 @@ const AddTraining = () => {
                       Adding a Training:
                     </h2>
                     <p>
-                      - On this page, you can
-                      <strong> add a new training</strong>. It is essential to
-                      complete all fields (description not mandatory) related to
-                      the training.
+                      - This page allows you to
+                      <strong> create a new training</strong>. It is imperative
+                      to complete all fields (description is optional)
+                      pertaining to the training.
                     </p>
                     <p>
-                      - <strong> After all fields are filled in</strong>, you
-                      can press the
-                      <strong> Add Training</strong> button
-                      <strong> to save it</strong>.
+                      - Once all fields are filled,
+                      <strong> click the "Add Training" button</strong> to save
+                      the details.
                     </p>
                     <p>
-                      <strong>
-                        - After adding a training, you can only edit it on the
-                        Edit Page.
-                      </strong>
+                      <strong>- Please note:</strong> After adding a training,
+                      any further modifications can only be made on the Edit
+                      Page.
                     </p>
                     <p>
-                      - Afer adding a training a new button will show up at the
-                      top right corner. You can press it to add a new training{" "}
+                      - Upon adding a training, a new button will appear at the
+                      top right corner. You can utilize this button to add
+                      another training.
                     </p>
 
                     <h2 className="text-left text-black text-lg font-semibold mb-4 pt-5">
                       Enrolment Open For:
                     </h2>
-                    <p className="text-lg font-bold text-red-500">NOTE:</p>
-                    <p>
-                      ** If you want to{" "}
-                      <strong> directly associate users to the training</strong>{" "}
-                      , you must do so in the <strong> start training</strong>{" "}
-                      page.
-                    </p>
 
-                    <p className="pt-3">
-                      - <strong>In this section</strong>, you can specify
-                      <strong> which users are teachers</strong> and
-                      <strong> which ones can attend the training</strong>.
+                    <p>
+                      - This setting allows individuals belonging to the
+                      selected Department, group, or team to request
+                      participation in the training.
                     </p>
                     <p>
-                      - <strong>You can select which users</strong> can apply to
-                      a training by selecting a
-                      <strong> Department, Group, or Team</strong>.
-                      <strong> You can choose all options</strong> that you
-                      want.
-                      <strong> All users</strong> that belong to the fields
-                      selected can request to participate in the training.
-                    </p>
-                    <p>
-                      - <strong>It is mandatory</strong> that you
+                      - <strong>It is mandatory</strong> to
                       <strong>
                         {" "}
-                        choose at least one teacher and one of the other fields
+                        select at least one teacher and one of the other fields
                       </strong>
                       .
                     </p>
+
+                    <h2 className="text-left text-black text-lg font-semibold mb-4 pt-5">
+                      Enroll users:
+                    </h2>
                     <p>
-                      - <strong>It is also possible</strong> to
-                      <strong>
-                        {" "}
-                        search for a user by inserting their email
-                      </strong>
-                      in the <strong>"Enroll"</strong> field.
+                      - Users can also be directly enrolled in the training via
+                      email. This action makes the training mandatory for those
+                      whose email addresses have been specified and are recorded
+                      in the designated table.
+                    </p>
+
+                    <p>
+                      - Should you wish to remove a user from the enrollment
+                      list, simply utilize the "Remove" button.
                     </p>
 
                     <div className="flex justify-center space-x-4 pt-5">
@@ -884,8 +923,8 @@ const AddTraining = () => {
                       Add New Training
                     </h2>
                     <h2 className="text-center text-black text-lg font-semibold mb-4">
-                      Are you sure that you want to add a new training? The page
-                      will refresh after confirming.
+                      Please confirm if you wish to proceed with adding a new
+                      training. The page will refresh upon confirmation.
                     </h2>
                     <div className="flex justify-center space-x-4 pt-5">
                       <button

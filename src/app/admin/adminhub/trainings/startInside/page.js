@@ -72,33 +72,26 @@ function StartInsideTraining() {
                     <h2 className="text-left text-black text-lg font-semibold mb-4">
                       Starting a Training
                     </h2>
-                    <p>In this section, you can start a training.</p>
                     <p>
-                      - Select the training you want to start by checking the
-                      checkbox.
+                      - Begin by selecting the training you wish to initiate by
+                      checking the checkbox.
                     </p>
                     <p>
-                      - If the training allows enrollment for Departments,
-                      Groups, or Teams, please confirm if these are correct.
+                      - Upon selection, all pertinent details of the chosen
+                      training will be displayed, including associated users if
+                      applicable.
                     </p>
                     <p>
-                      - If the training doesn't have users associated with it,
-                      make sure to add them to the training by selecting a
-                      Department, Group, Team, or all.
+                      - You have the option to modify the list of associated
+                      users as needed.
                     </p>
                     <p>
-                      - After users are associated with the training, make sure
-                      to check the "Mandatory" box if you want users to be
-                      automatically associated with the training.
+                      - Following this, kindly provide the training date, time,
+                      and location.
                     </p>
                     <p>
-                      - If you don't select the "Mandatory" box, users will have
-                      to request to join the training. This request will be
-                      accepted by their manager.
-                    </p>
-                    <p>
-                      - After this, you can start the training by entering the
-                      date, location, and time of the training.
+                      - Once all necessary information is provided, please press
+                      the "Start" button to begin the training.
                     </p>
 
                     <div className="flex justify-center space-x-4 pt-5">
