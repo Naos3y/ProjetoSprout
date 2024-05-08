@@ -13,6 +13,7 @@ const TrainingModal = ({ isOpen, onRequestClose, userid }) => {
   const [prof, setProf] = useState("");
   const [type, setType] = useState("");
   const [stop, setStop] = useState(false);
+  const [control, setControl] = useState(-1);
 
   async function tryGetTrainingsData() {
     try {
@@ -243,6 +244,7 @@ const TrainingModal = ({ isOpen, onRequestClose, userid }) => {
         const trainings = atrainingsFilter.concat(otrainingsFilter);
         setFormacoes(trainings);
         setStop(true);
+        setControl(1);
       } catch (error) {
         console.log(error);
       }
@@ -259,7 +261,9 @@ const TrainingModal = ({ isOpen, onRequestClose, userid }) => {
       overlayClassName="fixed inset-0 backdrop-filter backdrop-blur-sm"
       ariaHideApp={false}
     >
-      <h2 className="text-2xl mb-6 font-bold text-center">Add Training</h2>{" "}
+      <h2 className="text-2xl mb-6 font-bold text-center text-green-500">
+        Add Training
+      </h2>{" "}
       <div className="text-left border-b flex">
         <input
           name="filter"
@@ -280,61 +284,79 @@ const TrainingModal = ({ isOpen, onRequestClose, userid }) => {
         <Dropdown options={optionsType} message="Type" returned={handleType} />
       </div>
       <div className="max-h-96 overflow-y-auto">
-        {filteredFormacoes.map((training, index) => (
-          <div
-            key={index}
-            className={`border-t border-gray-200 rounded-sm ${
-              training.who === "inside" ? "bg-gray-100" : "bg-white"
-            }`}
-          >
-            <div className="flex items-center p-4 mb-2 mt-2">
-              <div className="w-4 h-4 mr-2 rounded-full" />
-              <div className="flex-1">
-                <div className="text-lg font-semibold">{training.treino}</div>
-                <div className="text-sm text-gray-600">{training.inicio}</div>
-                <div className="mt-1 text-sm text-gray-600">
-                  Duration: {training.duracao} min.
-                </div>
-                <div className="text-sm text-gray-600">
-                  Training Type: {training.area}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Location: {training.local}
-                </div>
-                {expandedTrainings.includes(index) && (
-                  <div className="">
-                    <div className="text-sm text-gray-600">
-                      Professor: {training.formador}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Min. Participants: {training.min}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Max. Participants: {training.max}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Description: {training.descricao}
-                    </div>
-                    <button
-                      className="mt-2 px-3 py-2 bg-gray-300 hover:bg-green-500 hover:text-white focus:outline-none rounded shadow-sm"
-                      onClick={() =>
-                        tryAddToTraining(training.id, training.who, index)
-                      }
-                    >
-                      Add
-                    </button>
-                  </div>
-                )}
-              </div>
-              <button
-                className="ml-4 px-3 py-2 bg-gray-300 hover:bg-green-500 hover:text-white focus:outline-none rounded-full shadow-sm"
-                onClick={() => handleExpand(index)}
+        {control == 1 ? (
+          <>
+            {" "}
+            {filteredFormacoes.map((training, index) => (
+              <div
+                key={index}
+                className={`border-t border-gray-200 rounded-sm ${
+                  training.who === "inside" ? "bg-gray-100" : "bg-white"
+                }`}
               >
-                <IoMdInformationCircleOutline />
-              </button>
-            </div>
-          </div>
-        ))}
+                <div className="flex items-center p-4 mb-2 mt-2">
+                  <div className="w-4 h-4 mr-2 rounded-full" />
+                  <div className="flex-1">
+                    <div className="text-lg font-semibold text-gray-700">
+                      {training.treino}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {training.inicio}
+                    </div>
+                    <div className="mt-1 text-sm text-gray-600">
+                      Duration: {training.duracao} min.
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Training Type: {training.area}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Location: {training.local}
+                    </div>
+                    {expandedTrainings.includes(index) && (
+                      <div className="">
+                        <div className="text-sm text-gray-600">
+                          Professor: {training.formador}
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          Min. Participants: {training.min}
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          Max. Participants: {training.max}
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          Description: {training.descricao}
+                        </div>
+                        <button
+                          className="mt-2 px-3 py-2 bg-gray-300 hover:bg-green-500 hover:text-white focus:outline-none rounded shadow-sm"
+                          onClick={() =>
+                            tryAddToTraining(training.id, training.who, index)
+                          }
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    className="ml-4 p-1 bg-gray-300 hover:bg-green-500 hover:text-white focus:outline-none rounded-full shadow-sm"
+                    onClick={() => handleExpand(index)}
+                  >
+                    <IoMdInformationCircleOutline />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <>
+            {" "}
+            <div className="flex items-center p-4 mb-2 mt-2">
+              <div className="w-4 h-4 mr-2 rounded-full text-black">
+                Loading...{" "}
+              </div>{" "}
+            </div>{" "}
+          </>
+        )}
       </div>
       <button
         onClick={onRequestClose}

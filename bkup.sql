@@ -379,7 +379,7 @@ DECLARE
 BEGIN
     BEGIN
         UPDATE public.regularuserhasinsidetrainings
-        set uhitpending = false
+        set uhitpending = false, ritflag = true
 		where regularuserruid = userid
 		and insidetrainingsitid = trainingid;
         success := true;
@@ -399,7 +399,7 @@ DECLARE
 BEGIN
     BEGIN
         UPDATE public.regularuserhasoutsidetrainings
-        set uhitpending = false
+        set uhitpending = false, rotflag = true
 		where regularuserruid = userid
 		and outsidetrainingsitid = trainingid;
         success := true;
@@ -485,6 +485,41 @@ BEGIN
     
     RETURN success;
 END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION regularuser_has_notification_inside(userid INT) 
+RETURNS TABLE (
+	id int,
+	name text)
+ AS $$
+BEGIN
+        RETURN QUERY
+     
+		select insidetrainingsitid, itname
+		from regularuserhasinsidetrainings , insidetrainings 
+		where regularuserruid = userid
+		and itid = insidetrainingsitid
+		and ritflag = true;
+	END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION regularuser_has_notification_outside(userid INT) 
+RETURNS TABLE (
+	id int,
+	name text)
+ AS $$
+BEGIN
+        RETURN QUERY
+		select outsidetrainingsitid, otname
+		from regularuserhasoutsidetrainings, outsidetrainings
+		where regularuserruid = userird
+		and otid = outsidetrainingsitid
+		and rotflag = true;
+
+    	END;
 $$ LANGUAGE plpgsql;
 
 -- TESTES

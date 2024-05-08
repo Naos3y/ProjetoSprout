@@ -22,6 +22,8 @@ function Layout(condition) {
   const [active, setActive] = useState("none");
   const [ids, setIds] = useState([]);
   const [currUser, setCurrUser] = useState(0);
+  const [control, setControl] = useState(-1);
+  const [altControl, setAltControl] = useState(-1);
 
   const closeHelp = () => {
     setShowHelp(false);
@@ -78,6 +80,7 @@ function Layout(condition) {
       });
       const trainings = atrainings.message.concat(otrainings.message);
       setFormacoes(trainings);
+      setAltControl(1);
     } catch (error) {}
   };
 
@@ -357,6 +360,7 @@ function Layout(condition) {
           const tempIds = iids.concat(oids);
           setIds(tempIds);
         }
+        setControl(1);
       } catch (error) {
         console.log(error);
       }
@@ -394,66 +398,82 @@ function Layout(condition) {
             className="overflow-y-auto"
             style={{ maxHeight: `calc(100vh - 15vh)` }}
           >
-            {Array.isArray(filteredTeam) && filteredTeam.length > 0 ? (
-              filteredTeam.map(function (user, index) {
-                return (
-                  <button
-                    className="border border-gray-200 rounded mb-4 ml-4 w-11/12 hover:bg-slate-100 focus:bg-gray-200 focus:border-black"
-                    key={index}
-                    name={"user" + index}
-                    onClick={() => handleUserTrainings(user, "user" + index)}
-                  >
-                    <div className="flex">
-                      <div id={index} className="flex">
-                        <div className="flex-1 p-4">
-                          <div className="text-l text-gray-600 font-bold text-left mb-1">
-                            Name:
-                            <span className="text-black mt-1 ml-1">
-                              {user.uname}
-                            </span>
-                          </div>
-                          <div className="text-l text-gray-600 font-bold text-left mb-1">
-                            Email:
-                            <span className="text-black mt-1 ml-1">
-                              {user.lemail}
-                            </span>
-                          </div>
-                          <div className="text-l text-gray-600 font-bold text-left mb-1">
-                            Role:
-                            <span className="text-black mt-1 ml-1">
-                              {user.urole}
-                            </span>
-                          </div>
-                          <div className="text-l text-gray-600 font-bold text-left mb-1">
-                            Team:
-                            <span className="text-black mt-1 ml-1">
-                              {user.tname}
-                            </span>
-                          </div>
-                          <div className="text-l text-gray-600 font-bold text-left">
-                            Department:
-                            <span className="text-black mt-1 ml-1">
-                              {user.dname}
-                            </span>
-                          </div>
-                          <div className="text-l text-gray-600 font-bold text-left">
-                            Training hours:
-                            <span className="text-black mt-1 ml-1">
-                              {user.nhoras}
-                            </span>
+            {control == 1 ? (
+              <>
+                {" "}
+                {Array.isArray(filteredTeam) && filteredTeam.length > 0 ? (
+                  filteredTeam.map(function (user, index) {
+                    return (
+                      <button
+                        className="border border-gray-200 rounded mb-4 ml-4 w-11/12 hover:bg-slate-100 focus:bg-gray-200 focus:border-black"
+                        key={index}
+                        name={"user" + index}
+                        onClick={() =>
+                          handleUserTrainings(user, "user" + index)
+                        }
+                      >
+                        <div className="flex">
+                          <div id={index} className="flex">
+                            <div className="flex-1 p-4">
+                              <div className="text-l text-gray-600 font-bold text-left mb-1">
+                                Name:
+                                <span className="text-black mt-1 ml-1">
+                                  {user.uname}
+                                </span>
+                              </div>
+                              <div className="text-l text-gray-600 font-bold text-left mb-1">
+                                Email:
+                                <span className="text-black mt-1 ml-1">
+                                  {user.lemail}
+                                </span>
+                              </div>
+                              <div className="text-l text-gray-600 font-bold text-left mb-1">
+                                Role:
+                                <span className="text-black mt-1 ml-1">
+                                  {user.urole}
+                                </span>
+                              </div>
+                              <div className="text-l text-gray-600 font-bold text-left mb-1">
+                                Team:
+                                <span className="text-black mt-1 ml-1">
+                                  {user.tname}
+                                </span>
+                              </div>
+                              <div className="text-l text-gray-600 font-bold text-left">
+                                Department:
+                                <span className="text-black mt-1 ml-1">
+                                  {user.dname}
+                                </span>
+                              </div>
+                              <div className="text-l text-gray-600 font-bold text-left">
+                                Training hours:
+                                <span className="text-black mt-1 ml-1">
+                                  {user.nhoras}
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })
+                      </button>
+                    );
+                  })
+                ) : (
+                  <div className="border border-gray-300 rounded p-5 bg-white mr-1 ml-1">
+                    <p className="text-black mt-1 ml-1 font-bold">
+                      There are no users in this team
+                    </p>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="border border-gray-300 rounded p-5 bg-white mr-1 ml-1">
-                <p className="text-black mt-1 ml-1 font-bold">
-                  No team members found.
-                </p>
-              </div>
+              <>
+                {" "}
+                <div className="border border-gray-300 rounded p-5 bg-white mr-1 ml-1">
+                  <p className="text-black mt-1 ml-1 font-bold">
+                    Loading users ...
+                  </p>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -488,157 +508,183 @@ function Layout(condition) {
             className="overflow-y-auto ml-4"
             style={{ maxHeight: `calc(100vh - 15vh)` }}
           >
-            {Array.isArray(filteredFormacoes) &&
-            filteredFormacoes.length > 0 ? (
-              filteredFormacoes.map(function (training, index) {
-                return (
-                  <div
-                    key={index}
-                    className={`${
-                      training.who === "inside"
-                        ? "border border-gray-200 rounded-s mb-4 w-11/12"
-                        : "border border-blue-500 rounded-s mb-4 w-11/12"
-                    }`}
-                  >
-                    <div className="flex">
-                      {training.pending == true ? (
-                        training.start == true ? (
-                          <div className="w-4 h-auto">
-                            <div className="bg-red-300 block object-cover rounded-tl rounded-bl h-full w-full" />
-                          </div>
-                        ) : (
-                          <div className="w-4 h-auto">
-                            <div className="bg-blue-300 block object-cover rounded-tl rounded-bl h-full w-full" />
-                          </div>
-                        )
-                      ) : training.start == true ? (
-                        <div className="w-4 h-auto">
-                          <div className="bg-black block object-cover rounded-tl rounded-bl h-full w-full" />
-                        </div>
-                      ) : (
-                        <div className="w-4 h-auto">
-                          <div className="bg-green-200 block object-cover rounded-tl rounded-bl h-full w-full" />
-                        </div>
-                      )}
-
-                      <div className="flex-1 p-4 border-b">
-                        <div className="text-l text-gray-600 font-bold text-left">
-                          <div className="mt-1">
-                            <span className="text-black">
-                              {training.treino}
-                            </span>
-                          </div>
-                          <div className="mt-1 border-b">
-                            <span className="text-black">
-                              {training.inicio}
-                            </span>
-                          </div>
-                          <div className="mt-1">
-                            <label className="font-bold text-gray-800">
-                              Duration:{" "}
-                            </label>
-                            <span className="text-gray-600">
-                              {training.duracao}
-                            </span>
-                          </div>
-                          <div className="mt-1">
-                            <label className="font-bold text-gray-800">
-                              Trainings Type:{" "}
-                            </label>
-                            <span className="text-gray-600">
-                              {training.area}
-                            </span>
-                          </div>
-                          <div className="mt-1">
-                            <label className="font-bold text-gray-800">
-                              Location:{" "}
-                            </label>
-                            <span className="text-gray-600">
-                              {training.local}
-                            </span>
-                          </div>
-                          {expandedTrainings.includes(index) && (
-                            <div className="text-l text-gray-600 font-bold text-left">
-                              <div className="mt-1">
-                                <label className="font-bold text-gray-800">
-                                  Professor:{" "}
-                                </label>
-                                <span className="text-gray-600">
-                                  {training.formador}
-                                </span>
+            {altControl == 1 ? (
+              <>
+                {Array.isArray(filteredFormacoes) &&
+                filteredFormacoes.length > 0 ? (
+                  filteredFormacoes.map(function (training, index) {
+                    return (
+                      <div
+                        key={index}
+                        className={`${
+                          training.who === "inside"
+                            ? "border border-gray-200 rounded-s mb-4 w-11/12"
+                            : "border border-blue-500 rounded-s mb-4 w-11/12"
+                        }`}
+                      >
+                        <div className="flex">
+                          {training.pending == true ? (
+                            training.start == true ? (
+                              <div className="w-4 h-auto">
+                                <div className="bg-red-300 block object-cover rounded-tl rounded-bl h-full w-full" />
                               </div>
-                              <div className="mt-1">
-                                <label className="font-bold text-gray-800">
-                                  Min. Participants:{" "}
-                                </label>
-                                <span className="text-gray-600">
-                                  {training.min}
-                                </span>
+                            ) : (
+                              <div className="w-4 h-auto">
+                                <div className="bg-blue-300 block object-cover rounded-tl rounded-bl h-full w-full" />
                               </div>
-                              <div className="mt-1">
-                                <label className="font-bold text-gray-800">
-                                  Max. Participants:{" "}
-                                </label>
-                                <span className="text-gray-600">
-                                  {training.max}
-                                </span>
-                              </div>
-                              <div className="mt-1 mb-4">
-                                <label className="font-bold text-gray-800">
-                                  Description:{" "}
-                                </label>
-                                <span className="text-gray-600">
-                                  {training.descricao}
-                                </span>
-                              </div>
-
-                              <button
-                                className="bg-red-400 text-black font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-red-500 hover:text-white active:bg-red-700"
-                                onClick={() =>
-                                  tryRefuseTraining(
-                                    training.id,
-                                    training.who,
-                                    index
-                                  )
-                                }
-                              >
-                                Refuse
-                              </button>
-                              <button
-                                className="bg-green-400 text-black ml-3 font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
-                                onClick={() =>
-                                  tryAcceptTraining(
-                                    training.id,
-                                    training.who,
-                                    index
-                                  )
-                                }
-                              >
-                                Accept
-                              </button>
+                            )
+                          ) : training.start == true ? (
+                            <div className="w-4 h-auto">
+                              <div className="bg-black block object-cover rounded-tl rounded-bl h-full w-full" />
+                            </div>
+                          ) : (
+                            <div className="w-4 h-auto">
+                              <div className="bg-green-200 block object-cover rounded-tl rounded-bl h-full w-full" />
                             </div>
                           )}
-                        </div>
 
-                        <div className="flex justify-end">
-                          <button
-                            className="bg-[#DFDFDF] text-[#818181] font-bold mt-2 px-2 py-1 rounded-full shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
-                            onClick={() => handleExpand(index)}
-                          >
-                            <IoMdInformationCircleOutline />
-                          </button>
+                          <div className="flex-1 p-4 border-b">
+                            <div className="text-l text-gray-600 font-bold text-left">
+                              <div className="mt-1">
+                                <span className="text-black">
+                                  {training.treino}
+                                </span>
+                              </div>
+                              <div className="mt-1 border-b">
+                                <span className="text-black">
+                                  {training.inicio}
+                                </span>
+                              </div>
+                              <div className="mt-1">
+                                <label className="font-bold text-gray-800">
+                                  Duration:{" "}
+                                </label>
+                                <span className="text-gray-600">
+                                  {training.duracao}
+                                </span>
+                              </div>
+                              <div className="mt-1">
+                                <label className="font-bold text-gray-800">
+                                  Trainings Type:{" "}
+                                </label>
+                                <span className="text-gray-600">
+                                  {training.area}
+                                </span>
+                              </div>
+                              <div className="mt-1">
+                                <label className="font-bold text-gray-800">
+                                  Location:{" "}
+                                </label>
+                                <span className="text-gray-600">
+                                  {training.local}
+                                </span>
+                              </div>
+                              {expandedTrainings.includes(index) && (
+                                <div className="text-l text-gray-600 font-bold text-left">
+                                  <div className="mt-1">
+                                    <label className="font-bold text-gray-800">
+                                      Professor:{" "}
+                                    </label>
+                                    <span className="text-gray-600">
+                                      {training.formador}
+                                    </span>
+                                  </div>
+                                  <div className="mt-1">
+                                    <label className="font-bold text-gray-800">
+                                      Min. Participants:{" "}
+                                    </label>
+                                    <span className="text-gray-600">
+                                      {training.min}
+                                    </span>
+                                  </div>
+                                  <div className="mt-1">
+                                    <label className="font-bold text-gray-800">
+                                      Max. Participants:{" "}
+                                    </label>
+                                    <span className="text-gray-600">
+                                      {training.max}
+                                    </span>
+                                  </div>
+                                  <div className="mt-1 mb-4">
+                                    <label className="font-bold text-gray-800">
+                                      Description:{" "}
+                                    </label>
+                                    <span className="text-gray-600">
+                                      {training.descricao}
+                                    </span>
+                                  </div>
+                                  {condition.condition ? (
+                                    <div>
+                                      {" "}
+                                      <button
+                                        className="bg-red-400 text-black font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-red-500 hover:text-white active:bg-red-700"
+                                        onClick={() =>
+                                          tryRefuseTraining(
+                                            training.id,
+                                            training.who,
+                                            index
+                                          )
+                                        }
+                                      >
+                                        Refuse
+                                      </button>
+                                      <button
+                                        className="bg-green-400 text-black ml-3 font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
+                                        onClick={() =>
+                                          tryAcceptTraining(
+                                            training.id,
+                                            training.who,
+                                            index
+                                          )
+                                        }
+                                      >
+                                        Accept
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    " "
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex justify-end">
+                              <button
+                                className="bg-[#DFDFDF] text-[#818181] font-bold mt-2 px-2 py-1 rounded-full shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
+                                onClick={() => handleExpand(index)}
+                              >
+                                <IoMdInformationCircleOutline />
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    );
+                  })
+                ) : (
+                  <div className="border border-gray-300 rounded p-5 bg-white mr-1 ml-1 w-11/12">
+                    <p className="text-black mt-1 ml-1 font-bold">
+                      This use has no trainings
+                    </p>
                   </div>
-                );
-              })
+                )}
+              </>
+            ) : control == 1 ? (
+              <>
+                {" "}
+                <div className="border border-gray-300 rounded p-5 bg-white mr-1 ml-1 w-11/12">
+                  <p className="text-black mt-1 ml-1 font-bold">
+                    Select a user{" "}
+                  </p>
+                </div>
+              </>
             ) : (
-              <div className="border border-gray-300 rounded p-5 bg-white mr-1 ml-1 w-11/12">
-                <p className="text-black mt-1 ml-1 font-bold">
-                  This user has no trainings.
-                </p>
-              </div>
+              <>
+                {" "}
+                <div className="border border-gray-300 rounded p-5 bg-white mr-1 ml-1 w-11/12">
+                  <p className="text-black mt-1 ml-1 font-bold">Loading ... </p>
+                </div>
+              </>
             )}
           </div>
         </div>

@@ -130,119 +130,119 @@ export default function ProfileLayout() {
   }, []);
 
   return (
-    <div className="mt-5 mb-5 max-w-screen max-h-screen">
-      <Toaster richColors position="bottom-center" />
-      <div className="h-screen ">
-        <div className="max-w-screen mx-auto p-5">
-          <div className="flex justify-between items-center mb-8 rounded-s py-5 bg-gray-100">
-            <h1 className="text-3xl font-bold ml-10">Profile</h1>
+    <div className="mt-5 mb-5 max-w-screen">
+      <Toaster richColors position="bottom-center h-screen" />
+      <div className="max-w-screen mx-auto p-5">
+        <div className="flex justify-between items-center mb-8 rounded-s py-5 bg-gray-100">
+          <h1 className="text-3xl font-bold ml-10 text-green-500">Profile</h1>
 
-            <div className="space-x-4 mr-10">
-              <Link href="/profile/edit">
-                <button className="bg-[#DFDFDF] text-[#818181] font-bold px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700 mr-2">
-                  Edit Profile
-                </button>
-              </Link>
-              <Link href="/profile/password">
-                <button className="bg-[#DFDFDF] text-[#818181] font-bold px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700 mr-2">
-                  Change Password
-                </button>
-              </Link>
+          <div className="space-x-4 mr-10">
+            <Link href="/profile/edit">
+              <button className="bg-[#DFDFDF] text-[#818181] font-bold px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700 mr-2">
+                Edit Profile
+              </button>
+            </Link>
+            <Link href="/profile/password">
+              <button className="bg-[#DFDFDF] text-[#818181] font-bold px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700 mr-2">
+                Change Password
+              </button>
+            </Link>
+          </div>
+        </div>
+
+        <div className="mb-8 p-5 bg-gray-100 rounded-s">
+          <span className="flex ">
+            <SlPeople className="mt-1 mr-4 ml-2" />
+            <h2 className="text-xl font-bold text-black">
+              Personal Information
+            </h2>
+          </span>
+
+          <hr className="mb-5" />
+          <div className="grid grid-cols-2 gap-4 ml-10">
+            <div className="col-span-2">
+              <p className="font-semibold  text-black">Photo:</p>
+              <div className="h-40 w-40 bg-gray-200 rounded-md flex justify-center items-center">
+                <img
+                  className="h-full w-full object-cover rounded-md"
+                  // src={user.photo}
+                  alt="User Photo"
+                />
+              </div>
+            </div>
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Name:</p>
+              <p className="text-gray-700">{user.name}</p>
+            </div>
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Number:</p>
+              <p className="text-gray-700">{user.number}</p>
+            </div>
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Email:</p>
+              <p className="text-gray-700">{user.email}</p>
+            </div>
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Seniority:</p>
+              <p className="text-gray-700">{user.seniority}</p>
+            </div>
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Starting Date:</p>
+              <p className="text-gray-700">{user.start}</p>
+            </div>
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Formation time:</p>
+              <p className="text-gray-700">{user.hours}</p>
+            </div>
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Location:</p>
+              <p className="text-gray-700">
+                {user.country} - {user.city}
+              </p>
             </div>
           </div>
+        </div>
 
-          <div className="mb-8 p-5 bg-gray-100 rounded-s">
-            <span className="flex ">
-              <SlPeople className="mt-1 mr-4 ml-2" />
-              <h2 className="text-xl font-bold">Personal Information</h2>
-            </span>
-
-            <hr className="mb-5" />
-            <div className="grid grid-cols-2 gap-4 ml-10">
-              <div className="col-span-2">
-                <p className="font-semibold">Photo:</p>
-                <div className="h-40 w-40 bg-gray-200 rounded-md flex justify-center items-center">
-                  <img
-                    className="h-full w-full object-cover rounded-md"
-                    // src={user.photo}
-                    alt="User Photo"
-                  />
-                </div>
-              </div>
-              <div className="col-span-1">
-                <p className="font-semibold">Name:</p>
-                <p>{user.name}</p>
-              </div>
-              <div className="col-span-1">
-                <p className="font-semibold">Number:</p>
-                <p>{user.number}</p>
-              </div>
-              <div className="col-span-1">
-                <p className="font-semibold">Email:</p>
-                <p>{user.email}</p>
-              </div>
-              <div className="col-span-1">
-                <p className="font-semibold">Seniority:</p>
-                <p>{user.seniority}</p>
-              </div>
-              <div className="col-span-1">
-                <p className="font-semibold">Starting Date:</p>
-                <p>{user.start}</p>
-              </div>
-              <div className="col-span-1">
-                <p className="font-semibold">Formation time:</p>
-                <p>{user.hours}</p>
-              </div>
-              <div className="col-span-1">
-                <p className="font-semibold">Location:</p>
-                <p>
-                  {user.country} - {user.city}
-                </p>
-              </div>
+        <div className="mb-8 p-5 bg-gray-100 rounded-s">
+          <span className="flex ">
+            <RiTeamFill className="mt-1 mr-4 ml-2" />
+            <h2 className="text-xl font-bold text-black">My Team</h2>
+          </span>
+          <hr className="mb-5" />
+          <div className="grid grid-cols-2 gap-4 ml-10">
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Department:</p>
+              <p className="text-gray-700">{team.department}</p>
+            </div>
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Team:</p>
+              <p className="text-gray-700">{team.team}</p>
+            </div>
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Type:</p>
+              <p className="text-gray-700">{user.type}</p>
+            </div>
+            <div className="col-span-1">
+              <p className="font-semibold text-black">Role:</p>
+              <p className="text-gray-700">{user.role}</p>
             </div>
           </div>
+        </div>
 
-          <div className="mb-8 p-5 bg-gray-100 rounded-s">
-            <span className="flex ">
-              <RiTeamFill className="mt-1 mr-4 ml-2" />
-              <h2 className="text-xl font-bold">My Team</h2>
-            </span>
-            <hr className="mb-5" />
-            <div className="grid grid-cols-2 gap-4 ml-10">
-              <div className="col-span-1">
-                <p className="font-semibold">Department:</p>
-                <p>{team.department}</p>
-              </div>
-              <div className="col-span-1">
-                <p className="font-semibold">Team:</p>
-                <p>{team.team}</p>
-              </div>
-              <div className="col-span-1">
-                <p className="font-semibold">Type:</p>
-                <p>{user.type}</p>
-              </div>
-              <div className="col-span-1">
-                <p className="font-semibold">Role:</p>
-                <p>{user.role}</p>
-              </div>
-            </div>
-          </div>
+        <div className="mb-8 p-5 bg-gray-100 rounded-s">
+          <span className="flex ">
+            <FaLayerGroup className="mt-1 mr-4 ml-2" />
+            <h2 className="text-xl font-bold text-black">Groups</h2>
+          </span>
+          <hr className="mb-5" />
 
-          <div className="mb-8 p-5 bg-gray-100 rounded-s">
-            <span className="flex ">
-              <FaLayerGroup className="mt-1 mr-4 ml-2" />
-              <h2 className="text-xl font-bold">Groups</h2>
-            </span>
-            <hr className="mb-5" />
-
-            <div className="space-y-4 ml-10">
-              {group.map((group, index) => (
-                <div key={index}>
-                  <p className="font-semibold">Name:</p>
-                  <p>{group.group_name}</p>
-                </div>
-              ))}
-            </div>
+          <div className="space-y-4 ml-10">
+            {group.map((group, index) => (
+              <div key={index}>
+                <p className="font-semibold text-black">Name:</p>
+                <p className="text-gray-700">{group.group_name}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

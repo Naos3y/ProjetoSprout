@@ -6,19 +6,10 @@ import { Toaster, toast } from "sonner";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
 export default function EditPassword() {
-  const profile = {
-    name: "Samuel",
-    email: "sam@root.pt",
-    contact: "91919191",
-    location: "my Location",
-    groups: ["g1", "g2", "g3", "g4"],
-    team: "Green",
-    department: "goat",
-  };
-
   const [email, setEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [ConfirmPassword, setConfirmPassword] = useState("");
 
   const handleOldPassword = (value) => {
     setCurrentPassword(value);
@@ -28,17 +19,24 @@ export default function EditPassword() {
     setNewPassword(value);
   };
 
-  const handleEmail = (value) => {
-    setEmail(value);
+  const handleConfirmPassword = (value) => {
+    setConfirmPassword(value);
   };
   async function saveProfile() {
     try {
       if (currentPassword > 0 && newPassword > 0) {
         const validAttempt = await validation(currentPassword);
         if (validAttempt.code == 200) {
-          const response = await changePassword(newPassword);
-          console.log(response);
-          toast.success("Success.");
+          if (newPassword.length >= 8) {
+            if (newPassword == ConfirmPassword) {
+              const response = await changePassword(newPassword);
+              console.log(response);
+              toast.success("Success.");
+            } else toast.error("Invalid new password!");
+          } else
+            toast.error(
+              "The new password needs to have 8 characters, at least!"
+            );
         } else {
           toast.error("Invalid Credentials!");
         }
@@ -129,6 +127,14 @@ export default function EditPassword() {
               type="password"
               label="New Password"
               returned={handleNewPassword}
+            />
+          </div>
+          <div className="max-w-96">
+            <TextInput
+              id={"newConfirm"}
+              type="password"
+              label="Confirm Password"
+              returned={handleConfirmPassword}
             />
           </div>
           <button
