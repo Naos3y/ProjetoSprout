@@ -11,27 +11,34 @@ const Formulario = () => {
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedUser(null);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/getUserGroupTeamDepartment");
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        setUsers(data.data);
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to fetch data");
+  const closeConfirmationModal = () => {
+    setIsConfirmationModalOpen(false);
+  };
+
+  const fetchInsideTeachers = async () => {
+    try {
+      const response = await fetch("/api/getNotInsideTeacher");
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
       }
-    };
-    fetchData();
+      const data = await response.json();
+      setUsers(data.data);
+      setFilteredUsers(data.data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch data");
+    }
+  };
+
+  useEffect(() => {
+    fetchInsideTeachers();
   }, []);
 
   useEffect(() => {
@@ -55,6 +62,15 @@ const Formulario = () => {
     setIsModalOpen(true);
   };
 
+  const handleDesassociateTeacher = (userId: number) => {
+    const user = filteredUsers.find((user) => user.id === userId);
+
+    if (user) {
+      setSelectedUser(user);
+    }
+
+    setIsConfirmationModalOpen(true);
+  };
   const handleSubmit = async () => {
     try {
       if (!selectedUser) {
@@ -74,6 +90,7 @@ const Formulario = () => {
         const data = await response.json();
         console.log("User associated successfully:", data);
         toast.success("User associated successfully.");
+        fetchInsideTeachers();
         closeModal();
       } else {
         const errorData = await response.json();
@@ -83,6 +100,38 @@ const Formulario = () => {
     } catch (error) {
       console.error("Error associating user:", error);
       toast.error("An error occurred while associating user.");
+    }
+  };
+
+  const handleConfirmDesassociate = async () => {
+    try {
+      if (!selectedUser) {
+        toast.error("Please select a user.");
+        return;
+      }
+
+      const response = await fetch("/api/removeInsideTeacher", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ useruid: selectedUser.id }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("User desassociated successfully:", data);
+        toast.success("User desassociated successfully.");
+        fetchInsideTeachers();
+        closeConfirmationModal();
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to desassociate user:", errorData);
+        toast.error("Failed to desassociate user: " + errorData.message);
+      }
+    } catch (error) {
+      console.error("Error desassociating user:", error);
+      toast.error("An error occurred while desassociating user.");
     }
   };
 
@@ -170,15 +219,27 @@ const Formulario = () => {
                   {user.uemployeenumber}
                 </td>
                 <td className="border border-gray-300 px-4 py-2 text-center">
-                  <div className="flex justify-center items-center">
-                    <Icon
-                      icon="la:chalkboard-teacher"
-                      width="24"
-                      height="24"
-                      className="text-yellow-500 cursor-pointer"
-                      onClick={() => handleAssociateTeacher(user.id)}
-                    />
-                  </div>
+                  {user.isInsideTeacher ? (
+                    <div className="flex justify-center items-center">
+                      <Icon
+                        icon="material-symbols:person-cancel-rounded"
+                        width="24"
+                        height="24"
+                        className="text-red-500 cursor-pointer"
+                        onClick={() => handleDesassociateTeacher(user.id)}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex justify-center items-center">
+                      <Icon
+                        icon="la:chalkboard-teacher"
+                        width="24"
+                        height="24"
+                        className="text-yellow-500 cursor-pointer"
+                        onClick={() => handleAssociateTeacher(user.id)}
+                      />
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}
@@ -236,6 +297,63 @@ const Formulario = () => {
                   onClick={handleSubmit}
                 >
                   Associate
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isConfirmationModalOpen && (
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-white bg-opacity-75">
+          <div className="bg-white p-8 rounded shadow-lg relative">
+            <div className="flex items-center ml-4 mt-4">
+              <Icon
+                icon="la:chalkboard-teacher"
+                width="19"
+                height="19"
+                className="text-green-500"
+              />
+              <span className="font-semibold text-green-500 text-lg ml-2">
+                Desassociate Inside Teacher: {selectedUser?.uname}
+              </span>
+            </div>
+            <button
+              className="modal-close absolute top-0 right-0 p-3 text-red-600"
+              onClick={closeConfirmationModal}
+            >
+              <Icon icon="zondicons:close-solid" width="24" height="24" />
+            </button>
+            <div className="flex items-center ml-4 mt-16">
+              <span className="font-semibold  text-lg">
+                Are you sure you really want to desassociate the user{" "}
+                <span className="underline">{selectedUser?.uname}</span> from
+                being an inside teacher?
+              </span>
+            </div>
+            <div className="flex justify-center ">
+              <div className="flex flex-wrap ">
+                <Toaster richColors position="bottom-center" />
+                <button
+                  style={{
+                    marginTop: "50px",
+                    marginRight: "10px",
+                    marginBottom: "50px",
+                  }}
+                  className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-500 hover:text-white active:bg-gray-500"
+                  onClick={() => {
+                    toast.error("Update Canceled!");
+                    closeConfirmationModal();
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  style={{ marginTop: "50px", marginBottom: "50px" }}
+                  className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
+                  onClick={handleConfirmDesassociate}
+                >
+                  Desassociate
                 </button>
               </div>
             </div>

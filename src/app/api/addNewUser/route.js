@@ -1,5 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+
+const mail = process.env.EMAIL;
+const pass = process.env.EMAIL_PASS;
+
+export const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: mail,
+    pass,
+  },
+});
 
 const prisma = new PrismaClient();
 
@@ -50,7 +62,7 @@ export async function POST(request) {
       return password;
     }
 
-    const randomPassword = generateRandomPassword(10); // Exemplo: senha de 10 caracteres
+    const randomPassword = generateRandomPassword(10);
 
     // Inserir o novo utilizador
     const newUser = await prisma.user.create({
@@ -94,6 +106,14 @@ export async function POST(request) {
       data: {
         useruid: newUser.uid,
       },
+    });
+
+    await transporter.sendMail({
+      from: mail,
+      to: email,
+      subject: "Sprout Account",
+      text: "Password",
+      html: `<h1>Password of Sprout account</h1><p>Your password to log in to your account is: ${randomPassword}</p>`,
     });
 
     console.log("New user created:", newUser);
