@@ -695,7 +695,7 @@ const AddTraining = () => {
         const responseData = await response.json();
         // await extractUserIDs(responseData.emails);
         //setEnrolledUsers(responseData.bruno_getuseridwithemail);
-        console.log("responseData ", responseData);
+        //console.log("responseData ", responseData);
 
         try {
           const responseEnroll = await fetch(
@@ -704,7 +704,7 @@ const AddTraining = () => {
             )}`
           );
           const responseDataEnroll = await responseEnroll.json();
-          console.log("Id regular user do user email: ", responseDataEnroll);
+          //console.log("Id regular user do user email: ", responseDataEnroll);
 
           if (responseEnroll.ok) {
             try {
