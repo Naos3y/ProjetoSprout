@@ -110,6 +110,7 @@ export default function MyTrainings() {
           atrainings.message.forEach((training) => {
             training.who = "inside";
           });
+          console.log(atrainings);
         } catch (error) {}
         try {
           otrainings = await tryGetOutsideTrainingsData();
@@ -261,14 +262,16 @@ export default function MyTrainings() {
                         <span className="text-black">{training.treino}</span>
                       </div>
                       <div className="mt-1 border-b">
-                        <span className="text-black">{training.inicio}</span>
+                        <span className="text-black">
+                          {training.inicio} {training.hora}
+                        </span>
                       </div>
                       <div className="mt-1">
                         <label className="font-bold text-gray-800">
                           Duration:{" "}
                         </label>
                         <span className="text-gray-600">
-                          {training.duracao}
+                          {training.duracao} min.
                         </span>
                       </div>
                       <div className="mt-1">
@@ -287,14 +290,6 @@ export default function MyTrainings() {
                       </div>
                       {expandedTrainings.includes(index) && (
                         <div className="text-l text-gray-600 font-bold text-left">
-                          <div className="mt-1">
-                            <label className="font-bold text-gray-800">
-                              Professor:{" "}
-                            </label>
-                            <span className="text-gray-600">
-                              {training.formador}
-                            </span>
-                          </div>
                           <div className="mt-1">
                             <label className="font-bold text-gray-800">
                               Min. Participants:{" "}

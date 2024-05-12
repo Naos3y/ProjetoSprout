@@ -583,14 +583,6 @@ function Layout(condition) {
                                 <div className="text-l text-gray-600 font-bold text-left">
                                   <div className="mt-1">
                                     <label className="font-bold text-gray-800">
-                                      Professor:{" "}
-                                    </label>
-                                    <span className="text-gray-600">
-                                      {training.formador}
-                                    </span>
-                                  </div>
-                                  <div className="mt-1">
-                                    <label className="font-bold text-gray-800">
                                       Min. Participants:{" "}
                                     </label>
                                     <span className="text-gray-600">
@@ -617,7 +609,7 @@ function Layout(condition) {
                                     <div>
                                       {" "}
                                       <button
-                                        className="bg-red-400 text-black font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-red-500 hover:text-white active:bg-red-700"
+                                        className="bg-gray-300 text-gray-800 font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-red-500 hover:text-white active:bg-red-700"
                                         onClick={() =>
                                           tryRefuseTraining(
                                             training.id,
@@ -629,7 +621,7 @@ function Layout(condition) {
                                         Refuse
                                       </button>
                                       <button
-                                        className="bg-green-400 text-black ml-3 font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
+                                        className="bg-gray-300 text-gray-800 ml-3 font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
                                         onClick={() =>
                                           tryAcceptTraining(
                                             training.id,
