@@ -46,6 +46,8 @@ const AddTraining = () => {
     useState(false);
   const [addNewTraining, setAddNewTraining] = useState(false);
   const [showRefreshConfirmation, setShowConfirmFefreshPage] = useState(false);
+  const [showAssociateUserOptions, setShowAssociateUserOptions] =
+    useState(false);
 
   // para adicionar pessoas ao treino
   const [department, setDepartments] = useState([]);
@@ -143,6 +145,7 @@ const AddTraining = () => {
     setShowAddTrainingConfirmation(false);
     setConfirmTrainingAdded(true);
     setAddNewTraining(true);
+    setShowAssociateUserOptions(true);
   };
 
   const handleDontWantToAddUsersToTraining = () => {
@@ -789,9 +792,7 @@ const AddTraining = () => {
                     </h2>
                     <p>
                       - This page allows you to
-                      <strong> create a new training</strong>. It is imperative
-                      to complete all fields (description is optional)
-                      pertaining to the training.
+                      <strong> create a new training</strong>.
                     </p>
                     <p>
                       - Once all fields are filled,
@@ -805,8 +806,8 @@ const AddTraining = () => {
                     </p>
                     <p>
                       - Upon adding a training, a new button will appear at the
-                      top right corner. You can utilize this button to add
-                      another training.
+                      top right corner. You can click this button to add another
+                      training.
                     </p>
 
                     <h2 className="text-left text-black text-lg font-semibold mb-4 pt-5">
@@ -1199,7 +1200,7 @@ const AddTraining = () => {
 
                   <div className="col-span-2 ">
                     <BigInput
-                      label={"Event | Training Description (Optional)"}
+                      label={"Event | Training Description"}
                       returned={setDescription}
                     />
                   </div>
@@ -1239,8 +1240,17 @@ const AddTraining = () => {
                   <div className="col-span-4 pt-10"></div>
                   <div className="col-span-4">
                     <span className="font-semibold text-green-500 text-lg ml-2 ">
-                      Enrolment Open For (Optional)
+                      Optional Fields
                     </span>
+                  </div>
+                  <div className="col-span-4 ">
+                    <TableTextInput
+                      label={"Enroll Users"}
+                      returned={setUserEmail}
+                    />
+                  </div>
+                  <div className="col-span-4">
+                    <span>Enrolment Open For</span>
                   </div>
                   <div>
                     <MultiselectSearch
@@ -1276,10 +1286,6 @@ const AddTraining = () => {
                       message="Select One / Multi"
                       returned={setTeams}
                     />
-                  </div>
-
-                  <div className="col-span-4 ">
-                    <TableTextInput label={"Enroll"} returned={setUserEmail} />
                   </div>
                 </div>
                 <div className="flex justify-center">
