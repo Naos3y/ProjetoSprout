@@ -223,6 +223,11 @@ function StartInsideTraining() {
   const startTraining = async () => {
     setShowStartConfirmation(false);
 
+    if (associatedUsers.length === 0 || associatedTeachers.length === 0) {
+      toast.error("Please add users to the training before starting it");
+      return;
+    }
+
     try {
       const response = await fetch(`/api/adminTrainings/StartIT_Updated`, {
         method: "POST",
