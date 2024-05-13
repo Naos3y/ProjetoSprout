@@ -314,12 +314,6 @@ export default function MyTrainings() {
                               {training.descricao}
                             </span>
                           </div>
-                          {/* <button
-                            className="bg-[#DFDFDF] text-[#818181] font-bold mt-2 px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
-                            //onClick={() => handleAppyToTraining(index)}
-                          >
-                            Apply
-                          </button> */}
                         </div>
                       )}
                     </div>

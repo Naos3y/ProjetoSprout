@@ -225,15 +225,13 @@ RETURNS TABLE (
     inicio TEXT,
     duracao TEXT,
     local TEXT,
-	sala TEXT
-    min TEXT,
-    max TEXT,
+	sala TEXT,
+    min INT,
+    max INT,
     descricao TEXT,
     area TEXT,
     start BOOLEAN,
-	hinicio TEXT,
-
-
+	hinicio TEXT
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -244,15 +242,16 @@ SELECT
     itnumofmin AS duracao,
     iteventtype AS local,
 	itlocation AS sala,
-    itminparticipants AS min,
-    itmaxparticipants AS max,
+	CAST(itminparticipants AS INT) AS min,
+	CAST(itmaxparticipants AS INT) AS max,
     itdescription AS descricao,
     ittrainingarea AS area,
 	itstarted AS start,
 	itstarttime AS inicio
 FROM
-    insidetrainings; 
-
+    insidetrainings
+WHERE
+	CAST(itmaxparticipants AS INT) > (SELECT COUNT(*) FROM regularuserhasinsidetrainings WHERE insidetrainingsitid = insidetrainings.itid);
 END;
 $$ LANGUAGE plpgsql;
 
@@ -265,8 +264,8 @@ RETURNS TABLE (
     duracao TEXT,
     local TEXT,
 	sala TEXT,
-    min TEXT,
-    max TEXT,
+    min INT,
+    max INT,
     descricao TEXT,
     start BOOLEAN,
 	hinicio TEXT
@@ -280,14 +279,17 @@ BEGIN
         otnumofmin AS duracao,
         oteventtype AS local,
 		otlocation AS sala,
-        otminparticipants AS min,
-        otmaxparticipants AS max,
+        CAST(otminparticipants AS INT) AS min,
+        CAST(otmaxparticipants AS INT) AS max,
 		otdescription AS descricao,
         otstarted AS start,
 		otstarttime AS inicio
 
     from
-        outsidetrainings;
+        outsidetrainings
+    where 
+    	CAST(otmaxparticipants AS INT) > (SELECT COUNT(*) FROM regularuserhasoutsidetrainings WHERE outsidetrainingsitid = outsidetrainings.otid);
+
 END;
 $$ LANGUAGE plpgsql;
 

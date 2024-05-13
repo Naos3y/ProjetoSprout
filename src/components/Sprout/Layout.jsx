@@ -338,14 +338,6 @@ export default function IncomingLayout() {
                         <div className="text-l text-gray-600 font-bold text-left">
                           <div className="mt-1">
                             <label className="font-bold text-gray-800">
-                              Professor:{" "}
-                            </label>
-                            <span className="text-gray-600">
-                              {training.formador}
-                            </span>
-                          </div>
-                          <div className="mt-1">
-                            <label className="font-bold text-gray-800">
                               Min. Participants:{" "}
                             </label>
                             <span className="text-gray-600">
