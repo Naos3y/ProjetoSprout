@@ -113,7 +113,7 @@ export async function POST(request) {
       to: email,
       subject: "Sprout Account",
       text: "Password",
-      html: `<h1>Password of Sprout account</h1><p>Your password to log in to your account is: ${randomPassword}</p>`,
+      html: `<h1>Password of Sprout account</h1><p><b>Hi Sprout ${completeName}<b>, welcome to our platform to start learning</p><br><p>Login email: ${email}</p><p>Your password to log into your account is: ${randomPassword}</p><br><p>Happy learning, </p><p>Sprout Team!</p>`,
     });
 
     console.log("New user created:", newUser);

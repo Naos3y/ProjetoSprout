@@ -51,7 +51,7 @@ export async function POST(request) {
         },
       },
       data: {
-        groupgid: parseInt(selectedGroupID), // Novo groupgid que você deseja definir
+        groupgid: parseInt(selectedGroupID),
       },
     });
 

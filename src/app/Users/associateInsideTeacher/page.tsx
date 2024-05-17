@@ -71,6 +71,7 @@ const Formulario = () => {
 
     setIsConfirmationModalOpen(true);
   };
+
   const handleSubmit = async () => {
     try {
       if (!selectedUser) {
