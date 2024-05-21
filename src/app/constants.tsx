@@ -75,6 +75,11 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
         path: "/Trainings/addNewTrainings",
         icon: <Icon icon="carbon:add-filled" width="17" height="17" />,
       },
+      {
+        title: "Confirm Training Attendance",
+        path: "/Trainings/confirmTrainingAttendance",
+        icon: <Icon icon="carbon:add-filled" width="17" height="17" />,
+      },
     ],
   },
   {

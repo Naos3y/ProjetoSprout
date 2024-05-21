@@ -34,6 +34,7 @@ const Formulario = () => {
   const [selectedCountrys, setSelectedCountrys] = useState("");
   const [selectedCitys, setSelectedCitys] = useState("");
   const [reloadData, setReloadData] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); //CARREGAR A PAGINA
 
   useEffect(() => {
     fetchLeader();
@@ -75,6 +76,8 @@ const Formulario = () => {
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch data");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -288,7 +291,9 @@ const Formulario = () => {
     console.log(selectedCountry);
     if (selectedCountry !== "Select Country") {
       getStates(selectedCountry).then((result) => {
-        setCountryStates(result.data.data.states);
+        if (result) {
+          setCountryStates(result.data.data.states);
+        }
       });
     }
   }, [selectedCountry]);
@@ -297,7 +302,9 @@ const Formulario = () => {
     console.log(selectedState);
     if (selectedState !== "Select State" && selectedCountry) {
       getCities(selectedCountry, selectedState).then((result) => {
-        setCities(result.data.data);
+        if (result) {
+          setCities(result.data.data);
+        }
       });
     }
   }, [selectedState]);
@@ -404,72 +411,82 @@ const Formulario = () => {
       </div>
 
       <div className="mt-10">
-        <h2 className="text-xl font-semibold mb-4 text-center ">
-          Table of Users to Edit
-        </h2>
-        <table className="mt-2 w-1/2 mx-auto border-collapse border border-gray-400 rounded-lg overflow-hidden bg-white">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Name
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Email
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Admin Rights
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Role
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Edit User
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.map((user) => (
-              <tr key={user.id}>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {user.uname}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {user.login ? user.login.lemail : ""}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {(() => {
-                    switch (user.uadminrights) {
-                      case 1:
-                        return "Admin";
-                      case 0:
-                        return "Admin";
-                      case 3:
-                        return "Manager";
-                      case 4:
-                        return "Sprout";
-                      default:
-                        return "";
-                    }
-                  })()}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {user.urole}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  <div className="flex justify-center items-center">
-                    <Icon
-                      icon="fa-solid:user-edit"
-                      width="19"
-                      height="19"
-                      className="text-yellow-500 cursor-pointer"
-                      onClick={() => handleEditUser(user.id)}
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {!isLoading ? (
+          <>
+            <h2 className="text-xl font-semibold mb-4 text-center ">
+              Table of Users to Edit
+            </h2>
+            <table className="mt-2 w-1/2 mx-auto border-collapse border border-gray-400 rounded-lg overflow-hidden bg-white">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Name
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Email
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Admin Rights
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Role
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Edit User
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUsers.map((user) => (
+                  <tr key={user.id}>
+                    <td className="border border-gray-300 px-4 py-2 text-center min-w-[180px]">
+                      {user.uname}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center min-w-[180px]">
+                      {user.login ? user.login.lemail : ""}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center min-w-[140px]">
+                      {(() => {
+                        switch (user.uadminrights) {
+                          case 1:
+                            return "Admin";
+                          case 0:
+                            return "Admin";
+                          case 3:
+                            return "Manager";
+                          case 4:
+                            return "Sprout";
+                          default:
+                            return "";
+                        }
+                      })()}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center min-w-[160px]">
+                      {user.urole}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center min-w-[105px]">
+                      <div className="flex justify-center items-center">
+                        <Icon
+                          icon="fa-solid:user-edit"
+                          width="19"
+                          height="19"
+                          className="text-yellow-500 cursor-pointer"
+                          onClick={() => handleEditUser(user.id)}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <div className="flex justify-center">
+            <div className="font-semibold text-green-500 text-lg pb-3">
+              Loading Users To Edit ...
+            </div>
+          </div>
+        )}
       </div>
 
       {isModalOpen && (

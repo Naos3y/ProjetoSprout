@@ -12,6 +12,7 @@ const Formulario = () => {
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); //CARREGAR A PAGINA
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -34,6 +35,8 @@ const Formulario = () => {
     } catch (error) {
       console.error(error);
       toast.error("Failed to fetch data");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -162,90 +165,110 @@ const Formulario = () => {
       </div>
 
       <div className="mt-10">
-        <h2 className="text-xl font-semibold mb-4 text-center ">
-          Table of Users to Edit
-        </h2>
-        <table className="mt-2 w-1/2 mx-auto border-collapse border border-gray-400 rounded-lg overflow-hidden bg-white">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Name
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                User Type
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Admin Rights
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Role
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Employee Number
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Associate Inside Teacher
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.map((user) => (
-              <tr key={user.id}>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {user.uname}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {user.utype}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {(() => {
-                    switch (user.uadminrights) {
-                      case 1:
-                        return "Admin";
-                      case 0:
-                        return "Admin";
-                      case 3:
-                        return "Manager";
-                      case 4:
-                        return "Sprout";
-                      default:
-                        return "";
-                    }
-                  })()}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {user.urole}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {user.uemployeenumber}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {user.isInsideTeacher ? (
-                    <div className="flex justify-center items-center">
-                      <Icon
-                        icon="material-symbols:person-cancel-rounded"
-                        width="24"
-                        height="24"
-                        className="text-red-500 cursor-pointer"
-                        onClick={() => handleDesassociateTeacher(user.id)}
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex justify-center items-center">
-                      <Icon
-                        icon="la:chalkboard-teacher"
-                        width="24"
-                        height="24"
-                        className="text-yellow-500 cursor-pointer"
-                        onClick={() => handleAssociateTeacher(user.id)}
-                      />
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {!isLoading ? (
+          <>
+            <h2 className="text-xl font-semibold mb-4 text-center ">
+              Table of Users to Edit
+            </h2>
+            <table className="mt-2 w-1/2 mx-auto border-collapse border border-gray-400 rounded-lg overflow-hidden bg-white">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Name
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    User Type
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Admin Rights
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Role
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Employee Number
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Associate Inside Teacher
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUsers.map((user) => (
+                  <tr key={user.id}>
+                    <td
+                      className="border border-gray-300 px-4 py-2 text-center min-w-[200px]"
+                      style={{
+                        width: "200px",
+                      }}
+                    >
+                      {user.uname}
+                    </td>
+                    <td
+                      className="border border-gray-300 px-4 py-2 text-center min-w-[140px]"
+                      style={{
+                        width: "130px",
+                      }}
+                    >
+                      {user.utype}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center min-w-[150px]">
+                      {(() => {
+                        switch (user.uadminrights) {
+                          case 1:
+                            return "Admin";
+                          case 0:
+                            return "Admin";
+                          case 3:
+                            return "Manager";
+                          case 4:
+                            return "Sprout";
+                          default:
+                            return "";
+                        }
+                      })()}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center min-w-[180px]">
+                      {user.urole}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center min-w-[180px]">
+                      {user.uemployeenumber}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center min-w-[120px]">
+                      {user.isInsideTeacher ? (
+                        <div className="flex justify-center items-center">
+                          <Icon
+                            icon="material-symbols:person-cancel-rounded"
+                            width="24"
+                            height="24"
+                            className="text-red-500 cursor-pointer"
+                            onClick={() => handleDesassociateTeacher(user.id)}
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex justify-center items-center">
+                          <Icon
+                            icon="la:chalkboard-teacher"
+                            width="24"
+                            height="24"
+                            className="text-yellow-500 cursor-pointer"
+                            onClick={() => handleAssociateTeacher(user.id)}
+                          />
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <div className="flex justify-center">
+            <div className="font-semibold text-green-500 text-lg pb-3">
+              Loading Associate Inside Teachers ...
+            </div>
+          </div>
+        )}
       </div>
 
       {isModalOpen && (

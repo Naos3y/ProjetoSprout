@@ -24,6 +24,7 @@ const Formulario = () => {
   >([]);
   const [confirmRemoveModal, setConfirmRemoveModal] = useState(false);
   const [teamToRemoveId, setTeamToRemoveId] = useState<number>();
+  const [isLoading, setIsLoading] = useState(true); //CARREGAR A PAGINA
 
   useEffect(() => {
     fetchDepartments();
@@ -50,6 +51,8 @@ const Formulario = () => {
     } catch (error) {
       console.error("Error:", error);
       toast.error("An error occurred while fetching Teams.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -196,9 +199,9 @@ const Formulario = () => {
             style={{
               marginTop: "50px",
               marginRight: "10px",
-              marginBottom: "100px",
+              marginBottom: "50px",
             }}
-            className="bg-gray-500 text-white font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-600 hover:text-white active:bg-gray-500"
+            className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-500 hover:text-white active:bg-gray-500"
             onClick={() => {
               toast.error("Registration Canceled!");
               setTeamName("");
@@ -207,8 +210,8 @@ const Formulario = () => {
             Cancel
           </button>
           <button
-            style={{ marginTop: "50px", marginBottom: "100px" }}
-            className="bg-green-500 text-white font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-800 hover:text-white active:bg-green-700"
+            style={{ marginTop: "50px", marginBottom: "50px" }}
+            className=" bg-green-500 text-white font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-800 hover:text-white active:bg-green-700"
             onClick={handleSubmit}
           >
             Register New Team
@@ -216,47 +219,57 @@ const Formulario = () => {
         </div>
       </div>
       <div className="mt-2">
-        <h2 className="text-xl font-semibold mb-4 text-center ">
-          Teams and Respective Departments
-        </h2>
-        <table className="mt-2 w-1/2 mx-auto border-collapse border border-gray-400 rounded-lg overflow-hidden bg-white">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Department
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Team
-              </th>
-              <th className="border border-gray-300 px-4 py-2 text-center">
-                Remove
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {teams.map((team) => (
-              <tr key={team.departmentdid}>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {team.department ? team.department.dname : "null"}{" "}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  {team.tname}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  <div className="flex justify-center items-center">
-                    <Icon
-                      icon="pajamas:remove"
-                      width="19"
-                      height="19"
-                      className="text-red-700 cursor-pointer"
-                      onClick={() => handleRemoveTeam(team.tid)}
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {!isLoading ? (
+          <>
+            <h2 className="text-xl font-semibold mb-4 text-center ">
+              Teams and Respective Departments
+            </h2>
+            <table className="mt-2 w-1/2 mx-auto border-collapse border border-gray-400 rounded-lg overflow-hidden bg-white">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Department
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Team
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Remove
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {teams.map((team) => (
+                  <tr key={team.departmentdid}>
+                    <td className="border border-gray-300 px-4 py-2 text-center">
+                      {team.department ? team.department.dname : "null"}{" "}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">
+                      {team.tname}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-center">
+                      <div className="flex justify-center items-center">
+                        <Icon
+                          icon="pajamas:remove"
+                          width="19"
+                          height="19"
+                          className="text-red-700 cursor-pointer"
+                          onClick={() => handleRemoveTeam(team.tid)}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <div className="flex justify-center">
+            <div className="font-semibold text-green-500 text-lg pb-3">
+              Loading Teams and Departmants ...
+            </div>
+          </div>
+        )}
       </div>
 
       {confirmRemoveModal && ( //PAINEL DE REMOÇÃO DE EQUIPA

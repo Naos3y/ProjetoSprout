@@ -8,15 +8,21 @@ const getCountries = async () => {
 };
 
 const getStates = async (country: string) => {
-  const url = `/states/q?country=${country}`;
-  const states = await axios.get(url);
-  return states;
+  if (country) {
+    const url = `/states/q?country=${country}`;
+    const states = await axios.get(url);
+    return states;
+  }
+  return null;
 };
 
 const getCities = async (country: string, state: string) => {
-  const url = `/state/cities/q?country=${country}&state=${state}`;
-  const cities = await axios.get(url);
-  return cities;
+  if (state && country) {
+    const url = `/state/cities/q?country=${country}&state=${state}`;
+    const cities = await axios.get(url);
+    return cities;
+  }
+  return null;
 };
 
 export { getCountries, getStates, getCities };

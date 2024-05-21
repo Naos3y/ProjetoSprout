@@ -8,12 +8,10 @@ import { Toaster, toast } from "sonner";
 
 const Formulario = () => {
   const [completeName, setCompleteName] = useState("");
-  const [selectedColumns, setSelectedColumns] = useState([
-    "Full Name",
-    "User Type",
-  ]);
+  const [selectedColumns, setSelectedColumns] = useState([]);
   const [users, setUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true); //CARREGAR A PAGINA
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +25,8 @@ const Formulario = () => {
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch data");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -46,32 +46,42 @@ const Formulario = () => {
   const renderTable = () => {
     return (
       <div className="flex justify-center mt-8">
-        <table className="border-collapse border border-gray-400 rounded-lg overflow-hidden bg-white">
-          <thead className="bg-gray-200">
-            <tr>
-              {selectedColumns.map((column) => (
-                <th key={column} className="border border-gray-400 p-2">
-                  {column}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers &&
-              filteredUsers.map((user) => (
-                <tr key={user.id}>
+        {!isLoading ? (
+          <>
+            <table className="border-collapse border border-gray-400 rounded-lg overflow-hidden bg-white">
+              <thead className="bg-gray-200">
+                <tr>
                   {selectedColumns.map((column) => (
-                    <td
-                      key={column}
-                      className="border border-gray-400 p-2 whitespace-nowrap"
-                    >
-                      {getColumnValue(user, column)}
-                    </td>
+                    <th key={column} className="border border-gray-400 p-2">
+                      {column}
+                    </th>
                   ))}
                 </tr>
-              ))}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {filteredUsers &&
+                  filteredUsers.map((user) => (
+                    <tr key={user.id}>
+                      {selectedColumns.map((column) => (
+                        <td
+                          key={column}
+                          className="border border-gray-400 p-2 whitespace-nowrap"
+                        >
+                          {getColumnValue(user, column)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <div className="flex justify-center">
+            <div className="font-semibold text-green-500 text-lg pb-3">
+              Loading Groups ...
+            </div>
+          </div>
+        )}
       </div>
     );
   };

@@ -193,7 +193,9 @@ const Formulario = () => {
     console.log(selectedCountry);
     if (selectedCountry !== "Select Country") {
       getStates(selectedCountry).then((result) => {
-        setCountryStates(result.data.data.states);
+        if (result) {
+          setCountryStates(result.data.data.states);
+        }
       });
     }
   }, [selectedCountry]);
@@ -202,7 +204,9 @@ const Formulario = () => {
     console.log(selectedState);
     if (selectedState !== "Select State" && selectedCountry) {
       getCities(selectedCountry, selectedState).then((result) => {
-        setCities(result.data.data);
+        if (result) {
+          setCities(result.data.data);
+        }
       });
     }
   }, [selectedState]);
