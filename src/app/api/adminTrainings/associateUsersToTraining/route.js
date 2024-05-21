@@ -12,7 +12,7 @@ export async function POST(request) {
     const result = await prisma.$queryRaw`
       SELECT bruno_associate_users_to_training(CAST(${trainingID} AS INTEGER), ${userIDs}, ${teacherIDs})`;
 
-    console.log(result);
+    console.log("aqui", result);
 
     if (result) {
       return NextResponse.json({

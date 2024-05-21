@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useEffect } from "react";
+import Link from "next/link";
 import Modal from "react-modal";
 import Navbar from "@/components/Navbar";
 import Dropdown from "@/components/Dropdown";
@@ -48,6 +49,7 @@ const AddTraining = () => {
   const [showRefreshConfirmation, setShowConfirmFefreshPage] = useState(false);
   const [showAssociateUserOptions, setShowAssociateUserOptions] =
     useState(false);
+  const [showFinalModal, setShowFinalModal] = useState(false);
 
   // para adicionar pessoas ao treino
   const [department, setDepartments] = useState([]);
@@ -146,6 +148,7 @@ const AddTraining = () => {
     setConfirmTrainingAdded(true);
     setAddNewTraining(true);
     setShowAssociateUserOptions(true);
+    setShowFinalModal(true);
   };
 
   const handleDontWantToAddUsersToTraining = () => {
@@ -1061,6 +1064,37 @@ const AddTraining = () => {
                       >
                         Cancel
                       </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {showFinalModal && (
+              <>
+                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                  <div className="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
+                      Would you like to:
+                    </h2>
+                    <div className="flex justify-center space-x-4 pt-5">
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={refreshPage}
+                      >
+                        Add a new training
+                      </button>
+                      <Link
+                        href="/admin/adminhub/trainings/startInside"
+                        passHref
+                      >
+                        <button
+                          className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                          onClick={changePageToStartTraining}
+                        >
+                          Go to Edit Trainings
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 </div>

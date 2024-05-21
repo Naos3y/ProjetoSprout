@@ -6,6 +6,8 @@ import { Toaster, toast } from "sonner";
 import TimePicker from "@/components/TimePicker";
 import DatePicker from "@/components/DatePicker";
 import TextInput from "@/components/TextInput";
+import TableTextInput from "@/components/EnrollUser";
+import MultiselectSearch from "@/components/MultiselectSearch";
 
 function StartInsideTraining() {
   const [trainingArea, setTrainingArea] = useState(null);
@@ -29,10 +31,208 @@ function StartInsideTraining() {
   const [date, setDate] = useState(null);
   const [location, setLocation] = useState(null);
   const [showStartConfirmation, setShowStartConfirmation] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+
+  const [department, setDepartments] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [teams, setTeams] = useState([]);
+  const [trainers, setTrainers] = useState([]);
+  const [userEmail, setUserEmail] = useState([]);
+  const [finalEnrolledUserArray, setFinalEnrolledUserArray] = useState([]);
+  const [enrolledUsers, setEnrolledUsers] = useState([]);
+  const [finalUserArray, setFinalUserArray] = useState([]);
+  const [options, setOptions] = useState([]);
+  const [trainingType, setTrainingType] = useState("internal");
+  const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [groupOptions, setGroupOtions] = useState([]);
+  const [teamOptions, setTeamOptions] = useState([]);
 
   useEffect(() => {
     getAllInsideTrainings();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const trainers = await handleTrainerOptions(trainingType);
+      setOptions(trainers);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const departments = await handleDepartmentOptions();
+      setDepartmentOptions(departments);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const groups = await handleGroupOptions();
+      setGroupOtions(groups);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const teams = await handleTeamOptions();
+      setTeamOptions(teams);
+    };
+    fetchData();
+  }, []);
+
+  const handleTeamOptions = async () => {
+    try {
+      const response = await fetch(`/api/adminTrainings/getTeamNames`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        const mappedTeams = responseData.trainers.map((teams) => ({
+          value: teams.team_id,
+          label: teams.team_name,
+        }));
+        return mappedTeams;
+      } else {
+        toast.error("Failed to get teams");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        "An error occurred while trying to get the teams. Please try again later."
+      );
+    }
+  };
+
+  const handleGroupOptions = async () => {
+    try {
+      const response = await fetch(`/api/adminTrainings/getGroupNames`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        const mappedGroups = responseData.trainers.map((groups) => ({
+          value: groups.group_id,
+          label: groups.group_name,
+        }));
+        return mappedGroups;
+      } else {
+        toast.error("Failed to get groups");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        "An error occurred while trying to get the groups. Please try again later."
+      );
+    }
+  };
+
+  const handleDepartmentOptions = async () => {
+    try {
+      const response = await fetch(`/api/adminTrainings/getDepartmentNames`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        const mappedDepartments = responseData.trainers.map((departments) => ({
+          value: departments.department_id,
+          label: departments.department_name,
+        }));
+        return mappedDepartments;
+      } else {
+        toast.error("Failed to get departments");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        "An error occurred while trying to get the departments. Please try again later."
+      );
+    }
+  };
+
+  const handleTrainerOptions = async () => {
+    /* try {
+      if (type.value == "external") {
+        setTrainers([]);
+        try {
+          const response = await fetch(
+            `/api/adminTrainings/getExternalTrainers`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (response.ok) {
+            const responseData = await response.json();
+            const mappedTrainers = responseData.trainers.map((trainer) => ({
+              value: trainer.trainer_id,
+              label: trainer.trainer_name,
+            }));
+            //console.log("aqui", mappedTrainers);
+            return mappedTrainers;
+          } else {
+            toast.error("Failed to get trainers");
+            return [];
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          toast.error(
+            "An error occurred while trying to get internal trainers. Please try again later."
+          );
+        }
+      } else if (type.value == "internal") { */
+    setTrainers([]);
+    try {
+      const response = await fetch(`/api/adminTrainings/getInternalTrainers`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        const mappedTrainers = responseData.trainers.map((trainer) => ({
+          value: trainer.user_id,
+          label: trainer.teacher_name,
+        }));
+        //console.log("aqui", mappedTrainers);
+        return mappedTrainers;
+      } else {
+        toast.error("Failed to get trainers");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        "An error occurred while trying to get internal trainers. Please try again later."
+      );
+    }
+    /*}
+     } catch (error) {
+      return [];
+    } */
+  };
 
   const showHelp = () => {
     setShowHelpModal(true);
@@ -206,6 +406,15 @@ function StartInsideTraining() {
     setShowAddOptions(true);
   };
 
+  const showEditModal = async (TID) => {
+    setTrainingID(TID);
+    setShowEdit(true);
+  };
+
+  const editTraining = async (TID) => {
+    handleAssociateUsers(trainingID);
+  };
+
   const handleModalSwitch = () => {
     if (time == null || date == null || location == null) {
       toast.error("Complete all fields");
@@ -254,6 +463,206 @@ function StartInsideTraining() {
     setDate(null);
     setTime(null);
     setLocation(null);
+  };
+
+  const handleAssociateUsers = async (idTraining) => {
+    const userIDsArray = [];
+    const uniqueUserIDs = new Set();
+
+    try {
+      // adaptado do chatGPT
+      const extractUserIDs = async (responseData) => {
+        responseData.forEach((item) => {
+          const userID =
+            item.bruno_getusersbydepartmentid ||
+            item.bruno_getusersbyteamid ||
+            item.bruno_getusersbygroupid ||
+            item.bruno_getuseridwithemail;
+          if (userID) {
+            // Verifica se o ID de usuário não é nulo
+            uniqueUserIDs.add(userID);
+          }
+        });
+      };
+
+      try {
+        //https://www.w3schools.com/js/js_loop_forof.asp
+        for (const dept of department) {
+          const response = await fetch(
+            `/api/adminTrainings/getUsersByDepartmentID?id=${dept.value}`,
+            { method: "GET" }
+          );
+          if (response.ok) {
+            const responseData = await response.json();
+            await extractUserIDs(responseData.departments);
+          }
+        }
+
+        for (const team of teams) {
+          const response = await fetch(
+            `/api/adminTrainings/getUsersByTeamID?id=${team.value}`,
+            { method: "GET" }
+          );
+          if (response.ok) {
+            const responseData = await response.json();
+            await extractUserIDs(responseData.teams);
+          }
+        }
+
+        for (const group of groups) {
+          const response = await fetch(
+            `/api/adminTrainings/getUsersByGroupID?id=${group.value}`,
+            { method: "GET" }
+          );
+          if (response.ok) {
+            const responseData = await response.json();
+            await extractUserIDs(responseData.groups);
+          }
+        }
+
+        // trata dos utilizadores que se podem inscrever
+        userIDsArray.push(...uniqueUserIDs);
+
+        try {
+          const response = await fetch(
+            `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
+              userIDsArray
+            )}`
+          );
+          const responseData = await response.json();
+
+          if (response.ok) {
+            console.log("Entrou no if");
+            setFinalUserArray(responseData.userids);
+
+            try {
+              const trainerIds = trainers.map((trainer) => trainer.value);
+              const responseteacher = await fetch(
+                `/api/adminTrainings/getInsideTeacherByUserID?userids=${encodeURIComponent(
+                  trainerIds
+                )}`
+              );
+              const responseDataTeacher = await responseteacher.json();
+
+              console.log(responseDataTeacher);
+              if (responseteacher.ok) {
+                console.log("teacher ids: ", responseDataTeacher.userids);
+                try {
+                  const trainingResponse = await fetch(
+                    `/api/adminTrainings/associateUsersToTraining`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        trainingID: idTraining,
+                        userIDs: responseData.userids,
+                        teacherIDs: responseDataTeacher.userids,
+                      }),
+                    }
+                  );
+
+                  const trainingData = await trainingResponse.json();
+                  console.log("trainingData: ", trainingData);
+
+                  if (trainingResponse.ok) {
+                    toast.success(trainingData.message);
+                  } else {
+                    toast.error(trainingData.message);
+                  }
+                } catch (error) {
+                  console.error("Error inserting training data:", error);
+                  toast.error(
+                    "An error occurred while inserting training data."
+                  );
+                }
+              } else {
+                toast.error(responseDataTeacher.message);
+              }
+            } catch (error) {
+              console.log(error);
+            }
+          } else {
+            console.log("Entrou no else");
+            toast.error(responseData.message);
+          }
+        } catch (error) {
+          toast.error("An error occurred while converting userIDs.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        toast.error(
+          "An error occurred while associating users to the training. Please try again later."
+        );
+      }
+
+      // trata dos utilizadores que são incritos automaticamente no enroll
+      for (const email of userEmail) {
+        const response = await fetch(
+          `/api/adminTrainings/getUserIDWithEmail?email=${email}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          // await extractUserIDs(responseData.emails);
+          //setEnrolledUsers(responseData.bruno_getuseridwithemail);
+          //console.log("responseData ", responseData);
+
+          try {
+            const responseEnroll = await fetch(
+              `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
+                enrolledUsers
+              )}`
+            );
+            const responseDataEnroll = await responseEnroll.json();
+            //console.log("Id regular user do user email: ", responseDataEnroll);
+
+            if (responseEnroll.ok) {
+              try {
+                const trainingResponse = await fetch(
+                  `/api/adminTrainings/enrollUsers`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      trainingID: idTraining,
+                      userIDs: responseData.emails,
+                    }),
+                  }
+                );
+
+                const trainingData = await trainingResponse.json();
+
+                if (trainingResponse.ok) {
+                  toast.success(trainingData.message);
+                } else {
+                  toast.error(trainingData.message);
+                }
+              } catch (error) {
+                console.error("Error inserting training data!:", error);
+                toast.error("An error occurred while inserting training data.");
+              }
+            } else {
+              toast.error("An error occurred. Try again later.");
+            }
+          } catch (error) {
+            toast.error("An error occurred. Try again later.");
+          }
+        }
+      }
+
+      setShowEdit(false);
+      setUserEmail([]);
+      setTrainers([]);
+      setDepartments([]);
+      setGroups([]);
+      setTeams([]);
+    } catch (error) {
+      toast.error("Error editing training");
+    }
   };
 
   return (
@@ -362,7 +771,7 @@ function StartInsideTraining() {
             {showAddOptions && (
               <>
                 <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 p-10">
-                  <div className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-screen">
+                  <div className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[850px]">
                     <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
                       Start Training
                     </h2>
@@ -659,7 +1068,7 @@ function StartInsideTraining() {
                             <td className="border border-gray-200 p-2 text-center">
                               <button
                                 className="bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                                //onClick={() => showAddModal(trainings.itid)}
+                                onClick={() => showEditModal(trainings.itid)}
                               >
                                 Edit
                               </button>
@@ -676,6 +1085,81 @@ function StartInsideTraining() {
                         ))}
                     </tbody>
                   </table>
+                </div>
+              </>
+            )}
+
+            {showEdit && (
+              <>
+                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                  <div
+                    className="bg-white p-8 rounded-lg shadow-lg w-[1300px] overflow-y-auto
+                  "
+                  >
+                    <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
+                      Edit Training
+                    </h2>
+                    <div className="grid grid-cols-4  gap-x-20 gap-y-3">
+                      <div className="col-span-4 ">
+                        <TableTextInput
+                          label={"Enroll Users"}
+                          returned={setUserEmail}
+                        />
+                      </div>
+                      <div className="col-span-4">
+                        <span>Enrolment Open For</span>
+                      </div>
+                      <div>
+                        <MultiselectSearch
+                          label="Trainers"
+                          options={options}
+                          message="Select One / Multi"
+                          returned={setTrainers}
+                        />
+                      </div>
+
+                      <div>
+                        <MultiselectSearch
+                          label="Enrolment for Department"
+                          options={departmentOptions}
+                          message="Select One / Multi"
+                          returned={setDepartments}
+                        />
+                      </div>
+
+                      <div>
+                        <MultiselectSearch
+                          label="Enrolment for Groups"
+                          options={groupOptions}
+                          message="Select One / Multi"
+                          returned={setGroups}
+                        />
+                      </div>
+
+                      <div>
+                        <MultiselectSearch
+                          label="Enrolment for Teams"
+                          options={teamOptions}
+                          message="Select One / Multi"
+                          returned={setTeams}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-center space-x-4 pt-5">
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={editTraining}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
+                        onClick={() => setShowEdit(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </>
             )}
