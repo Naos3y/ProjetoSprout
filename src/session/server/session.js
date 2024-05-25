@@ -49,13 +49,14 @@ async function tryGetEssentials(email) {
 }
 
 export async function Login(credentials) {
-  const permission = 4;
-  //permissions :
-  // 0 -> admin
-  // 1 -> admin
-  // 2 -> admin
-  // 3 -> manager
+  //const permission = 4;
+
+  //perms :
+  // 0 -> admin & manager & sprout
+  // 1 -> admin & sprout
+  // 3 -> manager & sprout
   // 4 -> sprout
+
   const email = credentials.get("email");
   const password = credentials.get("password");
 

@@ -7,14 +7,19 @@ export async function getPermission() {
   return decryptedSession.user.permission;
 }
 
-export async function validSession(p1, p2 = p1, p3 = p1) {
+export async function validSession(p1, p2 = p1, p3 = p1, p4 = p1) {
   const sessionCookie = cookies.get("session");
   if (sessionCookie) {
     try {
       const decryptedSession = await decrypt(sessionCookie);
       if (decryptedSession) {
         const response = await getPermission();
-        if (response == p1 || response == p2 || response == p3) {
+        if (
+          response == p1 ||
+          response == p2 ||
+          response == p3 ||
+          response == p4
+        ) {
           return 1;
         } else {
           return 0;

@@ -8,10 +8,16 @@ import Navbar from "@/components/Navbar";
 import SessionExpired from "@/components/Session/SessionExpired";
 import Footer from "@/components/Footer";
 import "@fontsource/proza-libre";
+import SideNav from "@/components/Static/sidenav";
 
 export default function Manager() {
   const [control, setControl] = useState(-1);
   const [showExpired, setShowExpired] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSideNav = () => {
+    setIsOpen(!isOpen);
+  };
 
   useEffect(() => {
     let flag = true;
@@ -52,12 +58,13 @@ export default function Manager() {
           </div>
         </div>
       ) : control === 1 ? (
-        <div>
-          <nav>
-            <Navbar activeRoute="/manager" privilege={3} />
-          </nav>
-          <div className="justify-center items-center mr-5 ml-5">
-            <Layout condition={false} />
+        <div className="relative flex">
+          <SideNav isOpen={isOpen} toggleSideNav={toggleSideNav} />
+          <div className="flex-1">
+            {/* <Navbar toggleSideNav={toggleSideNav} /> */}
+            <main className="">
+              <Layout condition={false} />
+            </main>
           </div>
         </div>
       ) : (

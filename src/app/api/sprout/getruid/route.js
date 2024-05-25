@@ -16,7 +16,6 @@ export async function GET(request) {
     if (sessionCookie) {
       const data =
         await prisma.$queryRaw`select * from get_user_ruid(CAST(${id} AS INTEGER))`;
-      console.log(data);
       return NextResponse.json({
         code: 200,
         message: data,

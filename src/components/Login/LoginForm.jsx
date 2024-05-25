@@ -36,15 +36,15 @@ export default async function LoginForm(props) {
           />
         </div>
 
-        <div className="mb-4 text-center">
+        {/* <div className="mb-4 text-center">
           <a
             href="#"
             className="text-black transition-colors hover:text-gray-500 duration-300 font-bold"
           >
             Forgot the Password?
           </a>
-        </div>
-        <div className="text-center">
+        </div> */}
+        <div className="text-center mt-8">
           <button
             type="submit"
             className="bg-[#DFDFDF] text-[#818181] font-bold px-12 py-2 mb-4 rounded-md shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"

@@ -9,6 +9,7 @@ import ColorHelp from "../Sprout/ColorInfor";
 import { MdOutlineHelp } from "react-icons/md";
 import { react } from "react";
 import { Toaster, toast } from "sonner";
+import { FiHelpCircle } from "react-icons/fi";
 
 function Layout(condition) {
   const [userFilter, setUserFilter] = useState("");
@@ -346,6 +347,7 @@ function Layout(condition) {
     const updateData = async () => {
       try {
         const aTeam = await tryGetTeam();
+        console.log(aTeam);
         const userrequestI = await tryGetUserInsideRequest();
         const userrequestO = await tryGetUserOutsideRequest();
         let iids = [];
@@ -369,9 +371,9 @@ function Layout(condition) {
   }, []);
 
   return (
-    <div className="border rounded mt-5 mb-5 h-screen">
+    <div className="border rounded mb-5 h-screen ml-8">
       <Toaster richColors position="bottom-center" />
-      <div className="flex flex-col lg:flex-row rounded mt-1 mb-1">
+      <div className="flex flex-col lg:flex-row rounded mt-1 mb-1 ml-4">
         <div className="w-full lg:w-1/3 relative lg:border-r">
           <h2 className="text-Left text-green-700 text-3xl font-semibold ml-5 mt-5">
             Sprouts
@@ -439,7 +441,7 @@ function Layout(condition) {
                                   {user.tname}
                                 </span>
                               </div>
-                              <div className="text-l text-gray-600 font-bold text-left">
+                              <div className="text-l text-gray-600 font-bold text-left mb-1">
                                 Department:
                                 <span className="text-black mt-1 ml-1">
                                   {user.dname}
@@ -681,13 +683,13 @@ function Layout(condition) {
           </div>
         </div>
       </div>
-      <div className="fixed bottom-4 right-4 p-4">
-        <button
-          className="bg-[#DFDFDF] text-[#818181]  rounded-full shadow-sm hover:bg-blue-500 hover:text-white active:bg-blue-500 text-2xl"
+      <div className="fixed top-16 right-4 p-4 flex items-center">
+        <p className="font-semibold text-green-500 text-lg pr-2 pl-10">Help</p>
+        <FiHelpCircle
           onClick={() => setShowHelp(true)}
-        >
-          <MdOutlineHelp />
-        </button>
+          style={{ cursor: "pointer" }}
+          className="text-black"
+        />
       </div>
       {showHelp && <ColorHelp onClose={closeHelp} />}
     </div>

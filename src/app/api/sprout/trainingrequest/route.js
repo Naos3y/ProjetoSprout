@@ -16,10 +16,8 @@ export async function POST(request) {
         : "";
 
     if (sessionCookie) {
-      console.log(tid, uid);
       const data =
         await prisma.$queryRaw`select * from training_request(CAST(${tid} AS INTEGER),CAST(${uid} AS INTEGER))`;
-      console.log(data);
       return NextResponse.json({
         code: 200,
         message: "Success",

@@ -3,6 +3,8 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { MdOutlineHelp } from "react-icons/md";
 import Dropdown from "../DropdownFilter";
 import { GrClearOption } from "react-icons/gr";
+import { FiHelpCircle } from "react-icons/fi";
+
 import { decrypt } from "@/session/crypt";
 import { Toaster, toast } from "sonner";
 import cookies from "js-cookie";
@@ -237,7 +239,7 @@ export default function IncomingLayout() {
     { value: "", label: "All" },
     { value: "virtual", label: "Virtual" },
     { value: "onsite", label: "OnSite" },
-    { value: "offile", label: "Offile" },
+    { value: "offline", label: "Offline" },
   ];
 
   const filteredFormacoes = formacoes.filter((formacao) => {
@@ -391,14 +393,15 @@ export default function IncomingLayout() {
           })}
         </div>
       </div>
-      <div className="fixed bottom-4 right-4 p-4">
-        <button
-          className="bg-[#DFDFDF] text-[#818181]  rounded-full shadow-sm hover:bg-blue-500 hover:text-white active:bg-blue-500 text-2xl"
+      <div className="fixed top-16 right-4 p-4 flex items-center">
+        <p className="font-semibold text-green-500 text-lg pr-2 pl-10">Help</p>
+        <FiHelpCircle
           onClick={() => setShowHelp(true)}
-        >
-          <MdOutlineHelp />
-        </button>
+          style={{ cursor: "pointer" }}
+          className="text-black"
+        />
       </div>
+
       {showHelp && <ColorHelp onClose={closeHelp} />}
     </div>
   );

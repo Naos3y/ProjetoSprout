@@ -19,7 +19,6 @@ export async function POST(request) {
       const data =
         await prisma.$queryRaw`select * from add_to_training(CAST(${tid} AS INTEGER), CAST(${uid} AS INTEGER))
         `;
-      console.log(data);
       return NextResponse.json({
         code: 200,
         message: "Success",

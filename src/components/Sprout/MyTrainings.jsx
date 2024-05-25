@@ -7,6 +7,7 @@ import { GrClearOption } from "react-icons/gr";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
 import ColorHelp from "./ColorInfor";
+import { FiHelpCircle } from "react-icons/fi";
 
 export default function MyTrainings() {
   const [formacoes, setFormacoes] = useState([]);
@@ -317,7 +318,6 @@ export default function MyTrainings() {
                         </div>
                       )}
                     </div>
-
                     <div className="flex justify-end">
                       <button
                         className="bg-[#DFDFDF] text-[#818181] font-bold mt-2 px-2 py-1 rounded-full shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700"
@@ -326,6 +326,7 @@ export default function MyTrainings() {
                         <IoMdInformationCircleOutline />
                       </button>
                     </div>
+                    s
                   </div>
                 </div>
               </div>
@@ -333,13 +334,13 @@ export default function MyTrainings() {
           })}
         </div>
       </div>
-      <div className="fixed bottom-4 right-4 p-4">
-        <button
-          className="bg-[#DFDFDF] text-[#818181]  rounded-full shadow-sm hover:bg-blue-500 hover:text-white active:bg-blue-500 text-2xl"
+      <div className="fixed top-16 right-4 p-4 flex items-center">
+        <p className="font-semibold text-green-500 text-lg pr-2 pl-10">Help</p>
+        <FiHelpCircle
           onClick={() => setShowHelp(true)}
-        >
-          <MdOutlineHelp />
-        </button>
+          style={{ cursor: "pointer" }}
+          className="text-black"
+        />
       </div>
       {showHelp && <ColorHelp onClose={closeHelp} />}
     </div>

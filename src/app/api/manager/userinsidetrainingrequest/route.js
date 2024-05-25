@@ -15,7 +15,6 @@ export async function GET(request) {
       const data =
         await prisma.$queryRaw`select regularuserruid from regularuserhasinsidetrainings group by regularuserruid
         `;
-      console.log(data);
       return NextResponse.json({
         code: 200,
         message: data,

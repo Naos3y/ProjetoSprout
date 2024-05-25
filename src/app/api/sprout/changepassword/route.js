@@ -36,7 +36,6 @@ export async function PATCH(request) {
       });
     }
   } catch (error) {
-    console.log(error);
     return NextResponse.json({
       code: 500,
       message: "something went wrong",
