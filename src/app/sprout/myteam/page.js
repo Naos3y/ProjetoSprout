@@ -6,11 +6,19 @@ import SessionExpired from "@/components/Session/SessionExpired";
 import TeamLayout from "@/components/Sprout/Team";
 import Footer from "@/components/Footer";
 import "@fontsource/proza-libre"; // Defaults to weight 400
+import cookies from "js-cookie";
+import { decrypt } from "@/session/crypt";
+import SideNav from "@/components/Static/sidenav";
 
 export default function MyTeam() {
   const [control, setControl] = useState(-1);
   const [showExpired, setShowExpired] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [permission, setPermission] = useState(0);
 
+  const toggleSideNav = () => {
+    setIsOpen(!isOpen);
+  };
   //control
   // -1 Verificar a sessão
   //  0 Acesso negado
@@ -20,6 +28,10 @@ export default function MyTeam() {
     let flag = true;
     let sessionStatus;
     const getSession = async () => {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      const auxPermission = decryptedSession.user.permission;
+      setPermission(auxPermission);
       if (!flag) {
         const expired = await sessionExpired();
         if (sessionStatus === 1 && expired === 1 && !showExpired) {
@@ -55,12 +67,16 @@ export default function MyTeam() {
           </div>
         </div>
       ) : control === 1 ? (
-        <div>
-          <nav>
-            <Navbar activeRoute="/sprout/myteam" />
-          </nav>
-          <div className="justify-center items-center mr-5 ml-5">
-            <TeamLayout condition={false} />
+        <div className="relative flex">
+          <SideNav
+            isOpen={isOpen}
+            toggleSideNav={toggleSideNav}
+            perm={permission}
+          />
+          <div className="flex-1">
+            <main className="ml-14">
+              <TeamLayout condition={false} />
+            </main>
           </div>
         </div>
       ) : (

@@ -8,15 +8,28 @@ import Navbar from "@/components/Navbar";
 import SessionExpired from "@/components/Session/SessionExpired";
 import Footer from "@/components/Footer";
 import "@fontsource/proza-libre";
+import SideNav from "@/components/Static/sidenav";
+import cookies from "js-cookie";
+import { decrypt } from "@/session/crypt";
 
 export default function Manager() {
   const [control, setControl] = useState(-1);
   const [showExpired, setShowExpired] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [permission, setPermission] = useState(0);
+
+  const toggleSideNav = () => {
+    setIsOpen(!isOpen);
+  };
 
   useEffect(() => {
     let flag = true;
     let sessionStatus;
     const getSession = async () => {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      const auxPermission = decryptedSession.user.permission;
+      setPermission(auxPermission);
       if (!flag) {
         const expired = await sessionExpired();
         if (sessionStatus === 1 && expired === 1 && !showExpired) {
@@ -52,12 +65,16 @@ export default function Manager() {
           </div>
         </div>
       ) : control === 1 ? (
-        <div>
-          <nav>
-            <Navbar activeRoute="/manager/TrainingRequests" privilege={3} />
-          </nav>
-          <div className="justify-center items-center mr-5 ml-5">
-            <Layout condition={true} />
+        <div className="relative flex">
+          <SideNav
+            isOpen={isOpen}
+            toggleSideNav={toggleSideNav}
+            perm={permission}
+          />
+          <div className="flex-1">
+            <main className="ml-14">
+              <Layout condition={false} />
+            </main>
           </div>
         </div>
       ) : (

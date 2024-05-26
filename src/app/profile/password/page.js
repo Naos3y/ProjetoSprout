@@ -8,11 +8,17 @@ import Footer from "@/components/Footer";
 import "@fontsource/proza-libre";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
+import SideNav from "@/components/Static/sidenav";
+
 export default function Sprout() {
   const [control, setControl] = useState(-1);
   const [showExpired, setShowExpired] = useState(false);
-  const [perm, setPerm] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+  const [permission, setPermission] = useState(0);
 
+  const toggleSideNav = () => {
+    setIsOpen(!isOpen);
+  };
   //control
   // -1 Verificar a sessão
   //  0 Acesso negado
@@ -22,10 +28,10 @@ export default function Sprout() {
     let flag = true;
     let sessionStatus;
     const getSession = async () => {
-      const sessionCookie = cookies.get("session");
-      const decryptedSession = await decrypt(sessionCookie);
-      const tPerm = decryptedSession.user.permission;
-      setPerm(tPerm);
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      const auxPermission = decryptedSession.user.permission;
+      setPermission(auxPermission);
 
       if (!flag) {
         const expired = await sessionExpired();
@@ -62,12 +68,16 @@ export default function Sprout() {
           </div>
         </div>
       ) : control === 1 ? (
-        <div>
-          <nav>
-            <Navbar activeRoute="/profile/password" privilege={perm} />
-          </nav>
-          <div className="justify-center items-center mr-5 ml-5">
-            <EditPassword />
+        <div className="relative flex">
+          <SideNav
+            isOpen={isOpen}
+            toggleSideNav={toggleSideNav}
+            perm={permission}
+          />
+          <div className="flex-1">
+            <main className="ml-14">
+              <EditPassword />
+            </main>
           </div>
         </div>
       ) : (

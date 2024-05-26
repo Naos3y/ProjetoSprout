@@ -18,7 +18,7 @@ export default function Sprout() {
         const sessionStatus = await sessionExpired();
         setControl(sessionStatus);
       } else if (flag) {
-        const sessionStatus = await validSession(0, 1, 2);
+        const sessionStatus = await validSession(0, 1, 3, 4);
         setControl(sessionStatus);
         flag = !flag;
       }

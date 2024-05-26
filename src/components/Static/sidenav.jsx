@@ -1,16 +1,34 @@
 "use client";
 import React, { useState } from "react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SIDENAV_ITEMS } from "@/components/Static/constants";
+import { SIDENAV_ITEMS_0 } from "@/components/Static/perm0";
+import { SIDENAV_ITEMS_1 } from "@/components/Static/perm1";
+import { SIDENAV_ITEMS_3 } from "@/components/Static/perm3";
+import { SIDENAV_ITEMS_4 } from "@/components/Static/perm4";
+
 import { FiMenu, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FiLogOut, FiUser } from "react-icons/fi";
+import { Logout } from "@mui/icons-material";
+import { Toaster, toast } from "sonner";
+import Cookies from "js-cookie";
 
-const SideNav = () => {
+const SideNav = ({ perm }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSideNav = () => {
     setIsOpen(!isOpen);
+  };
+
+  const logout = async () => {
+    try {
+      Cookies.remove("session");
+      toast.success("Good bye sprout :)");
+    } catch (error) {
+      toast.error("Something went wrong ...");
+      console.log(error);
+    }
   };
 
   return (
@@ -21,11 +39,18 @@ const SideNav = () => {
       >
         <FiMenu className="text-gray-500" />
       </button>{" "}
-      <button className="fixed bottom-4 left-4 rounded-md hover:border-green-500 focus:outline-none cursor-pointer flex items-center justify-between bg-transparent text-black z-50">
-        <FiLogOut className="text-gray-500" />
+      <button
+        className="fixed bottom-4 left-4 rounded-md hover:border-green-500 focus:outline-none cursor-pointer flex items-center justify-between bg-transparent text-black z-50"
+        onClick={logout}
+      >
+        <Link href={"/"}>
+          <FiLogOut className="text-gray-500" />
+        </Link>
       </button>
       <button className="fixed bottom-10 left-4 rounded-md hover:border-green-500 focus:outline-none cursor-pointer flex items-center justify-between bg-transparent text-black z-50">
-        <FiUser className="text-gray-500 mr-2" />
+        <Link href="/profile">
+          <FiUser className="text-gray-500 mr-2" />
+        </Link>
       </button>
       {isOpen ? (
         <div>
@@ -40,9 +65,35 @@ const SideNav = () => {
           >
             <div className="flex mt-10 flex-col space-y-6 w-full">
               <div className="flex flex-col space-y-2 md:px-6">
-                {SIDENAV_ITEMS.map((item, idx) => (
-                  <MenuItem key={idx} item={item} />
-                ))}
+                {perm == 0 ? (
+                  <>
+                    {" "}
+                    {SIDENAV_ITEMS_0.map((item, idx) => (
+                      <MenuItem key={idx} item={item} />
+                    ))}
+                  </>
+                ) : perm == 1 ? (
+                  <>
+                    {" "}
+                    {SIDENAV_ITEMS_1.map((item, idx) => (
+                      <MenuItem key={idx} item={item} />
+                    ))}
+                  </>
+                ) : perm == 3 ? (
+                  <>
+                    {" "}
+                    {SIDENAV_ITEMS_3.map((item, idx) => (
+                      <MenuItem key={idx} item={item} />
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    {SIDENAV_ITEMS_4.map((item, idx) => (
+                      <MenuItem key={idx} item={item} />
+                    ))}
+                  </>
+                )}
               </div>
             </div>
           </div>

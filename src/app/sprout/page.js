@@ -6,10 +6,19 @@ import SessionExpired from "@/components/Session/SessionExpired";
 import Layout from "@/components/Sprout/Layout";
 import Footer from "@/components/Footer";
 import "@fontsource/proza-libre"; // Defaults to weight 400
+import SideNav from "@/components/Static/sidenav";
+import cookies from "js-cookie";
+import { decrypt } from "@/session/crypt";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);
   const [showExpired, setShowExpired] = useState(false);
+  const [permission, setPermission] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSideNav = () => {
+    setIsOpen(!isOpen);
+  };
 
   //control
   // -1 Verificar a sessão
@@ -20,6 +29,11 @@ export default function Sprout() {
     let flag = true;
     let sessionStatus;
     const getSession = async () => {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      const auxPermission = decryptedSession.user.permission;
+      setPermission(auxPermission);
+
       if (!flag) {
         const expired = await sessionExpired();
         if (sessionStatus === 1 && expired === 1 && !showExpired) {
@@ -55,12 +69,16 @@ export default function Sprout() {
           </div>
         </div>
       ) : control === 1 ? (
-        <div>
-          <nav>
-            <Navbar activeRoute="/sprout" />
-          </nav>
-          <div className="justify-center items-center mr-5 ml-5">
-            <Layout />
+        <div className="relative flex">
+          <SideNav
+            isOpen={isOpen}
+            toggleSideNav={toggleSideNav}
+            perm={permission}
+          />
+          <div className="flex-1">
+            <main className="ml-14">
+              <Layout />
+            </main>
           </div>
         </div>
       ) : (

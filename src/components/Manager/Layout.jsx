@@ -371,7 +371,7 @@ function Layout(condition) {
   }, []);
 
   return (
-    <div className="border rounded mb-5 h-screen ml-8">
+    <div className="border rounded mb-5 h-screen">
       <Toaster richColors position="bottom-center" />
       <div className="flex flex-col lg:flex-row rounded mt-1 mb-1 ml-4">
         <div className="w-full lg:w-1/3 relative lg:border-r">
