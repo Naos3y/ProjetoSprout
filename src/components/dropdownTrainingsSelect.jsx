@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Dropdown = ({ label, options, message, returned }) => {
+const Dropdown = ({ label, options, message, returned, className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -10,11 +10,9 @@ const Dropdown = ({ label, options, message, returned }) => {
     setIsOpen(false);
   };
 
-  console.log("Options:", options); // Adiciona este log
-
   return (
-    <div className="relative px-5 py-5 space-x-5">
-      <label className="px-5">{label}</label>
+    <div className={`relative ${className}`}>
+      <label>{label}</label>
       <button
         required
         type="button"

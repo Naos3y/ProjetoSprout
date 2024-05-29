@@ -117,6 +117,16 @@ const Formulario = () => {
       return;
     }
 
+    const teamExists = teams.some(
+      (team) =>
+        team.tname === teamName && team.departmentdid === selectedDepartmentId
+    );
+    if (teamExists) {
+      toast.error("Team already exists in this department!");
+      setTeamName("");
+      return;
+    }
+
     try {
       const response = await fetch("/api/addNewTeam", {
         method: "POST",

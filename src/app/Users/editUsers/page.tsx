@@ -376,9 +376,9 @@ const Formulario = () => {
         throw new Error("Failed to update user");
       }
 
-      toast.success("User updated successfully");
       setReloadData(true);
       setIsModalOpen(false);
+      toast.success("User updated successfully");
     } catch (error) {
       console.error(error);
       toast.error("Failed to update user");
@@ -503,12 +503,6 @@ const Formulario = () => {
                 Edit User: {selectedUser?.uname}
               </span>
             </div>
-            <button
-              className="modal-close absolute top-0 right-0 p-3 text-red-600"
-              onClick={closeModal}
-            >
-              <Icon icon="zondicons:close-solid" width="24" height="24" />
-            </button>
 
             <div className="flex flex-wrap">
               <div className="gap-4 ml-10">
@@ -530,7 +524,7 @@ const Formulario = () => {
                   options={[
                     { value: "Senior", label: "Senior" },
                     { value: "Junior", label: "Junior" },
-                    { value: "Mid", label: "Mid" },
+                    { value: "Mid", label: "Mid " },
                   ]}
                   message={seniority}
                   returned={handleSelectSeniority}
@@ -678,8 +672,8 @@ const Formulario = () => {
                   }}
                   className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-500 hover:text-white active:bg-gray-500"
                   onClick={() => {
-                    toast.error("Update Canceled!");
                     closeModal();
+                    toast.error("Update Canceled!");
                   }}
                 >
                   Cancel

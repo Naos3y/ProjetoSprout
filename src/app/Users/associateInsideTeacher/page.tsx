@@ -21,6 +21,7 @@ const Formulario = () => {
 
   const closeConfirmationModal = () => {
     setIsConfirmationModalOpen(false);
+    setSelectedUser(null);
   };
 
   const fetchInsideTeachers = async () => {
@@ -61,7 +62,6 @@ const Formulario = () => {
     if (user) {
       setSelectedUser(user);
     }
-
     setIsModalOpen(true);
   };
 
@@ -77,11 +77,6 @@ const Formulario = () => {
 
   const handleSubmit = async () => {
     try {
-      if (!selectedUser) {
-        toast.error("Please select a user.");
-        return;
-      }
-
       const response = await fetch("/api/addNewInsideTeacher", {
         method: "POST",
         headers: {
@@ -91,18 +86,14 @@ const Formulario = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("User associated successfully:", data);
-        toast.success("User associated successfully.");
         fetchInsideTeachers();
+        toast.success("User associated successfully.");
         closeModal();
       } else {
         const errorData = await response.json();
-        console.error("Failed to associate user:", errorData);
         toast.error("Failed to associate user: " + errorData.message);
       }
     } catch (error) {
-      console.error("Error associating user:", error);
       toast.error("An error occurred while associating user.");
     }
   };
@@ -123,18 +114,14 @@ const Formulario = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("User desassociated successfully:", data);
         toast.success("User desassociated successfully.");
         fetchInsideTeachers();
         closeConfirmationModal();
       } else {
         const errorData = await response.json();
-        console.error("Failed to desassociate user:", errorData);
         toast.error("Failed to desassociate user: " + errorData.message);
       }
     } catch (error) {
-      console.error("Error desassociating user:", error);
       toast.error("An error occurred while desassociating user.");
     }
   };

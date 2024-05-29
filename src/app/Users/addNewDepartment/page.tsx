@@ -37,9 +37,19 @@ const AddNewDepartment = () => {
   const handleSubmit = async () => {
     // VERIFICAR SE O NOME DO DEPARTAMENTO INSERIDO É VALIDO
     if (!department.trim()) {
-      toast.warning("Department name cannot be empty.");
+      toast.warning("Department name cannot be empty!");
       return;
     }
+
+    const departmentExists = departments.some(
+      (dep) => dep.dname === department
+    );
+    if (departmentExists) {
+      toast.error("Department already exists!");
+      setDepartment("");
+      return;
+    }
+
     try {
       const response = await fetch("/api/addNewDepartment", {
         method: "POST",
@@ -113,11 +123,11 @@ const AddNewDepartment = () => {
         </div>
       </div>
 
-      <div className="flex justify-center ">
+      <div className="flex justify-center">
         <div className="flex flex-wrap mt-8">
           <Toaster richColors position="bottom-center" />
           <button
-            className="bg-red-500 text-white font-bold px-4 py-2 rounded-md shadow-sm mr-4 hover:bg-red-600"
+            className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-gray-500 hover:text-white active:bg-gray-500"
             onClick={() => {
               toast.error("Registration Canceled!");
               setDepartment("");
@@ -126,7 +136,7 @@ const AddNewDepartment = () => {
             Cancel
           </button>
           <button
-            className="bg-gray-500 text-white font-bold px-4 py-2 rounded-md shadow-sm hover:bg-gray-600"
+            className=" bg-green-500 text-white font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-800 hover:text-white active:bg-green-700"
             onClick={handleSubmit}
           >
             Register New Department

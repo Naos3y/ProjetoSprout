@@ -67,6 +67,13 @@ const Formulario = () => {
       return;
     }
 
+    const groupExists = groups.some((group) => group.gname === groupName);
+    if (groupExists) {
+      toast.error("Group already exists!");
+      setGroupName("");
+      return;
+    }
+
     try {
       const response = await fetch("/api/addNewGroup", {
         method: "POST",

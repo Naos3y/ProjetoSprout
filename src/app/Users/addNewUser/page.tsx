@@ -279,17 +279,24 @@ const Formulario = () => {
         },
         body: JSON.stringify(userData),
       });
+      const data = await response.json();
 
-      if (response.ok) {
-        const data = await response.json();
+      if (data.code === 200) {
+        console.log("data", data);
+
         console.log("User registered successfully:", data);
         toast.success("User registered successfully.");
 
         window.location.reload();
+      } else if (data.code === 400) {
+        console.log("data", data);
+        toast.error("User already exists!");
+
+        //window.location.reload();
       } else {
         const errorData = await response.json();
         console.error("Failed to register user:", errorData);
-        toast.error("Failed to register user: " + errorData.message);
+        toast.error("Failed to register user, please fill out all text box");
       }
 
       fetchLeader();
@@ -339,7 +346,11 @@ const Formulario = () => {
       <div className="flex flex-wrap">
         <div className="gap-4 ml-10">
           <Dropdown
-            label="User Type"
+            label={
+              <span>
+                User Type <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
             options={[
               { value: "IC", label: "IC" },
               { value: "Leader", label: "Leader" },
@@ -351,7 +362,11 @@ const Formulario = () => {
 
         <div className="gap-4 ml-10">
           <Dropdown
-            label="Admin Rights"
+            label={
+              <span>
+                Admin Rights <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
             options={[
               { value: "4", label: "Sprout" },
               { value: "3", label: "Manager" },
@@ -363,12 +378,23 @@ const Formulario = () => {
         </div>
 
         <div className="ml-10">
-          <TextInput label={"Employee Number"} returned={setEmployeeNumber} />
+          <TextInput
+            label={
+              <span>
+                Employee Number <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
+            returned={setEmployeeNumber}
+          />
         </div>
 
         <div className="ml-10">
           <Dropdown
-            label="Role"
+            label={
+              <span>
+                Role <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
             options={[
               { value: "Backend Engineer", label: "Backend Engineer" },
               { value: "Frontend Engineer", label: "Frontend Engineer" },
@@ -387,7 +413,10 @@ const Formulario = () => {
               { value: "Agile Coach", label: "Agile Coach" },
               { value: "Devops Engineer", label: "Devops Engineer" },
               { value: "Technical Advisor", label: "Technical Advisor" },
-              { value: "Marketing Specialist", label: "Marketing Specialist" },
+              {
+                value: "Marketing Specialist",
+                label: "Marketing Specialist",
+              },
               {
                 value: "IT Sales Representative",
                 label: "IT Sales Representative",
@@ -402,7 +431,11 @@ const Formulario = () => {
       <div className="flex flex-wrap">
         <div className="ml-10">
           <Dropdown
-            label="Seniority"
+            label={
+              <span>
+                Seniority <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
             options={[
               { value: "Senior", label: "Senior" },
               { value: "Junior", label: "Junior" },
@@ -416,7 +449,11 @@ const Formulario = () => {
         <div className="ml-10">
           {userType === "Leader" && (
             <Dropdown
-              label="Report Team"
+              label={
+                <span>
+                  Report Team <span style={{ color: "red" }}>*</span>{" "}
+                </span>
+              }
               options={
                 reportTeam && reportTeam.length > 0
                   ? reportTeam.map((team) => ({
@@ -435,27 +472,50 @@ const Formulario = () => {
       <div className="flex flex-wrap">
         <div className="ml-10">
           <CompleteName
-            label={"Full Name"}
+            label={
+              <span>
+                Full Name <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
             value={completeName}
             returned={setCompleteName}
           />
         </div>
 
         <div className="ml-10 ">
-          <PhotoInput label="Photo" returned={setPhotos} />
+          <PhotoInput
+            label={
+              <span>
+                Photo <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
+            returned={setPhotos}
+          />
         </div>
       </div>
 
       <div className="flex flex-wrap">
-        <div className="ml-10 ">
-          <CompleteName label={"Email"} value={email} returned={setEmail} />
+        <div className="ml-10 flex items-center">
+          <CompleteName
+            label={
+              <span>
+                Email <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
+            value={email}
+            returned={setEmail}
+          />
         </div>
       </div>
 
       <div className="flex flex-wrap">
         <div className="gap-4 ml-10">
           <Dropdown
-            label="Leader"
+            label={
+              <span>
+                Leader <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
             options={
               leaderType && leaderType.length > 0
                 ? leaderType.map((user) => ({
@@ -471,7 +531,11 @@ const Formulario = () => {
 
         <div className="ml-10">
           <Dropdown
-            label="Team"
+            label={
+              <span>
+                Team <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
             options={
               teamDrop && teamDrop.length > 0
                 ? teamDrop.map((team) => ({
@@ -487,7 +551,11 @@ const Formulario = () => {
 
         <div className="ml-10">
           <Dropdown
-            label="Groups"
+            label={
+              <span>
+                Groups <span style={{ color: "red" }}>*</span>{" "}
+              </span>
+            }
             options={
               groupsName && groupsName.length > 0
                 ? groupsName.map((team) => ({
@@ -526,7 +594,16 @@ const Formulario = () => {
 
       <div className="flex flex-wrap">
         <div className="mt-6 ml-10">
-          {<DatePicker label={"Start Date"} returned={setStartDate} />}
+          {
+            <DatePicker
+              label={
+                <span>
+                  Start Date <span style={{ color: "red" }}>*</span>{" "}
+                </span>
+              }
+              returned={setStartDate}
+            />
+          }
         </div>
       </div>
 
