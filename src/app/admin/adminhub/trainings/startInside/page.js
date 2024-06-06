@@ -1,5 +1,4 @@
 "use client";
-import Navbar from "@/components/Navbar";
 import React, { useState, useEffect } from "react";
 import { FiHelpCircle } from "react-icons/fi";
 import { Toaster, toast } from "sonner";
@@ -667,7 +666,6 @@ function StartInsideTraining() {
 
   return (
     <div>
-      <Navbar activeRoute="/admin/adminhub" />
       <div className="flex">
         <div className="w-80 bg-gray-200 h-screen p-4 border-r border-gray-400">
           barra lateral
