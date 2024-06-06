@@ -18,7 +18,12 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+<<<<<<< HEAD
   background: linear-gradient(to top, #e6b06b, #92da92);
+=======
+  background-color: #f9f9f9;
+  /* background: linear-gradient(to top, #e6b06b, #92da92); */
+>>>>>>> origin/Samuel
 }
 
 @layer utilities {

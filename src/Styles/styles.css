@@ -5,13 +5,24 @@
 .mainNav {
   background-color: #87b421;
   display: flex;
+<<<<<<< HEAD
   flex-direction: column;
   align-items: start;
+=======
+  justify-content: space-between;
+  align-items: center;
+  /* flex-direction: column;
+  align-items: start; */
+>>>>>>> origin/Samuel
   padding-top: 10px;
 }
 
 .block-tabs {
   display: flex;
+<<<<<<< HEAD
+=======
+  flex-wrap: wrap;
+>>>>>>> origin/Samuel
   padding-left: 1em;
 }
 
@@ -19,12 +30,20 @@
   cursor: pointer;
   padding: 10px;
   color: white;
+<<<<<<< HEAD
   flex-grow: 1;
+=======
+  /* flex-grow: 1; */
+>>>>>>> origin/Samuel
   margin-right: 20px;
 }
 
 .active-tabs {
+<<<<<<< HEAD
   background-color: white;
+=======
+  background-color: #f9f9f9;
+>>>>>>> origin/Samuel
   color: #87b421;
   font-weight: bold;
 }
@@ -39,10 +58,18 @@
 
 @media only screen and (min-width: 768px) {
   .tabs {
+<<<<<<< HEAD
     margin-right: 7em;
+=======
+    margin-right: 10px;
+>>>>>>> origin/Samuel
   }
 }
 
 a {
   text-decoration: none;
+<<<<<<< HEAD
+=======
+  cursor: default;
+>>>>>>> origin/Samuel
 }
