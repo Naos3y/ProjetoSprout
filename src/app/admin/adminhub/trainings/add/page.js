@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
 import Dropdown from "@/components/Dropdown";
 import Counter from "@/components/Counter";
 import TextInput from "@/components/TextInput";
@@ -9,6 +8,7 @@ import BigInput from "@/components/BigInput";
 import { Toaster, toast } from "sonner";
 import DropdownState from "@/components/DropdownState";
 import { FiHelpCircle } from "react-icons/fi";
+import Navbar from "@/components/Navbar";
 
 const AddTraining = () => {
   // variaveis para o treino
@@ -150,7 +150,6 @@ const AddTraining = () => {
 
   return (
     <div>
-      <Navbar activeRoute="/admin/adminhub" />
       <div className="flex">
         <div className="w-80 bg-gray-200 h-screen p-4 border-r border-gray-400">
           barra lateral

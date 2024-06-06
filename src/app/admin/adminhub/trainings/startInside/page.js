@@ -1,4 +1,6 @@
 "use client";
+
+import Navbar from "@/components/Navbar";
 import React, { useState, useEffect } from "react";
 import { FiHelpCircle } from "react-icons/fi";
 import { Toaster, toast } from "sonner";
