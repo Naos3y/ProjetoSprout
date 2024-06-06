@@ -18,21 +18,20 @@ interface Training {
   itstarted: boolean;
   itlocation: string;
   itstarttime: string;
+  day?: number; // Adiciona a propriedade `day` opcionalmente
 }
 
 const Formulario = () => {
   const [completeName, setCompleteName] = useState("");
-  const [trainingsName, setTrainingsName] = useState("");
   const [trainings, setTrainings] = useState<Training[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(6);
+  const [itemsPerPage] = useState(6);
   const [selectedTrainings, setSelectedTrainings] = useState<Training[]>([]);
   const [selectedDays, setSelectedDays] = useState<{ [key: number]: number }>(
     {}
   );
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [filteredTrainings, setFilteredTrainings] = useState<Training[]>([]);
 
   useEffect(() => {
@@ -57,11 +56,11 @@ const Formulario = () => {
         const data = await response.json();
         setTrainings(data.data);
       } else {
-        toast.error("Failed to fetch Teams.");
+        toast.error("Failed to fetch trainings.");
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("An error occurred while fetching Teams.");
+      toast.error("An error occurred while fetching trainings.");
     } finally {
       setIsLoading(false);
     }
@@ -111,7 +110,54 @@ const Formulario = () => {
     return daysTrainingsMap;
   };
 
-  const handleSaveTrainingTemplate = () => {};
+  const reloadSuccess = () => {
+    window.location.reload();
+    toast.success("Training template saved successfully.");
+  };
+
+  const handleSaveTrainingTemplate = async () => {
+    if (!completeName) {
+      toast.error("Template name is required.");
+      return;
+    }
+
+    const selectedTrainingsWithDays = selectedTrainings.map((training) => ({
+      ...training,
+      day: selectedDays[training.itid],
+    }));
+
+    const requestBody = {
+      templateName: completeName,
+      selectedTrainings: selectedTrainingsWithDays,
+    };
+
+    try {
+      const response = await fetch("/api/addNewTrainingTemplate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      const data = await response.json();
+
+      if (data.code === 200) {
+        toast.success("Training template created sucessfully.");
+
+        window.location.reload();
+      } else if (data.code === 400) {
+        console.log("data", data);
+        toast.error("Template Name already exists!");
+      } else if (data.code === 500) {
+        console.log("data", data);
+        toast.error("Internal server error!");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while saving the training template.");
+    }
+  };
 
   const daysTrainingsMap = getDaysTrainingsMap();
   const sortedDays = Object.keys(daysTrainingsMap)
@@ -320,7 +366,7 @@ const Formulario = () => {
           <DaysTrainingsTable />
           <div className="flex justify-center mt-4">
             <button
-              className="bg-green-500 text-white px-4 py-2 rounded"
+              className=" bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
               onClick={handleSaveTrainingTemplate}
             >
               Save Training Template

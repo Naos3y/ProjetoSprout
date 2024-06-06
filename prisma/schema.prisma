@@ -216,7 +216,7 @@ model regularuserhasinsidetrainings {
 
 model trainingplantemplatehasinsidetrainings {
   trainingplantemplatetrtid Int
-  insidetrainingsitid       Int
+  insidetrainingsitid       Int 
   tptipriority              Int?
 
   trainingplantemplate trainingplantemplate @relation(fields: [trainingplantemplatetrtid], references: [trtid])
