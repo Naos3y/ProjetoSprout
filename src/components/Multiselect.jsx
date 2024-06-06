@@ -32,7 +32,10 @@ const Multiselect = ({ label, options, message, returned }) => {
         {selectedOptions.length > 0
           ? selectedOptions.map((option) => option.label).join(", ")
           : message}
+<<<<<<< HEAD
         <img width="15" src="add/icon.svg" alt="Arrow Down" className="ml-2" />
+=======
+>>>>>>> origin/Rodrigo
       </button>
       {isOpen && (
         <div

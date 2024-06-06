@@ -233,4 +233,8 @@ model trainingplantemplatehasoutsidetrainings {
   outsidetrainings     outsidetrainings     @relation(fields: [outsidetrainingsotid], references: [otid])
 
   @@id([trainingplantemplatetrtid, outsidetrainingsotid])
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/Rodrigo

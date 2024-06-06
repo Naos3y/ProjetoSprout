@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 export async function GET() {
+<<<<<<< HEAD
   return NextResponse.json({
 <<<<<<< HEAD
     user: 1,
@@ -31,3 +32,10 @@ export async function DELETE() {
 >>>>>>> origin/Samuel
   });
 }
+=======
+
+  return NextResponse.json({
+    hello:1,
+  });
+}
+>>>>>>> origin/Rodrigo

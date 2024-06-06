@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 "use client";
 
+=======
+>>>>>>> origin/Rodrigo
 import React, { useState } from "react";
 
 const Dropdown = ({ label, options, message, returned }) => {
@@ -12,22 +15,47 @@ const Dropdown = ({ label, options, message, returned }) => {
     setIsOpen(false);
   };
 
+<<<<<<< HEAD
   return (
     <div className="relative py-5">
       <label>{label}</label>
       <button
         type="button"
         className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-full bg-white shadow-sm mt-2"
+=======
+  console.log("Options:", options); // Adiciona este log
+
+  return (
+    <div className="relative px-5 py-5 space-x-5">
+      <label className="px-5">{label}</label>
+      <button
+        required
+        type="button"
+        className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-[220px] bg-white shadow-sm w-50 mt-2"
+>>>>>>> origin/Rodrigo
         onClick={() => setIsOpen(!isOpen)}
         // para ficar sobreposto
         style={{ zIndex: 1000 }}
       >
         {selectedOption ? selectedOption.label : message}
+<<<<<<< HEAD
         <img width="15" src="add/icon.svg" alt="Arrow Down" className="ml-2" />
       </button>
       {isOpen && (
         <div
           className="absolute rounded border border-gray-300 bg-white top-full w-full shadow-md"
+=======
+        <img
+          width="15"
+          src="addNewUser/icon.svg"
+          alt="Arrow Down"
+          className="ml-2"
+        />
+      </button>
+      {isOpen && (
+        <div
+          className="absolute rounded border border-gray-300 bg-white top-full w-[220px] shadow-md"
+>>>>>>> origin/Rodrigo
           // para ficar sobreposto
           style={{ zIndex: 1000 }}
         >
