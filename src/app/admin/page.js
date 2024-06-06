@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-import React from "react";
-
-const admin = () => {
-  return (
-    <div>
-      <div>Admin home page - Colocar aqui tudo o que está na home do admin</div>
-    </div>
-  );
-};
-
-export default admin;
-=======
 "use client";
 import { useEffect, useState } from "react";
 import cookies from "js-cookie";
@@ -20,18 +7,33 @@ import {
   sessionExpired,
   validSession,
 } from "@/session/sessionUtils";
+import SideNav from "@/components/Static/sidenav";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);
+  const [permission, setPermission] = useState(0);
+  const [showExpired, setShowExpired] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
+  const toggleSideNav = () => {
+    setIsOpen(!isOpen);
+  };
   useEffect(() => {
     let flag = true;
+    let sessionStatus;
     const getSession = async () => {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      const auxPermission = decryptedSession.user.permission;
+      setPermission(auxPermission);
+
       if (!flag) {
-        const sessionStatus = await sessionExpired();
-        setControl(sessionStatus);
+        const expired = await sessionExpired();
+        if (sessionStatus === 1 && expired === 1 && !showExpired) {
+          setShowExpired(true);
+        }
       } else if (flag) {
-        const sessionStatus = await validSession(0, 1, 3, 4);
+        sessionStatus = await validSession(0, 1, 3, 4);
         setControl(sessionStatus);
         flag = !flag;
       }
@@ -61,12 +63,16 @@ export default function Sprout() {
         </div>
       ) : (
         <div className="flex justify-center items-center h-screen">
-          <div className="rounded-lg bg-white p-6 shadow-md w-full md:w-96">
-            <h2 className="text-2xl text-gray-600 font-bold text-center">OK</h2>
+          <SideNav
+            isOpen={isOpen}
+            toggleSideNav={toggleSideNav}
+            perm={permission}
+          />
+          <div className="flex-1">
+            <main className="ml-14"></main>
           </div>
         </div>
       )}
     </div>
   );
 }
->>>>>>> origin/Samuel

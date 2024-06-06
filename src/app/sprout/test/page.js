@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import "@fontsource/proza-libre"; // Defaults to weight 400
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
 

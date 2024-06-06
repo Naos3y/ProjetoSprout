@@ -7,7 +7,6 @@ import { sessionExpired, validSession } from "@/session/sessionUtils";
 import Navbar from "@/components/Navbar";
 import SessionExpired from "@/components/Session/SessionExpired";
 import Footer from "@/components/Footer";
-import "@fontsource/proza-libre";
 import SideNav from "@/components/Static/sidenav";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";

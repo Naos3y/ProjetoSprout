@@ -10,7 +10,6 @@ import { SIDENAV_ITEMS_4 } from "@/components/Static/perm4";
 
 import { FiMenu, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FiLogOut, FiUser } from "react-icons/fi";
-import { Logout } from "@mui/icons-material";
 import { Toaster, toast } from "sonner";
 import Cookies from "js-cookie";
 

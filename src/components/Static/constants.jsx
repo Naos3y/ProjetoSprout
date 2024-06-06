@@ -54,7 +54,7 @@ export const SIDENAV_ITEMS = [
   },
   {
     title: "Trainings",
-    path: "/Trainings",
+    path: "/admin/adminhub/trainings",
     // icon: <Icon icon="oui:training" width="24" height="24" />,
     submenu: true,
     subMenuItems: [
@@ -72,7 +72,7 @@ export const SIDENAV_ITEMS = [
       },
       {
         title: "Add New Trainings",
-        path: "/Trainings/addNewTrainings",
+        path: "/admin/adminhub/trainings/add",
         // icon: <Icon icon="carbon:add-filled" width="17" height="17" />,
       },
       {

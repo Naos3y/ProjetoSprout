@@ -12,6 +12,7 @@ export async function validSession(p1, p2 = p1, p3 = p1, p4 = p1) {
   if (sessionCookie) {
     try {
       const decryptedSession = await decrypt(sessionCookie);
+      console.log(decryptedSession);
       if (decryptedSession) {
         const response = await getPermission();
         if (

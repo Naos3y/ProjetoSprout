@@ -5,7 +5,6 @@ import Navbar from "@/components/Navbar";
 import SessionExpired from "@/components/Session/SessionExpired";
 import CalendarSprout from "@/components/Sprout/Calendar";
 import Footer from "@/components/Footer";
-import "@fontsource/proza-libre"; // Defaults to weight 400
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
 import SideNav from "@/components/Static/sidenav";

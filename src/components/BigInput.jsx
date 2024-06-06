@@ -10,13 +10,8 @@ const BigInput = ({ label, returned }) => {
   };
 
   return (
-<<<<<<< HEAD
     <div className="relative py-5 ">
       <label>{label}</label>
-=======
-    <div className="relative px-5 py-5 space-x-5">
-      <label className="px-5">{label}</label>
->>>>>>> origin/Samuel
       <textarea
         value={text}
         onChange={handleChange}

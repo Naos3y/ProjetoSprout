@@ -5,7 +5,6 @@ import Navbar from "@/components/Navbar";
 import SessionExpired from "@/components/Session/SessionExpired";
 import Layout from "@/components/Sprout/Layout";
 import Footer from "@/components/Footer";
-import "@fontsource/proza-libre"; // Defaults to weight 400
 import SideNav from "@/components/Static/sidenav";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";

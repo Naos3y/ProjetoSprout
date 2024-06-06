@@ -14,13 +14,9 @@ module.exports = {
       },
       fontFamily: {
         tara: ["Tarah", "sans-serif"],
-<<<<<<< HEAD
-      },
-=======
         proza: ["proza", "Proza Libre"],
       },
 
->>>>>>> origin/Samuel
       colors: {
         green: {
           500: "#87B421",

@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-export default function Home() {
-  return (
-    <div>
-      <h1>ola</h1>
-    </div>
-  );
-=======
 import LoginPanel from "../components/Login/LoginPanel";
 import { getSession } from "../session/server/session";
 import { getError } from "../session/server/session";
@@ -21,5 +13,4 @@ export default async function Home() {
   } else {
     return <LoginPanel error={true} />;
   }
->>>>>>> origin/Samuel
 }
