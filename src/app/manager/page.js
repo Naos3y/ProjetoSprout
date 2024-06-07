@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import SideNav from "@/components/Static/sidenav";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
+import "tailwindcss/tailwind.css";
 
 export default function Manager() {
   const [control, setControl] = useState(-1);

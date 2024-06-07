@@ -9,6 +9,7 @@ import { Toaster, toast } from "sonner";
 import DropdownState from "@/components/DropdownState";
 import { FiHelpCircle } from "react-icons/fi";
 import Navbar from "@/components/Navbar";
+import "tailwindcss/tailwind.css";
 
 const AddTraining = () => {
   // variaveis para o treino

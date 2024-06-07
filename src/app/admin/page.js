@@ -8,6 +8,7 @@ import {
   validSession,
 } from "@/session/sessionUtils";
 import SideNav from "@/components/Static/sidenav";
+import "tailwindcss/tailwind.css";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);

@@ -1,6 +1,8 @@
 import LoginPanel from "../components/Login/LoginPanel";
 import { getSession } from "../session/server/session";
 import { getError } from "../session/server/session";
+import "tailwindcss/tailwind.css";
+
 export default async function Home() {
   const session = await getSession();
   const error = await getError();

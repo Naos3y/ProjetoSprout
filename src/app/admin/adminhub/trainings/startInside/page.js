@@ -9,6 +9,7 @@ import DatePicker from "@/components/DatePicker";
 import TextInput from "@/components/TextInput";
 import TableTextInput from "@/components/EnrollUser";
 import MultiselectSearch from "@/components/MultiselectSearch";
+import "tailwindcss/tailwind.css";
 
 function StartInsideTraining() {
   const [trainingArea, setTrainingArea] = useState(null);

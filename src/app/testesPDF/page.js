@@ -3,6 +3,8 @@
 import React from "react";
 import { PDFViewer } from "@react-pdf/renderer";
 import CertificatePDF from "@/components/CertificatePDF";
+import "tailwindcss/tailwind.css";
+
 const TestesPDF = () => {
   const userName = "Samuel Martins";
   const trainingName = "Java Basics";

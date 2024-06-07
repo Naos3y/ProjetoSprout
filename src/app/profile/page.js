@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
 import SideNav from "@/components/Static/sidenav";
+import "tailwindcss/tailwind.css";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
 import Link from "next/link";
+import "tailwindcss/tailwind.css";
 
 export default function Validation() {
   const [linkComponent, setLinkComponent] = useState(null);
