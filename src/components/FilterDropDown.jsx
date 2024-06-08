@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-const Dropdown = ({ label, options, message, returned }) => {
+const FilterDropDown = ({ label, options, message, returned }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -13,7 +13,7 @@ const Dropdown = ({ label, options, message, returned }) => {
   };
 
   return (
-    <div className="relative py-5">
+    <div className="relative">
       {label != "" && (
         <>
           <label>{label}</label>
@@ -22,7 +22,7 @@ const Dropdown = ({ label, options, message, returned }) => {
 
       <button
         type="button"
-        className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-full bg-white shadow-sm mt-2"
+        className="border border-gray-300 focus:border-green-500 focus:outline-none px-4 py-2 rounded cursor-pointer font-bold flex items-center justify-between w-30 bg-white shadow-sm"
         onClick={() => setIsOpen(!isOpen)}
         // para ficar sobreposto
         style={{ zIndex: 1000 }}
@@ -32,7 +32,7 @@ const Dropdown = ({ label, options, message, returned }) => {
       </button>
       {isOpen && (
         <div
-          className="absolute rounded border border-gray-300 bg-white top-full w-full shadow-md"
+          className="absolute rounded border border-gray-300 bg-white top-full w-30 shadow-md"
           // para ficar sobreposto
           style={{ zIndex: 1000 }}
         >
@@ -51,4 +51,4 @@ const Dropdown = ({ label, options, message, returned }) => {
   );
 };
 
-export default Dropdown;
+export default FilterDropDown;

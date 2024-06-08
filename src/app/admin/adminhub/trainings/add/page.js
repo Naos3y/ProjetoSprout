@@ -176,48 +176,11 @@ const AddTraining = () => {
                       <strong> click the "Add Training" button</strong> to save
                       the details.
                     </p>
-                    <p>
-                      <strong>- Please note:</strong> After adding a training,
-                      any further modifications can only be made on the Edit
-                      Page.
-                    </p>
-                    <p>
-                      - Upon adding a training, a new button will appear at the
-                      top right corner. You can click this button to add another
-                      training.
-                    </p>
-
-                    <h2 className="text-left text-black text-lg font-semibold mb-4 pt-5">
-                      Enrolment Open For:
-                    </h2>
 
                     <p>
-                      - This setting allows individuals belonging to the
-                      selected Department, group, or team to request
-                      participation in the training.
-                    </p>
-                    <p>
-                      - <strong>It is mandatory</strong> to
-                      <strong>
-                        {" "}
-                        select at least one teacher and one of the other fields
-                      </strong>
-                      .
-                    </p>
-
-                    <h2 className="text-left text-black text-lg font-semibold mb-4 pt-5">
-                      Enroll users:
-                    </h2>
-                    <p>
-                      - Users can also be directly enrolled in the training via
-                      email. This action makes the training mandatory for those
-                      whose email addresses have been specified and are recorded
-                      in the designated table.
-                    </p>
-
-                    <p>
-                      - Should you wish to remove a user from the enrollment
-                      list, simply utilize the "Remove" button.
+                      - After pressing the "Add Training" button, a popup will
+                      appear, where you can choose to add a new training or go
+                      to the "Edit training" page.
                     </p>
 
                     <div className="flex justify-center space-x-4 pt-5">
@@ -274,18 +237,18 @@ const AddTraining = () => {
                     )}
                     <div className="flex justify-center space-x-4 pt-5">
                       <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                        onClick={handleAddTraining}
-                      >
-                        It's Correct!
-                      </button>
-                      <button
                         className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
                         onClick={() => {
                           setShowAddTrainingConfirmation(false);
                         }}
                       >
                         Cancel
+                      </button>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={handleAddTraining}
+                      >
+                        It's Correct!
                       </button>
                     </div>
                   </div>

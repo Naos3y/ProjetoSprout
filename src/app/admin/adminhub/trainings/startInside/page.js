@@ -9,6 +9,8 @@ import DatePicker from "@/components/DatePicker";
 import TextInput from "@/components/TextInput";
 import TableTextInput from "@/components/EnrollUser";
 import MultiselectSearch from "@/components/MultiselectSearch";
+import { GrClearOption } from "react-icons/gr";
+import FilterDropDown from "@/components/FilterDropDown";
 
 function StartInsideTraining() {
   const [trainingArea, setTrainingArea] = useState(null);
@@ -47,6 +49,32 @@ function StartInsideTraining() {
   const [departmentOptions, setDepartmentOptions] = useState([]);
   const [groupOptions, setGroupOtions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
+
+  const [filter, setFilter] = useState("");
+  const [type, setType] = useState("");
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const resetFilter = () => {
+    setFilter("");
+  };
+
+  const handleType = (e) => {
+    setType(e.value);
+  };
+
+  const filteredTrainings = trainings.filter((training) => {
+    const matchesFilter = training.itname
+      .toLowerCase()
+      .includes(filter.toLowerCase());
+    const matchesStatus =
+      type === "all" ||
+      (type === "started" && training.itstarted) ||
+      (type === "notstarted" && !training.itstarted);
+    return matchesFilter && matchesStatus;
+  });
 
   useEffect(() => {
     getAllInsideTrainings();
@@ -751,16 +779,16 @@ function StartInsideTraining() {
                     </div>
                     <div className="flex justify-center space-x-4 pt-5">
                       <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                        onClick={startTraining}
-                      >
-                        It's Correct!
-                      </button>
-                      <button
                         className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
                         onClick={handleShowBackStartModal}
                       >
                         Cancel
+                      </button>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={startTraining}
+                      >
+                        It's Correct!
                       </button>
                     </div>
                   </div>
@@ -981,18 +1009,18 @@ function StartInsideTraining() {
 
                     <div className="flex justify-center space-x-4 pt-5">
                       <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                        onClick={handleModalSwitch}
-                      >
-                        Start
-                      </button>
-                      <button
                         className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
                         onClick={() => {
                           setShowAddOptions(false);
                         }}
                       >
                         Cancel
+                      </button>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={handleModalSwitch}
+                      >
+                        Start
                       </button>
                     </div>
                   </div>
@@ -1012,6 +1040,36 @@ function StartInsideTraining() {
                   <FiHelpCircle
                     onClick={showHelp}
                     style={{ cursor: "pointer" }}
+                  />
+                </div>
+
+                <div className="col-span-1 flex items-center">
+                  <input
+                    name="Filter"
+                    type="text"
+                    value={filter}
+                    onChange={handleFilterChange}
+                    className="p-1 border-l border-t border-b w-full rounded-tl rounded-bl border-gray-300 focus:outline-none focus:border-green-500 text-black py-2"
+                    placeholder="Filter by Training Name"
+                  />
+                  <button
+                    onClick={resetFilter}
+                    className="p-2 border rounded-tr rounded-br border-gray-300 hover:border-green-500 focus:outline-none cursor-pointer font-bold flex items-center justify-between bg-white shadow-sm text-black py-3"
+                  >
+                    <GrClearOption />
+                  </button>
+                </div>
+
+                <div className="col-span-1 pl-7">
+                  <FilterDropDown
+                    label={""}
+                    options={[
+                      { value: "all", label: "ALL" },
+                      { value: "started", label: "Started" },
+                      { value: "notstarted", label: "Not Started" },
+                    ]}
+                    message="Status"
+                    returned={handleType}
                   />
                 </div>
 
@@ -1042,7 +1100,7 @@ function StartInsideTraining() {
                     </thead>
                     <tbody>
                       {Array.isArray(trainings) &&
-                        trainings.map((trainings, index) => (
+                        filteredTrainings.map((trainings, index) => (
                           <tr key={index}>
                             <td className="border border-gray-200 p-2 text-center">
                               {trainings.itname}
@@ -1147,16 +1205,16 @@ function StartInsideTraining() {
                     </div>
                     <div className="flex justify-center space-x-4 pt-5">
                       <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                        onClick={editTraining}
-                      >
-                        Edit
-                      </button>
-                      <button
                         className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
                         onClick={() => setShowEdit(false)}
                       >
                         Cancel
+                      </button>
+                      <button
+                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                        onClick={editTraining}
+                      >
+                        Edit
                       </button>
                     </div>
                   </div>

@@ -8,6 +8,8 @@ export async function GET() {
     const result = await prisma.$queryRaw`
       SELECT * FROM bruno_get_all_trainings()`;
 
+    console.log(result);
+
     if (result) {
       return NextResponse.json({
         status: 200,
