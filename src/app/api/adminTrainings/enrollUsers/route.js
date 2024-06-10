@@ -10,7 +10,7 @@ export async function POST(request) {
     // Extrai os IDs do array de objetos
     const userIdsArray = userIDs.map((user) => user.bruno_getuseridwithemail);
 
-    console.log("user ids no enroll", userIdsArray);
+    //console.log("user ids no enroll", userIdsArray);
 
     const result = await prisma.$queryRaw`
       SELECT bruno_enrollUsers(CAST(${trainingID} AS INTEGER), ${userIdsArray})`;

@@ -1,9 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Toaster, toast } from "sonner";
 
-const TableTextInput = ({ label, returned }) => {
+const TableTextInput = ({ label, tid, returned }) => {
   const [email, setEmail] = useState("");
   const [list, setList] = useState([]);
+
+  useEffect(() => {
+    const fetchExistingUsers = async () => {
+      try {
+        const response = await fetch(
+          `/api/adminTrainings/getUserNameAndEmailByTrainingID?tid=${tid}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          const existingUsers = data.users.map((user) => ({
+            email: user.email,
+            name: user.name,
+          }));
+          setList(existingUsers);
+          returned(existingUsers);
+        } else {
+          toast.error("Failed to fetch existing users.");
+        }
+      } catch (error) {
+        console.error("Error fetching existing users:", error);
+        toast.error(
+          "An error occurred while fetching existing users. Please try again later."
+        );
+      }
+    };
+
+    fetchExistingUsers();
+  }, [tid]);
 
   const handleChange = (event) => {
     const newEmail = event.target.value;
@@ -14,6 +49,11 @@ const TableTextInput = ({ label, returned }) => {
     try {
       if (!email) {
         toast.error("Please enter an email address.");
+        return;
+      }
+
+      if (list.some((item) => item.email === email)) {
+        toast.error("This email is already in the list.");
         return;
       }
 

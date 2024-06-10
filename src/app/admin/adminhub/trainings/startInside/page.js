@@ -78,6 +78,45 @@ function StartInsideTraining() {
   });
 
   useEffect(() => {
+    if (showEdit) {
+      console.log("Training Area:", trainingArea);
+      console.log("Event Type:", eventType);
+      console.log("Number of Minutes:", numMin);
+      console.log("Description:", description);
+      console.log("Min Participants:", minParticipants);
+      console.log("Max Participants:", maxParticipants);
+      console.log("Training Name:", trainingName);
+      console.log("Associated Users:", associatedUsers);
+      console.log("Associated Teachers:", associatedTeachers);
+      console.log("Open For Group:", openForGroup);
+      console.log("Open For Team:", openForTeam);
+      console.log("Open For Department:", openForDepartment);
+      console.log("options: ", options);
+      console.log("department", departmentOptions);
+      console.log("team", teamOptions);
+      console.log("group", groupOptions);
+    }
+  }, [
+    showEdit,
+    trainingArea,
+    eventType,
+    numMin,
+    description,
+    minParticipants,
+    maxParticipants,
+    trainingName,
+    associatedUsers,
+    associatedTeachers,
+    openForGroup,
+    openForTeam,
+    openForDepartment,
+    options,
+    departmentOptions,
+    teamOptions,
+    groupOptions,
+  ]);
+
+  useEffect(() => {
     getAllInsideTrainings();
   }, []);
 
@@ -437,12 +476,12 @@ function StartInsideTraining() {
   };
 
   const showEditModal = async (TID) => {
-    getTrainingDataByID(TID);
+    await getTrainingDataByID(TID);
     setShowEdit(true);
   };
 
-  const editTraining = async (TID) => {
-    handleAssociateUsers(trainingID);
+  const editTraining = async () => {
+    editTrainingData(trainingID);
   };
 
   const handleModalSwitch = () => {
@@ -495,7 +534,7 @@ function StartInsideTraining() {
     setLocation(null);
   };
 
-  const handleAssociateUsers = async (idTraining) => {
+  const editTrainingData = async (idTraining) => {
     const userIDsArray = [];
     const uniqueUserIDs = new Set();
 
@@ -562,7 +601,7 @@ function StartInsideTraining() {
           const responseData = await response.json();
 
           if (response.ok) {
-            console.log("Entrou no if");
+            //console.log("Entrou no if");
             setFinalUserArray(responseData.userids);
 
             try {
@@ -574,9 +613,9 @@ function StartInsideTraining() {
               );
               const responseDataTeacher = await responseteacher.json();
 
-              console.log(responseDataTeacher);
+              //console.log(responseDataTeacher);
               if (responseteacher.ok) {
-                console.log("teacher ids: ", responseDataTeacher.userids);
+                //console.log("teacher ids: ", responseDataTeacher.userids);
                 try {
                   const trainingResponse = await fetch(
                     `/api/adminTrainings/associateUsersToTraining`,
@@ -1160,9 +1199,9 @@ function StartInsideTraining() {
 
             {showEdit && (
               <>
-                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 p-10">
                   <div
-                    className="bg-white p-8 rounded-lg shadow-lg w-[1300px] overflow-y-auto
+                    className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[850px]
                   "
                   >
                     <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
@@ -1180,10 +1219,35 @@ function StartInsideTraining() {
                       returned={setDescription}
                     />
 
-                    <div className="grid grid-cols-4  gap-x-20 gap-y-3">
+                    <div className="grid grid-cols-3 gap-x-5">
+                      <div>
+                        <TextInputEdit
+                          label={"Edit Durantion (minutes)"}
+                          initialValue={numMin}
+                          returned={setNumMin}
+                        />
+                      </div>
+                      <div>
+                        <TextInputEdit
+                          label={"Edit Min of Participants"}
+                          initialValue={minParticipants}
+                          returned={setMinParticipants}
+                        />
+                      </div>
+                      <div>
+                        <TextInputEdit
+                          label={"Edit Max of Participants"}
+                          initialValue={maxParticipants}
+                          returned={setMaxParticipants}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-4  gap-x-20">
                       <div className="col-span-4 ">
                         <TableTextInput
-                          label={"Enroll Users"}
+                          label={"Enrolled Users"}
+                          tid={trainingID}
                           returned={setUserEmail}
                         />
                       </div>
