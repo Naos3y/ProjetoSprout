@@ -9,13 +9,14 @@ export async function POST(request) {
     const { email } = body;
 
     const result = await prisma.$queryRaw`
-      SELECT bruno_checkUserEmail(${email})`;
+      SELECT * FROM bruno_checkUserEmail(${email})`;
 
-    if (result[0].bruno_checkuseremail) {
+    if (result.length > 0 && result[0].emailfound) {
       return NextResponse.json({
         status: 200,
         message: "Email found",
         emailFound: "yes",
+        userName: result[0].username,
       });
     } else {
       return NextResponse.json({

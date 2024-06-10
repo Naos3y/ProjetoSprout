@@ -11,6 +11,7 @@ import TableTextInput from "@/components/EnrollUser";
 import MultiselectSearch from "@/components/MultiselectSearch";
 import { GrClearOption } from "react-icons/gr";
 import FilterDropDown from "@/components/FilterDropDown";
+import TextInputEdit from "@/components/TextInputEdit";
 
 function StartInsideTraining() {
   const [trainingArea, setTrainingArea] = useState(null);
@@ -51,7 +52,7 @@ function StartInsideTraining() {
   const [teamOptions, setTeamOptions] = useState([]);
 
   const [filter, setFilter] = useState("");
-  const [type, setType] = useState("");
+  const [type, setType] = useState("all");
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -436,7 +437,7 @@ function StartInsideTraining() {
   };
 
   const showEditModal = async (TID) => {
-    setTrainingID(TID);
+    getTrainingDataByID(TID);
     setShowEdit(true);
   };
 
@@ -1125,16 +1126,26 @@ function StartInsideTraining() {
                             </td>
                             <td className="border border-gray-200 p-2 text-center">
                               <button
-                                className="bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                                className={`bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 ${
+                                  trainings.itstarted
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "hover:bg-green-500 hover:text-white active:bg-green-700"
+                                }`}
                                 onClick={() => showEditModal(trainings.itid)}
+                                disabled={trainings.itstarted}
                               >
                                 Edit
                               </button>
                             </td>
                             <td className="border border-gray-200 p-2 text-center">
                               <button
-                                className="bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                                className={`bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 ${
+                                  trainings.itstarted
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "hover:bg-green-500 hover:text-white active:bg-green-700"
+                                }`}
                                 onClick={() => showAddModal(trainings.itid)}
+                                disabled={trainings.itstarted}
                               >
                                 Start
                               </button>
@@ -1157,6 +1168,18 @@ function StartInsideTraining() {
                     <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
                       Edit Training
                     </h2>
+                    <TextInputEdit
+                      label={"Edit Name"}
+                      initialValue={trainingName}
+                      returned={setTrainingName}
+                    />
+
+                    <TextInputEdit
+                      label={"Edit Description"}
+                      initialValue={description}
+                      returned={setDescription}
+                    />
+
                     <div className="grid grid-cols-4  gap-x-20 gap-y-3">
                       <div className="col-span-4 ">
                         <TableTextInput

@@ -29,12 +29,11 @@ const TableTextInput = ({ label, returned }) => {
         const data = await response.json();
 
         if (data.emailFound == "yes") {
-          const updatedList = [...list, email];
+          const updatedList = [...list, { email, name: data.userName }];
           setList(updatedList);
           returned(updatedList);
           setEmail("");
         } else {
-          console.log(response);
           toast.error("Email verification failed. Please try again.");
         }
       }
@@ -54,7 +53,7 @@ const TableTextInput = ({ label, returned }) => {
   };
 
   return (
-    <div className="relative  py-5">
+    <div className="relative py-5">
       <label>{label}</label>
       <div className="flex items-center space-x-5">
         <input
@@ -74,15 +73,21 @@ const TableTextInput = ({ label, returned }) => {
         <table className="mt-4 w-full border-collapse border border-gray-300">
           <thead>
             <tr>
-              <th className="border border-gray-300 px-4 py-2">User Added</th>
+              <th className="border border-gray-300 px-4 py-2">Email</th>
+              <th className="border border-gray-300 px-4 py-2">Name</th>
               <th className="border border-gray-300 px-4 py-2">Action</th>
             </tr>
           </thead>
           <tbody>
             {list.map((item, index) => (
               <tr key={index}>
-                <td className="border border-gray-300 px-4 py-2">{item}</td>
-                <td className="border border-gray-300 px-4 py-2 ">
+                <td className="border border-gray-300 px-4 py-2">
+                  {item.email}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {item.name}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
                   <div className="flex justify-center">
                     <button
                       onClick={() => handleRemoveFromList(index)}
