@@ -26,6 +26,7 @@ export default function ProfileLayout() {
   const [user, setUser] = useState([]);
   const [team, setTeam] = useState([]);
   const [group, setGroup] = useState([]);
+  const [hours, setHours] = useState([]);
 
   async function tryGetUserInfo() {
     try {
@@ -33,6 +34,32 @@ export default function ProfileLayout() {
       const decryptedSession = await decrypt(token);
 
       const url = new URL("http://localhost:3000/api/sprout/getuserinfo");
+      url.searchParams.append("uid", decryptedSession.user.id);
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function tryGetUserHours() {
+    try {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+
+      const url = new URL("http://localhost:3000/api/sprout/gethours");
       url.searchParams.append("uid", decryptedSession.user.id);
 
       const response = await fetch(url.toString(), {
@@ -111,6 +138,9 @@ export default function ProfileLayout() {
         const aUser = await tryGetUserInfo();
         const aTeam = await tryGetUserTeam();
         const aGroup = await tryGetUserGroups();
+        const hours = await tryGetUserHours();
+        console.log(hours.message);
+        setHours(hours.message);
         setUser(aUser.message[0]);
         setTeam(aTeam.message[0]);
         const temporaryGroup = [];
@@ -137,11 +167,11 @@ export default function ProfileLayout() {
           <h1 className="text-3xl font-bold ml-10 text-green-500">Profile</h1>
 
           <div className="space-x-4 mr-10">
-            <Link href="/profile/edit">
+            {/* <Link href="/profile/edit">
               <button className="bg-[#DFDFDF] text-[#818181] font-bold px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700 mr-2">
                 Edit Profile
               </button>
-            </Link>
+            </Link> */}
             <Link href="/profile/password">
               <button className="bg-[#DFDFDF] text-[#818181] font-bold px-2 py-1 rounded shadow-sm hover:bg-green-500 hover:text-white active:bg-green-700 mr-2">
                 Change Password
@@ -161,11 +191,10 @@ export default function ProfileLayout() {
           <hr className="mb-5" />
           <div className="grid grid-cols-2 gap-4 ml-10">
             <div className="col-span-2">
-              <p className="font-semibold  text-black">Photo:</p>
               <div className="h-40 w-40 bg-gray-200 rounded-md flex justify-center items-center">
                 <img
                   className="h-full w-full object-cover rounded-md"
-                  // src={user.photo}
+                  src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
                   alt="User Photo"
                 />
               </div>
@@ -192,7 +221,7 @@ export default function ProfileLayout() {
             </div>
             <div className="col-span-1">
               <p className="font-semibold text-black">Formation time:</p>
-              <p className="text-gray-700">{user.hours}</p>
+              <p className="text-gray-700">{hours} hours</p>
             </div>
             <div className="col-span-1">
               <p className="font-semibold text-black">Location:</p>
