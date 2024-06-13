@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Toaster, toast } from "sonner";
 
-const TableTextInput = ({ label, tid, returned }) => {
+const TableTextInput = ({ label, tid }) => {
   const [email, setEmail] = useState("");
   const [list, setList] = useState([]);
 
@@ -25,8 +25,6 @@ const TableTextInput = ({ label, tid, returned }) => {
             name: user.name,
           }));
           setList(existingUsers);
-          // retorna apenas os emails
-          returned(existingUsers.map((user) => user.email));
         } else {
           toast.error("Failed to fetch existing users.");
         }
@@ -69,11 +67,57 @@ const TableTextInput = ({ label, tid, returned }) => {
       if (response.ok) {
         const data = await response.json();
 
-        if (data.emailFound == "yes") {
-          const updatedList = [...list, { email, name: data.userName }];
-          setList(updatedList);
-          returned(updatedList);
-          setEmail("");
+        if (data.emailFound === "yes") {
+          // Fetch user ID by email
+          const userIDResponse = await fetch(
+            `/api/adminTrainings/getUserIDWithEmail?email=${email}`,
+            { method: "GET" }
+          );
+
+          if (userIDResponse.ok) {
+            const userIDData = await userIDResponse.json();
+            const userID = userIDData.emails[0].bruno_getuseridwithemail;
+
+            // Fetch regular user ID by user ID
+            const regularUserIDResponse = await fetch(
+              `/api/adminTrainings/getRegularUserID_with_single_UID?uid=${encodeURIComponent(
+                userID
+              )}`
+            );
+
+            if (regularUserIDResponse.ok) {
+              const regularUserIDData = await regularUserIDResponse.json();
+              const regularUserIDs = regularUserIDData.userids;
+
+              // Enroll user in the training
+              const enrollResponse = await fetch(
+                `/api/adminTrainings/enrollUsers`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    trainingID: tid,
+                    userIDs: regularUserIDs,
+                  }),
+                }
+              );
+
+              const enrollData = await enrollResponse.json();
+
+              if (enrollResponse.ok) {
+                toast.success(enrollData.message);
+                const updatedList = [...list, { email, name: data.userName }];
+                setList(updatedList);
+                setEmail("");
+              } else {
+                toast.error(enrollData.message);
+              }
+            } else {
+              toast.error("Failed to fetch regular user ID. Please try again.");
+            }
+          } else {
+            toast.error("Failed to fetch user ID. Please try again.");
+          }
         } else {
           toast.error("Email verification failed. Please try again.");
         }
@@ -86,11 +130,38 @@ const TableTextInput = ({ label, tid, returned }) => {
     }
   };
 
-  const handleRemoveFromList = (index) => {
-    const updatedList = [...list];
-    updatedList.splice(index, 1);
-    setList(updatedList);
-    returned(updatedList);
+  const handleRemoveFromList = async (index) => {
+    const emailToRemove = list[index].email;
+
+    try {
+      const response = await fetch(
+        `/api/adminTrainings/removeUserFromTraining`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tid,
+            email: emailToRemove,
+          }),
+        }
+      );
+
+      const removeData = await response.json();
+
+      if (response.ok) {
+        toast.success(removeData.message);
+        const updatedList = [...list];
+        updatedList.splice(index, 1);
+        setList(updatedList);
+      } else {
+        toast.error(removeData.message);
+      }
+    } catch (error) {
+      console.error("Error removing user from training:", error);
+      toast.error(
+        "An error occurred while removing the user. Please try again later."
+      );
+    }
   };
 
   return (

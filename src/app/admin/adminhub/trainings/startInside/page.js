@@ -892,73 +892,6 @@ function StartInsideTraining() {
     } catch (error) {
       toast.error("Error e2: ", error);
     }
-    try {
-      console.log(userEmail);
-      // Processar usuários inscritos manualmente por email
-      for (const email of userEmail) {
-        console.log(`Fetching user ID with email: ${email.email}`);
-        const response = await fetch(
-          `/api/adminTrainings/getUserIDWithEmail?email=${email.email}`,
-          { method: "GET" }
-        );
-        console.log(`Response from getUserIDWithEmail:`, response);
-
-        if (response.ok) {
-          const responseData = await response.json();
-          console.log(
-            `Response data from getUserIDWithEmail ******:`,
-            responseData.emails
-          );
-
-          const responseEnroll = await fetch(
-            `/api/adminTrainings/getRegularUserID_with_single_UID?uid=${encodeURIComponent(
-              [responseData.emails[0].bruno_getuseridwithemail]
-            )}`
-          );
-          console.log(
-            `Response from getRegularUserIdsByUserID:`,
-            responseEnroll
-          );
-
-          if (responseEnroll.ok) {
-            const responseDataEnroll = await responseEnroll.json();
-            console.log(
-              `Response data from getRegularUserIdsByUserID:`,
-              responseDataEnroll
-            );
-
-            const trainingResponse = await fetch(
-              `/api/adminTrainings/enrollUsers`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  trainingID: idTraining,
-                  userIDs: responseDataEnroll.userids,
-                }),
-              }
-            );
-            console.log(`Response from enrollUsers:`, trainingResponse);
-
-            const trainingData = await trainingResponse.json();
-            console.log(`Response data from enrollUsers:`, trainingData);
-
-            if (trainingResponse.ok) {
-              toast.success(trainingData.message);
-            } else {
-              toast.error(trainingData.message);
-            }
-          } else {
-            toast.error("An error occurred. Try again later.");
-          }
-        } else {
-          toast.error(`Failed to fetch user ID for email: ${email}`);
-        }
-      }
-    } catch (error) {
-      console.log("Error e3: ", error);
-      toast.error("Error e3: ", error);
-    }
 
     // Limpar estados após a edição
     setShowEdit(false);
@@ -1470,7 +1403,6 @@ function StartInsideTraining() {
                         <TableTextInput
                           label={"Enrolled Users"}
                           tid={trainingID}
-                          returned={setUserEmail}
                         />
                       </div>
                       <div className="col-span-4">
