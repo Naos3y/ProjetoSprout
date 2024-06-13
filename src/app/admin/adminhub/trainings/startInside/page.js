@@ -78,45 +78,6 @@ function StartInsideTraining() {
   });
 
   useEffect(() => {
-    if (showEdit) {
-      console.log("Training Area:", trainingArea);
-      console.log("Event Type:", eventType);
-      console.log("Number of Minutes:", numMin);
-      console.log("Description:", description);
-      console.log("Min Participants:", minParticipants);
-      console.log("Max Participants:", maxParticipants);
-      console.log("Training Name:", trainingName);
-      console.log("Associated Users:", associatedUsers);
-      console.log("Associated Teachers:", associatedTeachers);
-      console.log("Open For Group:", openForGroup);
-      console.log("Open For Team:", openForTeam);
-      console.log("Open For Department:", openForDepartment);
-      console.log("options: ", options);
-      console.log("department", departmentOptions);
-      console.log("team", teamOptions);
-      console.log("group", groupOptions);
-    }
-  }, [
-    showEdit,
-    trainingArea,
-    eventType,
-    numMin,
-    description,
-    minParticipants,
-    maxParticipants,
-    trainingName,
-    associatedUsers,
-    associatedTeachers,
-    openForGroup,
-    openForTeam,
-    openForDepartment,
-    options,
-    departmentOptions,
-    teamOptions,
-    groupOptions,
-  ]);
-
-  useEffect(() => {
     getAllInsideTrainings();
   }, []);
 
@@ -534,13 +495,12 @@ function StartInsideTraining() {
     setLocation(null);
   };
 
-  const editTrainingData = async (idTraining) => {
+  /*const editTrainingData = async (idTraining) => {
     const userIDsArray = [];
     const uniqueUserIDs = new Set();
 
     try {
-      // adaptado do chatGPT
-      const extractUserIDs = async (responseData) => {
+      const extractUserIDs = (responseData) => {
         responseData.forEach((item) => {
           const userID =
             item.bruno_getusersbydepartmentid ||
@@ -548,125 +508,95 @@ function StartInsideTraining() {
             item.bruno_getusersbygroupid ||
             item.bruno_getuseridwithemail;
           if (userID) {
-            // Verifica se o ID de usuário não é nulo
             uniqueUserIDs.add(userID);
           }
         });
       };
 
-      try {
-        //https://www.w3schools.com/js/js_loop_forof.asp
-        for (const dept of department) {
-          const response = await fetch(
-            `/api/adminTrainings/getUsersByDepartmentID?id=${dept.value}`,
-            { method: "GET" }
-          );
-          if (response.ok) {
-            const responseData = await response.json();
-            await extractUserIDs(responseData.departments);
-          }
-        }
-
-        for (const team of teams) {
-          const response = await fetch(
-            `/api/adminTrainings/getUsersByTeamID?id=${team.value}`,
-            { method: "GET" }
-          );
-          if (response.ok) {
-            const responseData = await response.json();
-            await extractUserIDs(responseData.teams);
-          }
-        }
-
-        for (const group of groups) {
-          const response = await fetch(
-            `/api/adminTrainings/getUsersByGroupID?id=${group.value}`,
-            { method: "GET" }
-          );
-          if (response.ok) {
-            const responseData = await response.json();
-            await extractUserIDs(responseData.groups);
-          }
-        }
-
-        // trata dos utilizadores que se podem inscrever
-        userIDsArray.push(...uniqueUserIDs);
-
-        try {
-          const response = await fetch(
-            `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
-              userIDsArray
-            )}`
-          );
-          const responseData = await response.json();
-
-          if (response.ok) {
-            //console.log("Entrou no if");
-            setFinalUserArray(responseData.userids);
-
-            try {
-              const trainerIds = trainers.map((trainer) => trainer.value);
-              const responseteacher = await fetch(
-                `/api/adminTrainings/getInsideTeacherByUserID?userids=${encodeURIComponent(
-                  trainerIds
-                )}`
-              );
-              const responseDataTeacher = await responseteacher.json();
-
-              //console.log(responseDataTeacher);
-              if (responseteacher.ok) {
-                //console.log("teacher ids: ", responseDataTeacher.userids);
-                try {
-                  const trainingResponse = await fetch(
-                    `/api/adminTrainings/associateUsersToTraining`,
-                    {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        trainingID: idTraining,
-                        userIDs: responseData.userids,
-                        teacherIDs: responseDataTeacher.userids,
-                      }),
-                    }
-                  );
-
-                  const trainingData = await trainingResponse.json();
-                  console.log("trainingData: ", trainingData);
-
-                  if (trainingResponse.ok) {
-                    toast.success(trainingData.message);
-                  } else {
-                    toast.error(trainingData.message);
-                  }
-                } catch (error) {
-                  console.error("Error inserting training data:", error);
-                  toast.error(
-                    "An error occurred while inserting training data."
-                  );
-                }
-              } else {
-                toast.error(responseDataTeacher.message);
-              }
-            } catch (error) {
-              console.log(error);
-            }
-          } else {
-            console.log("Entrou no else");
-            toast.error(responseData.message);
-          }
-        } catch (error) {
-          toast.error("An error occurred while converting userIDs.");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        toast.error(
-          "An error occurred while associating users to the training. Please try again later."
+      for (const dept of department) {
+        const response = await fetch(
+          `/api/adminTrainings/getUsersByDepartmentID?id=${dept.value}`,
+          { method: "GET" }
         );
+        if (response.ok) {
+          const responseData = await response.json();
+          extractUserIDs(responseData.departments);
+        }
       }
 
-      // trata dos utilizadores que são incritos automaticamente no enroll
+      for (const team of teams) {
+        const response = await fetch(
+          `/api/adminTrainings/getUsersByTeamID?id=${team.value}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          extractUserIDs(responseData.teams);
+        }
+      }
+
+      for (const group of groups) {
+        const response = await fetch(
+          `/api/adminTrainings/getUsersByGroupID?id=${group.value}`,
+          { method: "GET" }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          extractUserIDs(responseData.groups);
+        }
+      }
+
+      userIDsArray.push(...uniqueUserIDs);
+
+      const response = await fetch(
+        `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
+          userIDsArray
+        )}`
+      );
+      const responseData = await response.json();
+
+      if (response.ok) {
+        setFinalUserArray(responseData.userids);
+
+        const trainerIds = trainers.map((trainer) => trainer.value);
+        const responseteacher = await fetch(
+          `/api/adminTrainings/getInsideTeacherByUserID?userids=${encodeURIComponent(
+            trainerIds
+          )}`
+        );
+        const responseDataTeacher = await responseteacher.json();
+
+        if (responseteacher.ok) {
+          const trainingResponse = await fetch(
+            `/api/adminTrainings/associateUsersToTraining`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                trainingID: idTraining,
+                userIDs: responseData.userids,
+                teacherIDs: responseDataTeacher.userids,
+              }),
+            }
+          );
+
+          const trainingData = await trainingResponse.json();
+
+          if (trainingResponse.ok) {
+            toast.success(trainingData.message);
+          } else {
+            toast.error(trainingData.message);
+          }
+        } else {
+          toast.error(responseDataTeacher.message);
+        }
+      } else {
+        toast.error(responseData.message);
+      }
+
+      // Processamento de utilizadores inscritos manualmente
       for (const email of userEmail) {
         const response = await fetch(
           `/api/adminTrainings/getUserIDWithEmail?email=${email}`,
@@ -674,50 +604,37 @@ function StartInsideTraining() {
         );
         if (response.ok) {
           const responseData = await response.json();
-          // await extractUserIDs(responseData.emails);
-          //setEnrolledUsers(responseData.bruno_getuseridwithemail);
-          //console.log("responseData ", responseData);
 
-          try {
-            const responseEnroll = await fetch(
-              `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
-                enrolledUsers
-              )}`
-            );
-            const responseDataEnroll = await responseEnroll.json();
-            //console.log("Id regular user do user email: ", responseDataEnroll);
+          const responseEnroll = await fetch(
+            `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
+              [responseData.bruno_getuseridwithemail]
+            )}`
+          );
+          const responseDataEnroll = await responseEnroll.json();
 
-            if (responseEnroll.ok) {
-              try {
-                const trainingResponse = await fetch(
-                  `/api/adminTrainings/enrollUsers`,
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      trainingID: idTraining,
-                      userIDs: responseData.emails,
-                    }),
-                  }
-                );
-
-                const trainingData = await trainingResponse.json();
-
-                if (trainingResponse.ok) {
-                  toast.success(trainingData.message);
-                } else {
-                  toast.error(trainingData.message);
-                }
-              } catch (error) {
-                console.error("Error inserting training data!:", error);
-                toast.error("An error occurred while inserting training data.");
+          if (responseEnroll.ok) {
+            const trainingResponse = await fetch(
+              `/api/adminTrainings/enrollUsers`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  trainingID: idTraining,
+                  userIDs: responseDataEnroll.userids,
+                }),
               }
+            );
+
+            const trainingData = await trainingResponse.json();
+
+            if (trainingResponse.ok) {
+              toast.success(trainingData.message);
             } else {
-              toast.error("An error occurred. Try again later.");
+              toast.error(trainingData.message);
             }
-          } catch (error) {
+          } else {
             toast.error("An error occurred. Try again later.");
           }
         }
@@ -732,6 +649,324 @@ function StartInsideTraining() {
     } catch (error) {
       toast.error("Error editing training");
     }
+  };
+*/
+  /**--------------------------------------------------------**/
+
+  // Função para buscar IDs de usuários por departamento
+  const fetchUserIDsByDepartment = async (departments) => {
+    const userIDs = new Set();
+    const extractUserIDs = (responseData) => {
+      responseData.forEach((item) => {
+        const userID = item.bruno_getusersbydepartmentid;
+        if (userID) {
+          userIDs.add(userID);
+        }
+      });
+    };
+
+    for (const dept of departments) {
+      const response = await fetch(
+        `/api/adminTrainings/getUsersByDepartmentID?id=${dept.value}`,
+        { method: "GET" }
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        extractUserIDs(responseData.departments);
+      }
+    }
+    return [...userIDs];
+  };
+
+  // Função para buscar IDs de usuários por equipe
+  const fetchUserIDsByTeam = async (teams) => {
+    const userIDs = new Set();
+    const extractUserIDs = (responseData) => {
+      responseData.forEach((item) => {
+        const userID = item.bruno_getusersbyteamid;
+        if (userID) {
+          userIDs.add(userID);
+        }
+      });
+    };
+
+    for (const team of teams) {
+      const response = await fetch(
+        `/api/adminTrainings/getUsersByTeamID?id=${team.value}`,
+        { method: "GET" }
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        extractUserIDs(responseData.teams);
+      }
+    }
+    return [...userIDs];
+  };
+
+  // Função para buscar IDs de usuários por grupo
+  const fetchUserIDsByGroup = async (groups) => {
+    const userIDs = new Set();
+    const extractUserIDs = (responseData) => {
+      responseData.forEach((item) => {
+        const userID = item.bruno_getusersbygroupid;
+        if (userID) {
+          userIDs.add(userID);
+        }
+      });
+    };
+
+    for (const group of groups) {
+      const response = await fetch(
+        `/api/adminTrainings/getUsersByGroupID?id=${group.value}`,
+        { method: "GET" }
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        extractUserIDs(responseData.groups);
+      }
+    }
+    return [...userIDs];
+  };
+
+  // Função para buscar IDs de professores
+  const fetchTeacherIDs = async (trainers) => {
+    const trainerIds = trainers.map((trainer) => trainer.value);
+    const response = await fetch(
+      `/api/adminTrainings/getInsideTeacherByUserID?userids=${encodeURIComponent(
+        trainerIds
+      )}`
+    );
+    if (response.ok) {
+      const responseData = await response.json();
+      return responseData.userids;
+    } else {
+      toast.error("Failed to get teacher IDs");
+      return [];
+    }
+  };
+
+  // Função principal para editar o treinamento
+  const editTrainingData = async (idTraining) => {
+    try {
+      const response = await fetch(
+        `/api/adminTrainings/editTrainingDescription`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            trainingID: idTraining,
+            description: description,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        toast.success("description edited");
+      } else {
+        toast.error("erro editing description");
+      }
+    } catch (error) {
+      console.log("description error: ", error);
+    }
+
+    try {
+      const response = await fetch(`/api/adminTrainings/editTrainingDuration`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          trainingID: idTraining,
+          duration: numMin,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success("duration edited");
+      } else {
+        toast.error("erro editing duration");
+      }
+    } catch (error) {
+      console.log("duration error: ", error);
+    }
+
+    try {
+      const response = await fetch(`/api/adminTrainings/editTrainingName`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          trainingID: idTraining,
+          name: trainingName,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success("name edited");
+      } else {
+        toast.error("erro editing name");
+      }
+    } catch (error) {
+      console.log("name error: ", error);
+    }
+
+    try {
+      // Buscar IDs de usuários por departamento, equipe e grupo
+      const userIDsByDepartment = await fetchUserIDsByDepartment(department);
+      const userIDsByTeam = await fetchUserIDsByTeam(teams);
+      const userIDsByGroup = await fetchUserIDsByGroup(groups);
+
+      // Combinar todos os IDs de usuários em um único array sem duplicatas
+      const uniqueUserIDs = new Set([
+        ...userIDsByDepartment,
+        ...userIDsByTeam,
+        ...userIDsByGroup,
+      ]);
+      const userIDsArray = [...uniqueUserIDs];
+
+      // Buscar IDs de usuários regulares
+      const response = await fetch(
+        `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
+          userIDsArray
+        )}`
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("ids de arrays convertidos: ", responseData);
+        setFinalUserArray(responseData.userids);
+
+        try {
+          const regularUsersResponse = await fetch(
+            `/api/adminTrainings/editTrainingRegularUsers`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                trainingID: idTraining,
+                userIDs: responseData.userids,
+              }),
+            }
+          );
+
+          const regularData = await regularUsersResponse.json();
+          if (regularUsersResponse.ok) {
+            toast.success(regularData.message);
+          } else {
+            toast.error(regularData.message);
+          }
+        } catch (error) {
+          toast.error("Error e2: ", error);
+        }
+      } else {
+        toast.error("Failed to get regular user IDs");
+      }
+    } catch (error) {
+      toast.error("Error e1: ", error);
+    }
+
+    try {
+      // Buscar IDs de professores
+      const teacherIDs = await fetchTeacherIDs(trainers);
+
+      const trainingResponse = await fetch(
+        `/api/adminTrainings/editTrainingInsideTeachers`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            trainingID: idTraining,
+            teacherIDs: teacherIDs,
+          }),
+        }
+      );
+
+      const trainingData = await trainingResponse.json();
+      if (trainingResponse.ok) {
+        toast.success(trainingData.message);
+      } else {
+        toast.error(trainingData.message);
+      }
+    } catch (error) {
+      toast.error("Error e2: ", error);
+    }
+    try {
+      console.log(userEmail);
+      // Processar usuários inscritos manualmente por email
+      for (const email of userEmail) {
+        console.log(`Fetching user ID with email: ${email.email}`);
+        const response = await fetch(
+          `/api/adminTrainings/getUserIDWithEmail?email=${email.email}`,
+          { method: "GET" }
+        );
+        console.log(`Response from getUserIDWithEmail:`, response);
+
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log(
+            `Response data from getUserIDWithEmail ******:`,
+            responseData.emails
+          );
+
+          const responseEnroll = await fetch(
+            `/api/adminTrainings/getRegularUserID_with_single_UID?uid=${encodeURIComponent(
+              [responseData.emails[0].bruno_getuseridwithemail]
+            )}`
+          );
+          console.log(
+            `Response from getRegularUserIdsByUserID:`,
+            responseEnroll
+          );
+
+          if (responseEnroll.ok) {
+            const responseDataEnroll = await responseEnroll.json();
+            console.log(
+              `Response data from getRegularUserIdsByUserID:`,
+              responseDataEnroll
+            );
+
+            const trainingResponse = await fetch(
+              `/api/adminTrainings/enrollUsers`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  trainingID: idTraining,
+                  userIDs: responseDataEnroll.userids,
+                }),
+              }
+            );
+            console.log(`Response from enrollUsers:`, trainingResponse);
+
+            const trainingData = await trainingResponse.json();
+            console.log(`Response data from enrollUsers:`, trainingData);
+
+            if (trainingResponse.ok) {
+              toast.success(trainingData.message);
+            } else {
+              toast.error(trainingData.message);
+            }
+          } else {
+            toast.error("An error occurred. Try again later.");
+          }
+        } else {
+          toast.error(`Failed to fetch user ID for email: ${email}`);
+        }
+      }
+    } catch (error) {
+      console.log("Error e3: ", error);
+      toast.error("Error e3: ", error);
+    }
+
+    // Limpar estados após a edição
+    setShowEdit(false);
+    setUserEmail([]);
+    setTrainers([]);
+    setDepartments([]);
+    setGroups([]);
+    setTeams([]);
   };
 
   return (
@@ -1207,19 +1442,15 @@ function StartInsideTraining() {
                     <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
                       Edit Training
                     </h2>
-                    <TextInputEdit
-                      label={"Edit Name"}
-                      initialValue={trainingName}
-                      returned={setTrainingName}
-                    />
 
-                    <TextInputEdit
-                      label={"Edit Description"}
-                      initialValue={description}
-                      returned={setDescription}
-                    />
-
-                    <div className="grid grid-cols-3 gap-x-5">
+                    <div className="grid grid-cols-2 gap-x-5">
+                      <div>
+                        <TextInputEdit
+                          label={"Edit Name"}
+                          initialValue={trainingName}
+                          returned={setTrainingName}
+                        />
+                      </div>
                       <div>
                         <TextInputEdit
                           label={"Edit Durantion (minutes)"}
@@ -1227,21 +1458,12 @@ function StartInsideTraining() {
                           returned={setNumMin}
                         />
                       </div>
-                      <div>
-                        <TextInputEdit
-                          label={"Edit Min of Participants"}
-                          initialValue={minParticipants}
-                          returned={setMinParticipants}
-                        />
-                      </div>
-                      <div>
-                        <TextInputEdit
-                          label={"Edit Max of Participants"}
-                          initialValue={maxParticipants}
-                          returned={setMaxParticipants}
-                        />
-                      </div>
                     </div>
+                    <TextInputEdit
+                      label={"Edit Description"}
+                      initialValue={description}
+                      returned={setDescription}
+                    />
 
                     <div className="grid grid-cols-4  gap-x-20">
                       <div className="col-span-4 ">

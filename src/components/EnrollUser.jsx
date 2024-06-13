@@ -25,7 +25,8 @@ const TableTextInput = ({ label, tid, returned }) => {
             name: user.name,
           }));
           setList(existingUsers);
-          returned(existingUsers);
+          // retorna apenas os emails
+          returned(existingUsers.map((user) => user.email));
         } else {
           toast.error("Failed to fetch existing users.");
         }
