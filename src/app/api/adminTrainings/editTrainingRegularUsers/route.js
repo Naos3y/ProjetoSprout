@@ -2,35 +2,35 @@ import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
+
 export async function POST(request) {
   try {
     const body = await request.json();
+
     const { trainingID, userIDs } = body;
 
-    console.log("enroll users ids: ", userIDs);
-
     const result = await prisma.$queryRaw`
-      SELECT bruno_enrolluser(CAST(${trainingID} AS INTEGER), ${userIDs})`;
+      SELECT bruno_associate_regular_users_to_training(CAST(${trainingID} AS INTEGER), ${userIDs})`;
 
-    console.log("resultado no enroll: ", result);
+    console.log("result regular users edit", result);
 
     if (result) {
       return NextResponse.json({
         status: 201,
-        message: "Training data inserted successfully",
+        message: "Regular users edited successfully",
       });
     } else {
       return NextResponse.json({
         status: 400,
-        message: "Failed to insert training data",
+        message: "Failed to edit regular users",
         error: "Unknown error",
       });
     }
   } catch (error) {
-    console.error("Error inserting training data:", error);
+    console.error("Error editing regular users:", error);
     return NextResponse.json({
       status: 500,
-      message: "Failed to insert training data",
+      message: "Error editing regular users:",
       error: error.message,
     });
   }

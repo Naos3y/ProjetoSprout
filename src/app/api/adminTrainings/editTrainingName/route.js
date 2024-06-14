@@ -6,29 +6,29 @@ const prisma = new PrismaClient();
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { email } = body;
+
+    const { trainingID, name } = body;
 
     const result = await prisma.$queryRaw`
-      SELECT * FROM bruno_checkUserEmail(${email})`;
+      SELECT bruno_edit_training_name(${trainingID}, ${name})`;
 
-    if (result.length > 0 && result[0].emailfound) {
+    if (result[0]) {
       return NextResponse.json({
-        status: 200,
-        message: "Email found",
-        emailFound: "yes",
-        userName: result[0].username,
+        status: 201,
+        message: "name edited",
       });
     } else {
       return NextResponse.json({
-        status: 404,
-        message: "Email not found",
+        status: 400,
+        message: "Failed to edit name",
+        error: result.error,
       });
     }
   } catch (error) {
-    console.error("Error checking email in training:", error);
+    console.error("Error editing name:", error);
     return NextResponse.json({
       status: 500,
-      message: "Failed to check user email in training",
+      message: "Internal Server Error",
       error: error.message,
     });
   }
