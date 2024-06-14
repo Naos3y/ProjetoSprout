@@ -59,25 +59,15 @@ export const SIDENAV_ITEMS_0 = [
     submenu: true,
     subMenuItems: [
       {
-        title: "Search Trainings",
-        path: "/Trainings/searchTrainings",
+        title: "All Trainings",
+        path: "/admin/adminhub/trainings/startInside",
         // icon: (
         //   <Icon icon="healthicons:magnifying-glass" width="17" height="17" />
         // ),
       },
       {
-        title: "Edit Trainings",
-        path: "/Trainings/editTrainings",
-        // icon: <Icon icon="mdi:pencil-outline" width="17" height="17" />,
-      },
-      {
         title: "Add New Trainings",
         path: "/admin/adminhub/trainings/add",
-        // icon: <Icon icon="carbon:add-filled" width="17" height="17" />,
-      },
-      {
-        title: "Confirm Training Attendance",
-        path: "/Trainings/confirmTrainingAttendance",
         // icon: <Icon icon="carbon:add-filled" width="17" height="17" />,
       },
     ],

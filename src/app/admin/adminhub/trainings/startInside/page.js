@@ -15,6 +15,14 @@ import TextInputEdit from "@/components/TextInputEdit";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import SideNav from "@/components/Static/sidenav";
+import cookies from "js-cookie";
+import { decrypt } from "@/session/crypt";
+import {
+  getPermission,
+  sessionExpired,
+  validSession,
+} from "@/session/sessionUtils";
+import "tailwindcss/tailwind.css";
 
 function StartInsideTraining() {
   const [trainingStartDate, setTrainingStartDate] = useState(null);
@@ -56,6 +64,40 @@ function StartInsideTraining() {
   const [type, setType] = useState("all");
 
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+
+  const [control, setControl] = useState(-1);
+  const [permission, setPermission] = useState(0);
+  const [showExpired, setShowExpired] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    let flag = true;
+    let sessionStatus;
+    const getSession = async () => {
+      const token = cookies.get("session");
+      const decryptedSession = await decrypt(token);
+      const auxPermission = decryptedSession.user.permission;
+      setPermission(auxPermission);
+
+      if (!flag) {
+        const expired = await sessionExpired();
+        if (sessionStatus === 1 && expired === 1 && !showExpired) {
+          setShowExpired(true);
+        }
+      } else if (flag) {
+        sessionStatus = await validSession(0, 1, 3, 4);
+        setControl(sessionStatus);
+        flag = !flag;
+      }
+    };
+    getSession();
+    const intervalId = setInterval(getSession, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const toggleSideNav = () => {
+    setIsOpen(!isOpen);
+  };
 
   const downloadCertificate = async (trainingName, userName, date) => {
     try {
@@ -778,662 +820,707 @@ function StartInsideTraining() {
 
   return (
     <div>
-      <div className="flex">
-        <div className="w-80 bg-gray-200 h-screen p-4 border-r border-gray-400">
-          barra lateral
-        </div>
-        <div className="mx-auto max-w-9xl my-4 space-y-4">
-          <Toaster richColors position="bottom-center" />
-          <div className="grid grid-cols-3">
-            {!showTable && (
-              <>
-                <div className="font-semibold text-green-500 text-lg pb-3 text-align-left">
-                  Loading Inside Trainings ...
-                </div>
-              </>
-            )}
-
-            {showHelpModal && (
-              <>
-                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
-                  <div className="bg-white p-8 rounded-lg shadow-lg">
-                    <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
-                      Help
-                    </h2>
-                    <h2 className="text-left text-black text-lg font-semibold mb-4">
-                      Starting a Training
-                    </h2>
-                    <p>
-                      - Begin by selecting the training you wish to initiate by
-                      checking the checkbox.
-                    </p>
-                    <p>
-                      - Upon selection, all pertinent details of the chosen
-                      training will be displayed, including associated users if
-                      applicable.
-                    </p>
-                    <p>
-                      - You have the option to modify the list of associated
-                      users as needed.
-                    </p>
-                    <p>
-                      - Following this, kindly provide the training date, time,
-                      and location.
-                    </p>
-                    <p>
-                      - Once all necessary information is provided, please press
-                      the "Start" button to begin the training.
-                    </p>
-
-                    <div className="flex justify-center space-x-4 pt-5">
-                      <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                        onClick={() => {
-                          setShowHelpModal(false);
-                        }}
-                      >
-                        Ok
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {showStartConfirmation && (
-              <>
-                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
-                  <div className="bg-white p-8 rounded-lg shadow-lg">
-                    <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
-                      Please verify the information below before starting the
-                      training:
-                    </h2>
-                    <div>
-                      <p>
-                        <strong>Date: </strong> {date}
-                      </p>
-                      <p>
-                        <strong>Time: </strong> {time}
-                      </p>
-                      <p>
-                        <strong>Location:</strong> {location}
-                      </p>
-                    </div>
-                    <div className="flex justify-center space-x-4 pt-5">
-                      <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
-                        onClick={handleShowBackStartModal}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                        onClick={startTraining}
-                      >
-                        It's Correct!
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {showAddOptions && (
-              <>
-                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 p-10">
-                  <div className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[850px]">
-                    <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
-                      Start Training
-                    </h2>
-                    <p className="pb-5">
-                      Please <strong>review all the information</strong> about
-                      the training before pressing <strong>"Start"</strong>
-                    </p>
-                    <div>
-                      <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                        <thead>
-                          <tr>
-                            <th className="border border-gray-200 p-2">
-                              Training Name
-                            </th>
-                            <th className="border border-gray-200 p-2">
-                              Duration (min)
-                            </th>
-                            <th className="border border-gray-200 p-2">Type</th>
-                            <th className="border border-gray-200 p-2">
-                              Min Participants
-                            </th>
-                            <th className="border border-gray-200 p-2">
-                              Max Participants
-                            </th>
-                            <th className="border border-gray-200 p-2">Area</th>
-                            <th className="border border-gray-200 p-2">
-                              Description
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {trainingName}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {numMin}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {eventType}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {minParticipants}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {maxParticipants}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {trainingArea}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {description}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div>
-                      <p className="pb-5 pt-3">
-                        <strong>Enrolled Sprouts</strong>
-                      </p>
-                      <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                        <thead>
-                          <tr>
-                            <th className="border border-gray-200 p-2">
-                              User Name
-                            </th>
-                            <th className="border border-gray-200 p-2">
-                              User Department
-                            </th>
-                            <th className="border border-gray-200 p-2">
-                              User Group
-                            </th>
-                            <th className="border border-gray-200 p-2">
-                              User Team
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {associatedUsers.map((user) => (
-                            <tr key={user.id}>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {user.name}
-                              </td>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {user.department}
-                              </td>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {user.group}
-                              </td>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {user.team}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div>
-                      <p className="pb-5 pt-3">
-                        <strong>Trainers</strong>
-                      </p>
-                      <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                        <thead>
-                          <tr>
-                            <th className="border border-gray-200 p-2">
-                              Trainer Name
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {associatedTeachers.map((teacher) => (
-                            <tr key={teacher.id}>
-                              <td className="border border-gray-200 p-2 text-left">
-                                {teacher.name}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div>
-                      <div>
-                        <p className="pb-5 pt-3">
-                          <strong>Enrollment Open For</strong>
-                        </p>
-                      </div>
-                      <div>
-                        <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                          <thead>
-                            <tr>
-                              <th className="border border-gray-200 p-2">
-                                Departments
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {openForDepartment.map((department, index) => (
-                              <tr key={index}>
-                                <td className="border border-gray-200 p-2">
-                                  {department}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-
-                        <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                          <thead>
-                            <tr>
-                              <th className="border border-gray-200 p-2">
-                                Groups
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {openForGroup.map((group, index) => (
-                              <tr key={index}>
-                                <td className="border border-gray-200 p-2">
-                                  {group}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-
-                        <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                          <thead>
-                            <tr>
-                              <th className="border border-gray-200 p-2">
-                                Teams
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {openForTeam.map((team, index) => (
-                              <tr key={index}>
-                                <td className="border border-gray-200 p-2">
-                                  {team}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                    <h2 className="text-left text-green-500 text-lg font-semibold pt-5">
-                      In order to Start this training, please indicate:
-                    </h2>
-
-                    <div className="grid grid-cols-4 gap-2">
-                      <div className="col-span-1 flex">
-                        <DatePicker label={"Date"} returned={setDate} />
-                      </div>
-
-                      <div className="col-span-1 flex">
-                        <TimePicker label={"Time"} returned={setTime} />
-                      </div>
-
-                      <div className="col-span-2">
-                        <TextInput label={"Location"} returned={setLocation} />
-                      </div>
-                    </div>
-
-                    <div className="flex justify-center space-x-4 pt-5">
-                      <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
-                        onClick={() => {
-                          setShowAddOptions(false);
-                        }}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                        onClick={handleModalSwitch}
-                      >
-                        Start
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {showTable && (
-              <>
-                <div className="font-semibold text-green-500 text-lg pb-3 text-align-left col-span-2">
-                  Trainings
-                </div>
-                <div className="flex justify-end">
-                  <span className="font-semibold text-green-500 text-lg pr-2 pl-10">
-                    Help
-                  </span>
-                  <FiHelpCircle
-                    onClick={showHelp}
-                    style={{ cursor: "pointer" }}
-                  />
-                </div>
-
-                <div className="col-span-1 flex items-center">
-                  <input
-                    name="Filter"
-                    type="text"
-                    value={filter}
-                    onChange={handleFilterChange}
-                    className="p-1 border-l border-t border-b w-full rounded-tl rounded-bl border-gray-300 focus:outline-none focus:border-green-500 text-black py-2"
-                    placeholder="Filter by Training Name"
-                  />
-                  <button
-                    onClick={resetFilter}
-                    className="p-2 border rounded-tr rounded-br border-gray-300 hover:border-green-500 focus:outline-none cursor-pointer font-bold flex items-center justify-between bg-white shadow-sm text-black py-3"
-                  >
-                    <GrClearOption />
-                  </button>
-                </div>
-
-                <div className="col-span-1 pl-7">
-                  <FilterDropDown
-                    label={""}
-                    options={[
-                      { value: "all", label: "ALL" },
-                      { value: "started", label: "Started" },
-                      { value: "notstarted", label: "Not Started" },
-                    ]}
-                    message="Status"
-                    returned={handleType}
-                  />
-                </div>
-
-                <div className="col-span-3 pt-2">
-                  <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                    <thead>
-                      <tr>
-                        <th className="border border-gray-200 p-2">
-                          Training Name
-                        </th>
-                        <th className="border border-gray-200 p-2">
-                          Duration (min)
-                        </th>
-                        <th className="border border-gray-200 p-2">Type</th>
-                        <th className="border border-gray-200 p-2">
-                          Min Participants
-                        </th>
-                        <th className="border border-gray-200 p-2">
-                          Max Participants
-                        </th>
-                        <th className="border border-gray-200 p-2">Area</th>
-                        <th className="border border-gray-200 p-2">
-                          Description
-                        </th>
-                        <th></th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Array.isArray(trainings) &&
-                        filteredTrainings.map((trainings, index) => {
-                          const currentDate = new Date();
-                          const trainingDate = new Date(trainings.itstartdate);
-                          const hasTrainingDatePassed =
-                            trainingDate < currentDate;
-
-                          return (
-                            <tr key={index}>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {trainings.itname}
-                              </td>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {trainings.itnumofmin}
-                              </td>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {trainings.iteventtype}
-                              </td>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {trainings.itminparticipants}
-                              </td>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {trainings.itmaxparticipants}
-                              </td>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {trainings.ittrainingarea}
-                              </td>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {trainings.itdescription}
-                              </td>
-                              {trainings.itstarted && hasTrainingDatePassed ? (
-                                <td
-                                  colSpan="2"
-                                  className="border border-gray-200 p-2 text-center"
-                                >
-                                  <button
-                                    className="bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                                    onClick={() =>
-                                      showAttenModal({
-                                        id: trainings.itid,
-                                        name: trainings.itname,
-                                        startDate: trainings.itstartdate,
-                                      })
-                                    }
-                                  >
-                                    Attendance
-                                  </button>
-                                </td>
-                              ) : (
-                                <>
-                                  <td className="border border-gray-200 p-2 text-center">
-                                    <button
-                                      className={`bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 ${
-                                        trainings.itstarted
-                                          ? "opacity-50 cursor-not-allowed"
-                                          : "hover:bg-green-500 hover:text-white active:bg-green-700"
-                                      }`}
-                                      onClick={() =>
-                                        showEditModal(trainings.itid)
-                                      }
-                                      disabled={trainings.itstarted}
-                                    >
-                                      Edit
-                                    </button>
-                                  </td>
-                                  <td className="border border-gray-200 p-2 text-center">
-                                    <button
-                                      className={`bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 ${
-                                        trainings.itstarted
-                                          ? "opacity-50 cursor-not-allowed"
-                                          : "hover:bg-green-500 hover:text-white active:bg-green-700"
-                                      }`}
-                                      onClick={() =>
-                                        showAddModal(trainings.itid)
-                                      }
-                                      disabled={trainings.itstarted}
-                                    >
-                                      Start
-                                    </button>
-                                  </td>
-                                </>
-                              )}
-                            </tr>
-                          );
-                        })}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
-
-            {showEdit && (
-              <>
-                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 p-10">
-                  <div
-                    className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[850px]
-                  "
-                  >
-                    <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
-                      Edit Training
-                    </h2>
-
-                    <div className="grid grid-cols-2 gap-x-5">
-                      <div>
-                        <TextInputEdit
-                          label={"Edit Name"}
-                          initialValue={trainingName}
-                          returned={setTrainingName}
-                        />
-                      </div>
-                      <div>
-                        <TextInputEdit
-                          label={"Edit Durantion (minutes)"}
-                          initialValue={numMin}
-                          returned={setNumMin}
-                        />
-                      </div>
-                    </div>
-                    <TextInputEdit
-                      label={"Edit Description"}
-                      initialValue={description}
-                      returned={setDescription}
-                    />
-
-                    <div className="grid grid-cols-4  gap-x-20">
-                      <div className="col-span-4 ">
-                        <TableTextInput
-                          label={"Enrolled Users"}
-                          tid={trainingID}
-                        />
-                      </div>
-                      <div className="col-span-4">
-                        <span>Enrolment Open For</span>
-                      </div>
-                      <div>
-                        <MultiselectSearch
-                          label="Trainers"
-                          options={options}
-                          message="Select One / Multi"
-                          returned={setTrainers}
-                        />
-                      </div>
-
-                      <div>
-                        <MultiselectSearch
-                          label="Enrolment for Department"
-                          options={departmentOptions}
-                          message="Select One / Multi"
-                          returned={setDepartments}
-                        />
-                      </div>
-
-                      <div>
-                        <MultiselectSearch
-                          label="Enrolment for Groups"
-                          options={groupOptions}
-                          message="Select One / Multi"
-                          returned={setGroups}
-                        />
-                      </div>
-
-                      <div>
-                        <MultiselectSearch
-                          label="Enrolment for Teams"
-                          options={teamOptions}
-                          message="Select One / Multi"
-                          returned={setTeams}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-center space-x-4 pt-5">
-                      <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
-                        onClick={() => setShowEdit(false)}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                        onClick={editTraining}
-                      >
-                        Edit
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {showAttendanceModal && (
-              <>
-                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 p-10">
-                  <div
-                    className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[600px] w-[600px]
-                  "
-                  >
-                    <div>
-                      <p className="pb-5 pt-3">
-                        <strong>Attendance at '{trainingName}' </strong>
-                      </p>
-
-                      <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                        <thead>
-                          <tr>
-                            <th className="border border-gray-200 p-2">
-                              User Name
-                            </th>
-                            <th className="border border-gray-200 p-2">
-                              Generate Certificate
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {associatedUsers.map((user) => (
-                            <tr key={user.id}>
-                              <td className="border border-gray-200 p-2 text-center">
-                                {user.name}
-                              </td>
-                              <td className="border border-gray-200 p-2 text-center">
-                                <button
-                                  onClick={() =>
-                                    downloadCertificate(
-                                      trainingName,
-                                      user.name,
-                                      trainingStartDate
-                                    )
-                                  }
-                                  className="bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                                >
-                                  Generate Certificate
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-
-                      <div className="flex justify-center space-x-4 pt-5">
-                        <button
-                          className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
-                          onClick={() => setShowAttendanceModal(false)}
-                        >
-                          Done
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
+      {control === -1 ? (
+        <div className="flex justify-center items-center h-screen">
+          <div className="rounded-lg bg-white p-6 shadow-md w-full md:w-96">
+            <h2 className="text-2xl text-gray-600 font-bold text-center">
+              Loading...
+            </h2>
           </div>
         </div>
-      </div>
+      ) : control === 0 ? (
+        <div className="flex justify-center items-center h-screen">
+          <div className="rounded-lg bg-white p-6 shadow-md w-full md:w-96">
+            <h2 className="text-2xl text-gray-600 font-bold text-center">
+              ACCESS DENIED !
+            </h2>
+          </div>
+        </div>
+      ) : (
+        <div className="flex justify-center items-center">
+          <SideNav
+            isOpen={isOpen}
+            toggleSideNav={toggleSideNav}
+            perm={permission}
+          />
+          <div className="flex-1">
+            <main>
+              <div className="flex">
+                <div className="mx-auto max-w-9xl my-4 space-y-4">
+                  <Toaster richColors position="bottom-center" />
+                  <div className="grid grid-cols-3">
+                    {!showTable && (
+                      <>
+                        <div className="font-semibold text-green-500 text-lg pb-3 text-align-left">
+                          Loading Inside Trainings ...
+                        </div>
+                      </>
+                    )}
+
+                    {showHelpModal && (
+                      <>
+                        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                          <div className="bg-white p-8 rounded-lg shadow-lg">
+                            <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
+                              Help
+                            </h2>
+                            <h2 className="text-left text-black text-lg font-semibold mb-4">
+                              Starting a Training
+                            </h2>
+                            <p>
+                              - Begin by selecting the training you wish to
+                              initiate by checking the checkbox.
+                            </p>
+                            <p>
+                              - Upon selection, all pertinent details of the
+                              chosen training will be displayed, including
+                              associated users if applicable.
+                            </p>
+                            <p>
+                              - You have the option to modify the list of
+                              associated users as needed.
+                            </p>
+                            <p>
+                              - Following this, kindly provide the training
+                              date, time, and location.
+                            </p>
+                            <p>
+                              - Once all necessary information is provided,
+                              please press the "Start" button to begin the
+                              training.
+                            </p>
+
+                            <div className="flex justify-center space-x-4 pt-5">
+                              <button
+                                className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                                onClick={() => {
+                                  setShowHelpModal(false);
+                                }}
+                              >
+                                Ok
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {showStartConfirmation && (
+                      <>
+                        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                          <div className="bg-white p-8 rounded-lg shadow-lg">
+                            <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
+                              Please verify the information below before
+                              starting the training:
+                            </h2>
+                            <div>
+                              <p>
+                                <strong>Date: </strong> {date}
+                              </p>
+                              <p>
+                                <strong>Time: </strong> {time}
+                              </p>
+                              <p>
+                                <strong>Location:</strong> {location}
+                              </p>
+                            </div>
+                            <div className="flex justify-center space-x-4 pt-5">
+                              <button
+                                className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
+                                onClick={handleShowBackStartModal}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                                onClick={startTraining}
+                              >
+                                It's Correct!
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {showAddOptions && (
+                      <>
+                        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 p-10">
+                          <div className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[850px]">
+                            <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
+                              Start Training
+                            </h2>
+                            <p className="pb-5">
+                              Please <strong>review all the information</strong>{" "}
+                              about the training before pressing{" "}
+                              <strong>"Start"</strong>
+                            </p>
+                            <div>
+                              <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                                <thead>
+                                  <tr>
+                                    <th className="border border-gray-200 p-2">
+                                      Training Name
+                                    </th>
+                                    <th className="border border-gray-200 p-2">
+                                      Duration (min)
+                                    </th>
+                                    <th className="border border-gray-200 p-2">
+                                      Type
+                                    </th>
+                                    <th className="border border-gray-200 p-2">
+                                      Min Participants
+                                    </th>
+                                    <th className="border border-gray-200 p-2">
+                                      Max Participants
+                                    </th>
+                                    <th className="border border-gray-200 p-2">
+                                      Area
+                                    </th>
+                                    <th className="border border-gray-200 p-2">
+                                      Description
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td className="border border-gray-200 p-2 text-center">
+                                      {trainingName}
+                                    </td>
+                                    <td className="border border-gray-200 p-2 text-center">
+                                      {numMin}
+                                    </td>
+                                    <td className="border border-gray-200 p-2 text-center">
+                                      {eventType}
+                                    </td>
+                                    <td className="border border-gray-200 p-2 text-center">
+                                      {minParticipants}
+                                    </td>
+                                    <td className="border border-gray-200 p-2 text-center">
+                                      {maxParticipants}
+                                    </td>
+                                    <td className="border border-gray-200 p-2 text-center">
+                                      {trainingArea}
+                                    </td>
+                                    <td className="border border-gray-200 p-2 text-center">
+                                      {description}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <div>
+                              <p className="pb-5 pt-3">
+                                <strong>Enrolled Sprouts</strong>
+                              </p>
+                              <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                                <thead>
+                                  <tr>
+                                    <th className="border border-gray-200 p-2">
+                                      User Name
+                                    </th>
+                                    <th className="border border-gray-200 p-2">
+                                      User Department
+                                    </th>
+                                    <th className="border border-gray-200 p-2">
+                                      User Group
+                                    </th>
+                                    <th className="border border-gray-200 p-2">
+                                      User Team
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {associatedUsers.map((user) => (
+                                    <tr key={user.id}>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {user.name}
+                                      </td>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {user.department}
+                                      </td>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {user.group}
+                                      </td>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {user.team}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+
+                            <div>
+                              <p className="pb-5 pt-3">
+                                <strong>Trainers</strong>
+                              </p>
+                              <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                                <thead>
+                                  <tr>
+                                    <th className="border border-gray-200 p-2">
+                                      Trainer Name
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {associatedTeachers.map((teacher) => (
+                                    <tr key={teacher.id}>
+                                      <td className="border border-gray-200 p-2 text-left">
+                                        {teacher.name}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+
+                            <div>
+                              <div>
+                                <p className="pb-5 pt-3">
+                                  <strong>Enrollment Open For</strong>
+                                </p>
+                              </div>
+                              <div>
+                                <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                                  <thead>
+                                    <tr>
+                                      <th className="border border-gray-200 p-2">
+                                        Departments
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {openForDepartment.map(
+                                      (department, index) => (
+                                        <tr key={index}>
+                                          <td className="border border-gray-200 p-2">
+                                            {department}
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                  </tbody>
+                                </table>
+
+                                <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                                  <thead>
+                                    <tr>
+                                      <th className="border border-gray-200 p-2">
+                                        Groups
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {openForGroup.map((group, index) => (
+                                      <tr key={index}>
+                                        <td className="border border-gray-200 p-2">
+                                          {group}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+
+                                <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                                  <thead>
+                                    <tr>
+                                      <th className="border border-gray-200 p-2">
+                                        Teams
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {openForTeam.map((team, index) => (
+                                      <tr key={index}>
+                                        <td className="border border-gray-200 p-2">
+                                          {team}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+
+                            <h2 className="text-left text-green-500 text-lg font-semibold pt-5">
+                              In order to Start this training, please indicate:
+                            </h2>
+
+                            <div className="grid grid-cols-4 gap-2">
+                              <div className="col-span-1 flex">
+                                <DatePicker label={"Date"} returned={setDate} />
+                              </div>
+
+                              <div className="col-span-1 flex">
+                                <TimePicker label={"Time"} returned={setTime} />
+                              </div>
+
+                              <div className="col-span-2">
+                                <TextInput
+                                  label={"Location"}
+                                  returned={setLocation}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="flex justify-center space-x-4 pt-5">
+                              <button
+                                className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
+                                onClick={() => {
+                                  setShowAddOptions(false);
+                                }}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                                onClick={handleModalSwitch}
+                              >
+                                Start
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {showTable && (
+                      <>
+                        <div className="font-semibold text-green-500 text-lg pb-3 text-align-left col-span-2">
+                          Trainings
+                        </div>
+                        <div className="flex justify-end">
+                          <span className="font-semibold text-green-500 text-lg pr-2 pl-10">
+                            Help
+                          </span>
+                          <FiHelpCircle
+                            onClick={showHelp}
+                            style={{ cursor: "pointer" }}
+                          />
+                        </div>
+
+                        <div className="col-span-1 flex items-center">
+                          <input
+                            name="Filter"
+                            type="text"
+                            value={filter}
+                            onChange={handleFilterChange}
+                            className="p-1 border-l border-t border-b w-full rounded-tl rounded-bl border-gray-300 focus:outline-none focus:border-green-500 text-black py-2"
+                            placeholder="Filter by Training Name"
+                          />
+                          <button
+                            onClick={resetFilter}
+                            className="p-2 border rounded-tr rounded-br border-gray-300 hover:border-green-500 focus:outline-none cursor-pointer font-bold flex items-center justify-between bg-white shadow-sm text-black py-3"
+                          >
+                            <GrClearOption />
+                          </button>
+                        </div>
+
+                        <div className="col-span-1 pl-7">
+                          <FilterDropDown
+                            label={""}
+                            options={[
+                              { value: "all", label: "ALL" },
+                              { value: "started", label: "Started" },
+                              { value: "notstarted", label: "Not Started" },
+                            ]}
+                            message="Status"
+                            returned={handleType}
+                          />
+                        </div>
+
+                        <div className="col-span-3 pt-2">
+                          <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                            <thead>
+                              <tr>
+                                <th className="border border-gray-200 p-2">
+                                  Training Name
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                  Duration (min)
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                  Type
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                  Min Participants
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                  Max Participants
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                  Area
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                  Description
+                                </th>
+                                <th></th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {Array.isArray(trainings) &&
+                                filteredTrainings.map((trainings, index) => {
+                                  const currentDate = new Date();
+                                  const trainingDate = new Date(
+                                    trainings.itstartdate
+                                  );
+                                  const hasTrainingDatePassed =
+                                    trainingDate < currentDate;
+
+                                  return (
+                                    <tr key={index}>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {trainings.itname}
+                                      </td>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {trainings.itnumofmin}
+                                      </td>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {trainings.iteventtype}
+                                      </td>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {trainings.itminparticipants}
+                                      </td>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {trainings.itmaxparticipants}
+                                      </td>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {trainings.ittrainingarea}
+                                      </td>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {trainings.itdescription}
+                                      </td>
+                                      {trainings.itstarted &&
+                                      hasTrainingDatePassed ? (
+                                        <td
+                                          colSpan="2"
+                                          className="border border-gray-200 p-2 text-center"
+                                        >
+                                          <button
+                                            className="bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                                            onClick={() =>
+                                              showAttenModal({
+                                                id: trainings.itid,
+                                                name: trainings.itname,
+                                                startDate:
+                                                  trainings.itstartdate,
+                                              })
+                                            }
+                                          >
+                                            Attendance
+                                          </button>
+                                        </td>
+                                      ) : (
+                                        <>
+                                          <td className="border border-gray-200 p-2 text-center">
+                                            <button
+                                              className={`bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 ${
+                                                trainings.itstarted
+                                                  ? "opacity-50 cursor-not-allowed"
+                                                  : "hover:bg-green-500 hover:text-white active:bg-green-700"
+                                              }`}
+                                              onClick={() =>
+                                                showEditModal(trainings.itid)
+                                              }
+                                              disabled={trainings.itstarted}
+                                            >
+                                              Edit
+                                            </button>
+                                          </td>
+                                          <td className="border border-gray-200 p-2 text-center">
+                                            <button
+                                              className={`bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 ${
+                                                trainings.itstarted
+                                                  ? "opacity-50 cursor-not-allowed"
+                                                  : "hover:bg-green-500 hover:text-white active:bg-green-700"
+                                              }`}
+                                              onClick={() =>
+                                                showAddModal(trainings.itid)
+                                              }
+                                              disabled={trainings.itstarted}
+                                            >
+                                              Start
+                                            </button>
+                                          </td>
+                                        </>
+                                      )}
+                                    </tr>
+                                  );
+                                })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </>
+                    )}
+
+                    {showEdit && (
+                      <>
+                        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 p-10">
+                          <div
+                            className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[850px]
+                  "
+                          >
+                            <h2 className="text-center text-green-500 text-lg font-semibold mb-4">
+                              Edit Training
+                            </h2>
+
+                            <div className="grid grid-cols-2 gap-x-5">
+                              <div>
+                                <TextInputEdit
+                                  label={"Edit Name"}
+                                  initialValue={trainingName}
+                                  returned={setTrainingName}
+                                />
+                              </div>
+                              <div>
+                                <TextInputEdit
+                                  label={"Edit Durantion (minutes)"}
+                                  initialValue={numMin}
+                                  returned={setNumMin}
+                                />
+                              </div>
+                            </div>
+                            <TextInputEdit
+                              label={"Edit Description"}
+                              initialValue={description}
+                              returned={setDescription}
+                            />
+
+                            <div className="grid grid-cols-4  gap-x-20">
+                              <div className="col-span-4 ">
+                                <TableTextInput
+                                  label={"Enrolled Users"}
+                                  tid={trainingID}
+                                />
+                              </div>
+                              <div className="col-span-4">
+                                <span>Enrolment Open For</span>
+                              </div>
+                              <div>
+                                <MultiselectSearch
+                                  label="Trainers"
+                                  options={options}
+                                  message="Select One / Multi"
+                                  returned={setTrainers}
+                                />
+                              </div>
+
+                              <div>
+                                <MultiselectSearch
+                                  label="Enrolment for Department"
+                                  options={departmentOptions}
+                                  message="Select One / Multi"
+                                  returned={setDepartments}
+                                />
+                              </div>
+
+                              <div>
+                                <MultiselectSearch
+                                  label="Enrolment for Groups"
+                                  options={groupOptions}
+                                  message="Select One / Multi"
+                                  returned={setGroups}
+                                />
+                              </div>
+
+                              <div>
+                                <MultiselectSearch
+                                  label="Enrolment for Teams"
+                                  options={teamOptions}
+                                  message="Select One / Multi"
+                                  returned={setTeams}
+                                />
+                              </div>
+                            </div>
+                            <div className="flex justify-center space-x-4 pt-5">
+                              <button
+                                className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
+                                onClick={() => setShowEdit(false)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                                onClick={editTraining}
+                              >
+                                Edit
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {showAttendanceModal && (
+                      <>
+                        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 p-10">
+                          <div
+                            className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[600px] w-[600px]
+                  "
+                          >
+                            <div>
+                              <p className="pb-5 pt-3">
+                                <strong>Attendance at '{trainingName}' </strong>
+                              </p>
+
+                              <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                                <thead>
+                                  <tr>
+                                    <th className="border border-gray-200 p-2">
+                                      User Name
+                                    </th>
+                                    <th className="border border-gray-200 p-2">
+                                      Generate Certificate
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {associatedUsers.map((user) => (
+                                    <tr key={user.id}>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        {user.name}
+                                      </td>
+                                      <td className="border border-gray-200 p-2 text-center">
+                                        <button
+                                          onClick={() =>
+                                            downloadCertificate(
+                                              trainingName,
+                                              user.name,
+                                              trainingStartDate
+                                            )
+                                          }
+                                          className="bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                                        >
+                                          Generate Certificate
+                                        </button>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+
+                              <div className="flex justify-center space-x-4 pt-5">
+                                <button
+                                  className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
+                                  onClick={() => setShowAttendanceModal(false)}
+                                >
+                                  Done
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
