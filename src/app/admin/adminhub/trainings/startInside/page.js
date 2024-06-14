@@ -57,7 +57,6 @@ function StartInsideTraining() {
   const [type, setType] = useState("all");
 
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
-  const [downloadLink, setDownloadLink] = useState("");
 
   const downloadCertificate = async (trainingName, userName, date) => {
     try {
@@ -1376,7 +1375,7 @@ function StartInsideTraining() {
               <>
                 <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 p-10">
                   <div
-                    className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[850px]
+                    className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[600px] w-[600px]
                   "
                   >
                     <div>
@@ -1410,7 +1409,7 @@ function StartInsideTraining() {
                                       trainingStartDate
                                     )
                                   }
-                                  className="bg-blue-500 text-white font-bold px-4 py-2 rounded-md shadow-sm hover:bg-blue-700"
+                                  className="bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
                                 >
                                   Generate Certificate
                                 </button>
@@ -1425,13 +1424,7 @@ function StartInsideTraining() {
                           className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
                           onClick={() => setShowAttendanceModal(false)}
                         >
-                          Cancel
-                        </button>
-                        <button
-                          className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
-                          //onClick={editTraining}
-                        >
-                          Edit
+                          Done
                         </button>
                       </div>
                     </div>
