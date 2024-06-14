@@ -7,7 +7,6 @@ const TestesPDF = () => {
   const userName = "Samuel Martins";
   const trainingName = "Java Basics";
   const date = "01/06/2024";
-  const trainers = "Bruno Lopes";
 
   return (
     <div
@@ -23,7 +22,6 @@ const TestesPDF = () => {
           userName={userName}
           trainingName={trainingName}
           date={date}
-          trainers={trainers}
         />
       </PDFViewer>
     </div>

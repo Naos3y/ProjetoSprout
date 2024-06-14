@@ -12,8 +12,13 @@ import MultiselectSearch from "@/components/MultiselectSearch";
 import { GrClearOption } from "react-icons/gr";
 import FilterDropDown from "@/components/FilterDropDown";
 import TextInputEdit from "@/components/TextInputEdit";
+import { PDFViewer } from "@react-pdf/renderer";
+import CertificatePDF from "@/components/CertificatePDF";
+import axios from "axios";
+import { saveAs } from "file-saver";
 
 function StartInsideTraining() {
+  const [trainingStartDate, setTrainingStartDate] = useState(null);
   const [trainingArea, setTrainingArea] = useState(null);
   const [eventType, setEventType] = useState(null);
   const [numMin, setNumMin] = useState(0);
@@ -36,15 +41,12 @@ function StartInsideTraining() {
   const [location, setLocation] = useState(null);
   const [showStartConfirmation, setShowStartConfirmation] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [generatePDF, setGeneratePDF] = useState(false);
 
   const [department, setDepartments] = useState([]);
   const [groups, setGroups] = useState([]);
   const [teams, setTeams] = useState([]);
   const [trainers, setTrainers] = useState([]);
-  const [userEmail, setUserEmail] = useState([]);
-  const [finalEnrolledUserArray, setFinalEnrolledUserArray] = useState([]);
-  const [enrolledUsers, setEnrolledUsers] = useState([]);
-  const [finalUserArray, setFinalUserArray] = useState([]);
   const [options, setOptions] = useState([]);
   const [trainingType, setTrainingType] = useState("internal");
   const [departmentOptions, setDepartmentOptions] = useState([]);
@@ -53,6 +55,30 @@ function StartInsideTraining() {
 
   const [filter, setFilter] = useState("");
   const [type, setType] = useState("all");
+
+  const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+  const [downloadLink, setDownloadLink] = useState("");
+
+  const downloadCertificate = async (trainingName, userName, date) => {
+    try {
+      const response = await axios.post(
+        "/api/adminTrainings/generatePDF",
+        {
+          trainingName,
+          userName,
+          date,
+        },
+        {
+          responseType: "blob",
+        }
+      );
+
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+      saveAs(pdfBlob, "certificate.pdf");
+    } catch (error) {
+      console.error("Error generating certificate:", error);
+    }
+  };
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -495,165 +521,6 @@ function StartInsideTraining() {
     setLocation(null);
   };
 
-  /*const editTrainingData = async (idTraining) => {
-    const userIDsArray = [];
-    const uniqueUserIDs = new Set();
-
-    try {
-      const extractUserIDs = (responseData) => {
-        responseData.forEach((item) => {
-          const userID =
-            item.bruno_getusersbydepartmentid ||
-            item.bruno_getusersbyteamid ||
-            item.bruno_getusersbygroupid ||
-            item.bruno_getuseridwithemail;
-          if (userID) {
-            uniqueUserIDs.add(userID);
-          }
-        });
-      };
-
-      for (const dept of department) {
-        const response = await fetch(
-          `/api/adminTrainings/getUsersByDepartmentID?id=${dept.value}`,
-          { method: "GET" }
-        );
-        if (response.ok) {
-          const responseData = await response.json();
-          extractUserIDs(responseData.departments);
-        }
-      }
-
-      for (const team of teams) {
-        const response = await fetch(
-          `/api/adminTrainings/getUsersByTeamID?id=${team.value}`,
-          { method: "GET" }
-        );
-        if (response.ok) {
-          const responseData = await response.json();
-          extractUserIDs(responseData.teams);
-        }
-      }
-
-      for (const group of groups) {
-        const response = await fetch(
-          `/api/adminTrainings/getUsersByGroupID?id=${group.value}`,
-          { method: "GET" }
-        );
-        if (response.ok) {
-          const responseData = await response.json();
-          extractUserIDs(responseData.groups);
-        }
-      }
-
-      userIDsArray.push(...uniqueUserIDs);
-
-      const response = await fetch(
-        `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
-          userIDsArray
-        )}`
-      );
-      const responseData = await response.json();
-
-      if (response.ok) {
-        setFinalUserArray(responseData.userids);
-
-        const trainerIds = trainers.map((trainer) => trainer.value);
-        const responseteacher = await fetch(
-          `/api/adminTrainings/getInsideTeacherByUserID?userids=${encodeURIComponent(
-            trainerIds
-          )}`
-        );
-        const responseDataTeacher = await responseteacher.json();
-
-        if (responseteacher.ok) {
-          const trainingResponse = await fetch(
-            `/api/adminTrainings/associateUsersToTraining`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                trainingID: idTraining,
-                userIDs: responseData.userids,
-                teacherIDs: responseDataTeacher.userids,
-              }),
-            }
-          );
-
-          const trainingData = await trainingResponse.json();
-
-          if (trainingResponse.ok) {
-            toast.success(trainingData.message);
-          } else {
-            toast.error(trainingData.message);
-          }
-        } else {
-          toast.error(responseDataTeacher.message);
-        }
-      } else {
-        toast.error(responseData.message);
-      }
-
-      // Processamento de utilizadores inscritos manualmente
-      for (const email of userEmail) {
-        const response = await fetch(
-          `/api/adminTrainings/getUserIDWithEmail?email=${email}`,
-          { method: "GET" }
-        );
-        if (response.ok) {
-          const responseData = await response.json();
-
-          const responseEnroll = await fetch(
-            `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
-              [responseData.bruno_getuseridwithemail]
-            )}`
-          );
-          const responseDataEnroll = await responseEnroll.json();
-
-          if (responseEnroll.ok) {
-            const trainingResponse = await fetch(
-              `/api/adminTrainings/enrollUsers`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  trainingID: idTraining,
-                  userIDs: responseDataEnroll.userids,
-                }),
-              }
-            );
-
-            const trainingData = await trainingResponse.json();
-
-            if (trainingResponse.ok) {
-              toast.success(trainingData.message);
-            } else {
-              toast.error(trainingData.message);
-            }
-          } else {
-            toast.error("An error occurred. Try again later.");
-          }
-        }
-      }
-
-      setShowEdit(false);
-      setUserEmail([]);
-      setTrainers([]);
-      setDepartments([]);
-      setGroups([]);
-      setTeams([]);
-    } catch (error) {
-      toast.error("Error editing training");
-    }
-  };
-*/
-  /**--------------------------------------------------------**/
-
-  // Função para buscar IDs de usuários por departamento
   const fetchUserIDsByDepartment = async (departments) => {
     const userIDs = new Set();
     const extractUserIDs = (responseData) => {
@@ -678,7 +545,6 @@ function StartInsideTraining() {
     return [...userIDs];
   };
 
-  // Função para buscar IDs de usuários por equipe
   const fetchUserIDsByTeam = async (teams) => {
     const userIDs = new Set();
     const extractUserIDs = (responseData) => {
@@ -703,7 +569,6 @@ function StartInsideTraining() {
     return [...userIDs];
   };
 
-  // Função para buscar IDs de usuários por grupo
   const fetchUserIDsByGroup = async (groups) => {
     const userIDs = new Set();
     const extractUserIDs = (responseData) => {
@@ -728,7 +593,6 @@ function StartInsideTraining() {
     return [...userIDs];
   };
 
-  // Função para buscar IDs de professores
   const fetchTeacherIDs = async (trainers) => {
     const trainerIds = trainers.map((trainer) => trainer.value);
     const response = await fetch(
@@ -745,7 +609,6 @@ function StartInsideTraining() {
     }
   };
 
-  // Função principal para editar o treinamento
   const editTrainingData = async (idTraining) => {
     try {
       const response = await fetch(
@@ -763,12 +626,13 @@ function StartInsideTraining() {
       );
 
       if (response.ok) {
-        toast.success("description edited");
+        //toast.success("description edited");
       } else {
-        toast.error("erro editing description");
+        //toast.error("erro editing description");
       }
     } catch (error) {
-      console.log("description error: ", error);
+      //console.log("description error: ", error);
+      toast.error("An error occurred while editing the description");
     }
 
     try {
@@ -784,12 +648,13 @@ function StartInsideTraining() {
       });
 
       if (response.ok) {
-        toast.success("duration edited");
+        //toast.success("ok");
       } else {
-        toast.error("erro editing duration");
+        //toast.error("erro editing duration");
       }
     } catch (error) {
-      console.log("duration error: ", error);
+      // console.log("duration error: ", error);
+      toast.error("An error occurred while editing the training duration");
     }
 
     try {
@@ -805,21 +670,21 @@ function StartInsideTraining() {
       });
 
       if (response.ok) {
-        toast.success("name edited");
+        //toast.success("name edited");
       } else {
-        toast.error("erro editing name");
+        //toast.error("erro editing name");
       }
     } catch (error) {
-      console.log("name error: ", error);
+      //console.log("name error: ", error);
+      toast.error("An error occurred while editing the training name");
     }
 
     try {
-      // Buscar IDs de usuários por departamento, equipe e grupo
       const userIDsByDepartment = await fetchUserIDsByDepartment(department);
       const userIDsByTeam = await fetchUserIDsByTeam(teams);
       const userIDsByGroup = await fetchUserIDsByGroup(groups);
 
-      // Combinar todos os IDs de usuários em um único array sem duplicatas
+      // pedaço de código chat gpt
       const uniqueUserIDs = new Set([
         ...userIDsByDepartment,
         ...userIDsByTeam,
@@ -827,7 +692,6 @@ function StartInsideTraining() {
       ]);
       const userIDsArray = [...uniqueUserIDs];
 
-      // Buscar IDs de usuários regulares
       const response = await fetch(
         `/api/adminTrainings/getRegularUserIdsByUserID?userids=${encodeURIComponent(
           userIDsArray
@@ -835,8 +699,6 @@ function StartInsideTraining() {
       );
       if (response.ok) {
         const responseData = await response.json();
-        console.log("ids de arrays convertidos: ", responseData);
-        setFinalUserArray(responseData.userids);
 
         try {
           const regularUsersResponse = await fetch(
@@ -853,22 +715,23 @@ function StartInsideTraining() {
 
           const regularData = await regularUsersResponse.json();
           if (regularUsersResponse.ok) {
-            toast.success(regularData.message);
+            // console.log("ok");
           } else {
-            toast.error(regularData.message);
+            //toast.error(regularData.message);
           }
         } catch (error) {
-          toast.error("Error e2: ", error);
+          //toast.error("Error e2: ", error);
+          toast.error("An error occurred while editing the training.");
         }
       } else {
-        toast.error("Failed to get regular user IDs");
+        //toast.error("Failed to get regular user IDs");
       }
     } catch (error) {
-      toast.error("Error e1: ", error);
+      // toast.error("Error e1: ", error);
+      toast.error("An error occurred while editing the training.");
     }
 
     try {
-      // Buscar IDs de professores
       const teacherIDs = await fetchTeacherIDs(trainers);
 
       const trainingResponse = await fetch(
@@ -885,22 +748,35 @@ function StartInsideTraining() {
 
       const trainingData = await trainingResponse.json();
       if (trainingResponse.ok) {
-        toast.success(trainingData.message);
+        // toast.success(trainingData.message);
       } else {
-        toast.error(trainingData.message);
+        // toast.error(trainingData.message);
       }
     } catch (error) {
-      toast.error("Error e2: ", error);
+      // toast.error("Error e2: ", error);
+      toast.error("An error occurred while editing the training.");
     }
 
-    // Limpar estados após a edição
     setShowEdit(false);
-    setUserEmail([]);
     setTrainers([]);
     setDepartments([]);
     setGroups([]);
     setTeams([]);
   };
+
+  function showAttenModal({ id, name, startDate }) {
+    //console.log("Training ID gfdssdfg :", id);
+    //console.log("Training Name sgdf gfds:", name);
+    //console.log("Start Date s sgdf:", startDate);
+    // Resto da lógica da função
+    setShowAttendanceModal(true);
+    getTrainingDataByID(id);
+    setTrainingID(id);
+    setTrainingName(name);
+    setTrainingStartDate(startDate);
+
+    // nao esquecer de dar reset nas variaveis no fim de marcar presenças!!!!
+  }
 
   return (
     <div>
@@ -1308,57 +1184,90 @@ function StartInsideTraining() {
                     </thead>
                     <tbody>
                       {Array.isArray(trainings) &&
-                        filteredTrainings.map((trainings, index) => (
-                          <tr key={index}>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {trainings.itname}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {trainings.itnumofmin}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {trainings.iteventtype}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {trainings.itminparticipants}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {trainings.itmaxparticipants}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {trainings.ittrainingarea}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              {trainings.itdescription}
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              <button
-                                className={`bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 ${
-                                  trainings.itstarted
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : "hover:bg-green-500 hover:text-white active:bg-green-700"
-                                }`}
-                                onClick={() => showEditModal(trainings.itid)}
-                                disabled={trainings.itstarted}
-                              >
-                                Edit
-                              </button>
-                            </td>
-                            <td className="border border-gray-200 p-2 text-center">
-                              <button
-                                className={`bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 ${
-                                  trainings.itstarted
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : "hover:bg-green-500 hover:text-white active:bg-green-700"
-                                }`}
-                                onClick={() => showAddModal(trainings.itid)}
-                                disabled={trainings.itstarted}
-                              >
-                                Start
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
+                        filteredTrainings.map((trainings, index) => {
+                          const currentDate = new Date();
+                          const trainingDate = new Date(trainings.itstartdate);
+                          const hasTrainingDatePassed =
+                            trainingDate < currentDate;
+
+                          return (
+                            <tr key={index}>
+                              <td className="border border-gray-200 p-2 text-center">
+                                {trainings.itname}
+                              </td>
+                              <td className="border border-gray-200 p-2 text-center">
+                                {trainings.itnumofmin}
+                              </td>
+                              <td className="border border-gray-200 p-2 text-center">
+                                {trainings.iteventtype}
+                              </td>
+                              <td className="border border-gray-200 p-2 text-center">
+                                {trainings.itminparticipants}
+                              </td>
+                              <td className="border border-gray-200 p-2 text-center">
+                                {trainings.itmaxparticipants}
+                              </td>
+                              <td className="border border-gray-200 p-2 text-center">
+                                {trainings.ittrainingarea}
+                              </td>
+                              <td className="border border-gray-200 p-2 text-center">
+                                {trainings.itdescription}
+                              </td>
+                              {trainings.itstarted && hasTrainingDatePassed ? (
+                                <td
+                                  colSpan="2"
+                                  className="border border-gray-200 p-2 text-center"
+                                >
+                                  <button
+                                    className="bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                                    onClick={() =>
+                                      showAttenModal({
+                                        id: trainings.itid,
+                                        name: trainings.itname,
+                                        startDate: trainings.itstartdate,
+                                      })
+                                    }
+                                  >
+                                    Attendance
+                                  </button>
+                                </td>
+                              ) : (
+                                <>
+                                  <td className="border border-gray-200 p-2 text-center">
+                                    <button
+                                      className={`bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 ${
+                                        trainings.itstarted
+                                          ? "opacity-50 cursor-not-allowed"
+                                          : "hover:bg-green-500 hover:text-white active:bg-green-700"
+                                      }`}
+                                      onClick={() =>
+                                        showEditModal(trainings.itid)
+                                      }
+                                      disabled={trainings.itstarted}
+                                    >
+                                      Edit
+                                    </button>
+                                  </td>
+                                  <td className="border border-gray-200 p-2 text-center">
+                                    <button
+                                      className={`bg-[#f1f1f1] text-[#818181] p-1 rounded-md shadow-sm mx-2 ${
+                                        trainings.itstarted
+                                          ? "opacity-50 cursor-not-allowed"
+                                          : "hover:bg-green-500 hover:text-white active:bg-green-700"
+                                      }`}
+                                      onClick={() =>
+                                        showAddModal(trainings.itid)
+                                      }
+                                      disabled={trainings.itstarted}
+                                    >
+                                      Start
+                                    </button>
+                                  </td>
+                                </>
+                              )}
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </table>
                 </div>
@@ -1457,6 +1366,74 @@ function StartInsideTraining() {
                       >
                         Edit
                       </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {showAttendanceModal && (
+              <>
+                <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 p-10">
+                  <div
+                    className="relative bg-white p-10 rounded-lg shadow-lg overflow-y-auto h-[850px]
+                  "
+                  >
+                    <div>
+                      <p className="pb-5 pt-3">
+                        <strong>Attendance at '{trainingName}' </strong>
+                      </p>
+
+                      <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
+                        <thead>
+                          <tr>
+                            <th className="border border-gray-200 p-2">
+                              User Name
+                            </th>
+                            <th className="border border-gray-200 p-2">
+                              Generate Certificate
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {associatedUsers.map((user) => (
+                            <tr key={user.id}>
+                              <td className="border border-gray-200 p-2 text-center">
+                                {user.name}
+                              </td>
+                              <td className="border border-gray-200 p-2 text-center">
+                                <button
+                                  onClick={() =>
+                                    downloadCertificate(
+                                      trainingName,
+                                      user.name,
+                                      trainingStartDate
+                                    )
+                                  }
+                                  className="bg-blue-500 text-white font-bold px-4 py-2 rounded-md shadow-sm hover:bg-blue-700"
+                                >
+                                  Generate Certificate
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+
+                      <div className="flex justify-center space-x-4 pt-5">
+                        <button
+                          className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-red-500 hover:text-white active:bg-red-700"
+                          onClick={() => setShowAttendanceModal(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className="bg-[#DFDFDF] text-[#818181] font-bold px-10 py-2 rounded-md shadow-sm mx-2 hover:bg-green-500 hover:text-white active:bg-green-700"
+                          //onClick={editTraining}
+                        >
+                          Edit
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

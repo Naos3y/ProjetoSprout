@@ -1,15 +1,18 @@
-// pages/api/generate-pdf.js
 import { renderToStream } from "@react-pdf/renderer";
 import CertificatePDF from "@/components/CertificatePDF";
+
 export default async function handler(req, res) {
-  const { userName, trainingName, date, trainers } = req.query;
+  const { userName, trainingName, date } = req.query;
+
+  console.log(userName);
+  console.log(trainingName);
+  console.log(date);
 
   const document = (
     <CertificatePDF
       userName={userName}
       trainingName={trainingName}
       date={date}
-      trainers={trainers}
     />
   );
 

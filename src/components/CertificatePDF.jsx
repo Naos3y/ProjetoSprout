@@ -1,4 +1,3 @@
-// components/CertificatePDF.js
 import React from "react";
 import {
   Document,
@@ -50,17 +49,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const CertificatePDF = ({ userName, trainingName, date, trainers }) => (
+const CertificatePDF = ({ userName, trainingName, date }) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.section}>
         <Image
-          style={{
-            width: 100,
-            height: 100,
-            alignSelf: "center",
-            marginBottom: 20,
-          }}
+          style={styles.logo}
           src="https://tse3.mm.bing.net/th?id=OIP.74gDxvdhJkPEH_kHkvGj8gHaFj&pid=15.1"
         />
         <Text style={styles.companyName}>Sprout</Text>
@@ -69,9 +63,8 @@ const CertificatePDF = ({ userName, trainingName, date, trainers }) => (
           This certifies that {userName} has successfully completed the training
         </Text>
         <Text style={styles.text}>
-          {trainingName} on {date}
+          {trainingName} on {date}.
         </Text>
-        <Text style={styles.text}>under the guidance of {trainers}.</Text>
         <Text style={styles.signature}>______________________________</Text>
         <Text style={styles.signature}>Authorized Signature</Text>
       </View>
