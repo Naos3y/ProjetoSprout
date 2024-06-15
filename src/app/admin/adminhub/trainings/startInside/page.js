@@ -869,25 +869,86 @@ function StartInsideTraining() {
                             </h2>
                             <p>
                               - Begin by selecting the training you wish to
-                              initiate by checking the checkbox.
+                              initiate by pressing the{" "}
+                              <strong>Start Button</strong>.
                             </p>
                             <p>
-                              - Upon selection, all pertinent details of the
-                              chosen training will be displayed, including
-                              associated users if applicable.
+                              - After this, you will see all the details about
+                              the training. If everything is correct, you can
+                              start it by selecting a <strong>date</strong>,{" "}
+                              <strong>time</strong>, and{" "}
+                              <strong>location</strong>.
                             </p>
                             <p>
-                              - You have the option to modify the list of
-                              associated users as needed.
+                              - A new popup will appear for you to confirm the
+                              inserted data. After this, the training will
+                              start.
                             </p>
                             <p>
-                              - Following this, kindly provide the training
-                              date, time, and location.
+                              - <strong>NOTE: </strong>if the edit or start
+                              button are locked, it means that the training has
+                              already started and you need to wait for it to
+                              finish in order to modify it.
+                            </p>
+
+                            <h2 className="text-left text-black text-lg font-semibold mb-4 pt-3">
+                              Editing a Training
+                            </h2>
+                            <p>
+                              - To edit a training, press the{" "}
+                              <strong>Edit Training</strong> button on the list.
                             </p>
                             <p>
-                              - Once all necessary information is provided,
-                              please press the "Start" button to begin the
+                              - You will then be shown a form where you can edit
+                              the <strong>name</strong>,{" "}
+                              <strong>duration</strong>, and{" "}
+                              <strong>description</strong> of the training, as
+                              well as the <strong>enrolled users</strong>, and{" "}
+                              <strong>enrollment open for</strong>.
+                            </p>
+                            <p>
+                              -- In the <strong>Enroll Users</strong> field, all
+                              users in the table will automatically be
+                              associated with the training.
+                            </p>
+                            <p>
+                              -- You can enroll users by typing their email or
+                              remove them by pressing the{" "}
+                              <strong>Remove</strong> button.
+                            </p>
+                            <p>
+                              -- The <strong>Enrollment Open For</strong> field
+                              specifies which users will be able to join the
                               training.
+                            </p>
+                            <p>
+                              - After making the necessary changes, press the{" "}
+                              <strong>Edit</strong> button to save the updates.
+                              Note that you only need to edit the fields you
+                              wish to change.
+                            </p>
+
+                            <h2 className="text-left text-black text-lg font-semibold mb-4 pt-3">
+                              Attendance
+                            </h2>
+                            <p>
+                              - After a training has finished, a new button will
+                              appear on the listing table.
+                            </p>
+                            <p>
+                              - The <strong>Attendance</strong> button is used
+                              to generate a PDF certificate for those who
+                              attended the training. This must be done manually.
+                            </p>
+                            <p>
+                              - To generate a PDF certificate, select the user
+                              you want and press{" "}
+                              <strong>Generate Certificate</strong>.
+                            </p>
+                            <p>
+                              - When you're done, press the{" "}
+                              <strong>Done</strong> button to return to the list
+                              of trainings.
                             </p>
 
                             <div className="flex justify-center space-x-4 pt-5">
@@ -957,7 +1018,7 @@ function StartInsideTraining() {
                             </p>
                             <div>
                               <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                                <thead>
+                                <thead className="bg-gray-200">
                                   <tr>
                                     <th className="border border-gray-200 p-2">
                                       Training Name
@@ -1014,7 +1075,7 @@ function StartInsideTraining() {
                                 <strong>Enrolled Sprouts</strong>
                               </p>
                               <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                                <thead>
+                                <thead className="bg-gray-200">
                                   <tr>
                                     <th className="border border-gray-200 p-2">
                                       User Name
@@ -1056,7 +1117,7 @@ function StartInsideTraining() {
                                 <strong>Trainers</strong>
                               </p>
                               <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                                <thead>
+                                <thead className="bg-gray-200">
                                   <tr>
                                     <th className="border border-gray-200 p-2">
                                       Trainer Name
@@ -1083,7 +1144,7 @@ function StartInsideTraining() {
                               </div>
                               <div>
                                 <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                                  <thead>
+                                  <thead className="bg-gray-200">
                                     <tr>
                                       <th className="border border-gray-200 p-2">
                                         Departments
@@ -1104,7 +1165,7 @@ function StartInsideTraining() {
                                 </table>
 
                                 <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                                  <thead>
+                                  <thead className="bg-gray-200">
                                     <tr>
                                       <th className="border border-gray-200 p-2">
                                         Groups
@@ -1123,7 +1184,7 @@ function StartInsideTraining() {
                                 </table>
 
                                 <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                                  <thead>
+                                  <thead className="bg-gray-200">
                                     <tr>
                                       <th className="border border-gray-200 p-2">
                                         Teams
@@ -1232,7 +1293,7 @@ function StartInsideTraining() {
 
                         <div className="col-span-3 pt-2">
                           <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                            <thead>
+                            <thead className="bg-gray-200">
                               <tr>
                                 <th className="border border-gray-200 p-2">
                                   Training Name
@@ -1466,7 +1527,7 @@ function StartInsideTraining() {
                               </p>
 
                               <table className="w-full table-auto border-collapse border border-gray-200 mb-4">
-                                <thead>
+                                <thead className="bg-gray-200">
                                   <tr>
                                     <th className="border border-gray-200 p-2">
                                       User Name

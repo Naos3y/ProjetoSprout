@@ -183,7 +183,7 @@ const TableTextInput = ({ label, tid }) => {
       </div>
       {list.length > 0 && (
         <table className="mt-4 w-full border-collapse border border-gray-300">
-          <thead>
+          <thead className="bg-gray-200">
             <tr>
               <th className="border border-gray-300 px-4 py-2">Email</th>
               <th className="border border-gray-300 px-4 py-2">Name</th>
