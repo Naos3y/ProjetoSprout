@@ -1,14 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
+//import { decrypt } from "@/session/crypt";
 import {
   getPermission,
   sessionExpired,
   validSession,
-} from "@/session/sessionUtils";
-import SideNav from "@/components/Static/sidenav";
+} from "../../session/sessionUtils";
+import SideNav from "../../components/Static/sidenav";
 import "tailwindcss/tailwind.css";
+import { decrypt } from "../../session/crypt";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);

@@ -1,6 +1,6 @@
 // import { Icon } from "@iconify/react";
 
-import { SideNavItem } from "@/components/Static/types";
+import { SideNavItem } from "../../components/Static/types";
 
 export const SIDENAV_ITEMS_1 = [
   {
@@ -11,7 +11,7 @@ export const SIDENAV_ITEMS_1 = [
     subMenuItems: [
       {
         title: "Search Users",
-        path: "/Users/searchUsers",
+        path: "/admin/adminhub/Users/searchUsers",
         // icon: (
         //   <Icon icon="healthicons:magnifying-glass" width="17" height="17" />
         // ),
@@ -23,31 +23,31 @@ export const SIDENAV_ITEMS_1 = [
       },
       {
         title: "Add New User",
-        path: "/Users/addNewUser",
+        path: "/admin/adminhub/Users/addNewUser",
         // icon: <Icon icon="wpf:add-user" width="17" height="17" />,
       },
       {
         title: "Add New Department",
-        path: "/Users/addNewDepartment",
+        path: "/admin/adminhub/Users/addNewDepartment",
         // icon: <Icon icon="ph:briefcase" width="17" height="17" />,
       },
       {
         title: "Add New Team",
-        path: "/Users/addNewTeam",
+        path: "/admin/adminhub/Users/addNewTeam",
         // icon: (
         // <Icon icon="ph:microsoft-teams-logo-fill" width="17" height="17" />
         // ),
       },
       {
         title: "Add New Group",
-        path: "/Users/addNewGroup",
+        path: "/admin/adminhub/Users/addNewGroup",
         // icon: (
         //   <Icon icon="clarity:employee-group-solid" width="17" height="17" />
         // ),
       },
       {
         title: "Associate Inside Teacher",
-        path: "/Users/associateInsideTeacher",
+        path: "/admin/adminhub/Users/associateInsideTeacher",
         // icon: <Icon icon="la:chalkboard-teacher" width="17" height="17" />,
       },
     ],
@@ -67,7 +67,7 @@ export const SIDENAV_ITEMS_1 = [
       },
       {
         title: "Edit Trainings",
-        path: "/Trainings/editTrainings",
+        path: "/admin/adminhub/Users/editUsers",
         // icon: <Icon icon="mdi:pencil-outline" width="17" height="17" />,
       },
       {
@@ -119,7 +119,7 @@ export const SIDENAV_ITEMS_1 = [
       },
       {
         title: "Create New Training Template",
-        path: "/TrainingPlans/createNewTrainingTemplate",
+        path: "/admin/adminhub/TrainingPlans/createNewTrainingTemplate",
         // icon: <Icon icon="gridicons:create" width="17" height="17" />,
       },
     ],

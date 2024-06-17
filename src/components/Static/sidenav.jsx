@@ -3,10 +3,10 @@ import React, { useState } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SIDENAV_ITEMS_0 } from "@/components/Static/perm0";
-import { SIDENAV_ITEMS_1 } from "@/components/Static/perm1";
-import { SIDENAV_ITEMS_3 } from "@/components/Static/perm3";
-import { SIDENAV_ITEMS_4 } from "@/components/Static/perm4";
+import { SIDENAV_ITEMS_0 } from "../../components/Static/perm0";
+import { SIDENAV_ITEMS_1 } from "../../components/Static/perm1";
+import { SIDENAV_ITEMS_3 } from "../../components/Static/perm3";
+import { SIDENAV_ITEMS_4 } from "../../components/Static/perm4";
 
 import { FiMenu, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FiLogOut, FiUser } from "react-icons/fi";

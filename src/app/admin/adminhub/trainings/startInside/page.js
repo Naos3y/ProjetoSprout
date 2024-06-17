@@ -1,27 +1,27 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
+import Navbar from "/src/components/Navbar";
 import React, { useState, useEffect } from "react";
 import { FiHelpCircle } from "react-icons/fi";
 import { Toaster, toast } from "sonner";
-import TimePicker from "@/components/TimePicker";
-import DatePicker from "@/components/DatePicker";
-import TextInput from "@/components/TextInput";
-import TableTextInput from "@/components/EnrollUser";
-import MultiselectSearch from "@/components/MultiselectSearch";
+import TimePicker from "/src/components/TimePicker";
+import DatePicker from "/src/components/DatePicker";
+import TextInput from "/src/components/TextInput";
+import TableTextInput from "/src/components/EnrollUser";
+import MultiselectSearch from "/src/components/MultiselectSearch";
 import { GrClearOption } from "react-icons/gr";
-import FilterDropDown from "@/components/FilterDropDown";
-import TextInputEdit from "@/components/TextInputEdit";
+import FilterDropDown from "/src/components/FilterDropDown";
+import TextInputEdit from "/src/components/TextInputEdit";
 import axios from "axios";
 import { saveAs } from "file-saver";
-import SideNav from "@/components/Static/sidenav";
+import SideNav from "/src/components/Static/sidenav";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
+import { decrypt } from "/src/session/crypt";
 import {
   getPermission,
   sessionExpired,
   validSession,
-} from "@/session/sessionUtils";
+} from "/src/session/sessionUtils";
 import "tailwindcss/tailwind.css";
 
 function StartInsideTraining() {

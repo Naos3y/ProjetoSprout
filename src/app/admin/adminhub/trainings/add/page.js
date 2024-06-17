@@ -1,22 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Dropdown from "@/components/Dropdown";
-import Counter from "@/components/Counter";
-import TextInput from "@/components/TextInput";
-import BigInput from "@/components/BigInput";
+import Dropdown from "/src/components/Dropdown";
+import Counter from "/src/components/Counter";
+import TextInput from "/src/components/TextInput";
+import BigInput from "/src/components/BigInput";
 import { Toaster, toast } from "sonner";
-import DropdownState from "@/components/DropdownState";
+import DropdownState from "/src/components/DropdownState";
 import { FiHelpCircle } from "react-icons/fi";
-import Navbar from "@/components/Navbar";
+import Navbar from "/src/components/Navbar";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
+import { decrypt } from "/src/session/crypt";
 import {
   getPermission,
   sessionExpired,
   validSession,
-} from "@/session/sessionUtils";
-import SideNav from "@/components/Static/sidenav";
+} from "/src/session/sessionUtils";
+import SideNav from "/src/components/Static/sidenav";
 import "tailwindcss/tailwind.css";
 
 const AddTraining = () => {

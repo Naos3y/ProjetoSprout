@@ -17,6 +17,7 @@
     "@fontsource/proza-libre": "^5.0.12",
     "@fortawesome/fontawesome-free": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@iconify/react": "^5.0.1",
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.14",
     "@prisma/client": "^5.10.2",
@@ -24,13 +25,16 @@
     "body-parser": "^1.20.2",
     "file-save": "^0.2.0",
     "file-saver": "^2.0.5",
+    "firebase": "^10.12.2",
     "fs": "^0.0.1-security",
+    "iconify": "^1.4.0",
     "jose": "^5.2.2",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
-    "next": "^14.2.3",
+    "next": "^14.2.4",
     "next-auth": "^4.24.6",
     "next-connect": "^1.0.0",
+    "nodemailer": "^6.9.13",
     "nookies": "^2.5.2",
     "pdf-lib": "^1.17.1",
     "pg": "^8.11.3",
@@ -44,11 +48,13 @@
     "vite": "^5.1.4"
   },
   "devDependencies": {
-    "@types/react": "18.2.60",
+    "@types/node": "^20.14.2",
+    "@types/react": "^18.2.60",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.35",
     "prisma": "^5.10.2",
     "tailwindcss": "^3.4.1",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }

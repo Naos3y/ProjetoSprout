@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
+//import { decrypt } from "src/session/crypt";
 import Link from "next/link";
 import "tailwindcss/tailwind.css";
+import { decrypt } from "../../session/crypt";
 
 export default function Validation() {
   const [linkComponent, setLinkComponent] = useState(null);
