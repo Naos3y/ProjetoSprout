@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import Layout from "@/components/Manager/Layout";
-import { sessionExpired, validSession } from "@/session/sessionUtils";
-import Navbar from "@/components/Navbar";
-import SessionExpired from "@/components/Session/SessionExpired";
-import Footer from "@/components/Footer";
 import SideNav from "@/components/Static/sidenav";
 import cookies from "js-cookie";
 import { decrypt } from "@/session/crypt";
 import "tailwindcss/tailwind.css";
+
+import Footer from "../../components/Footer";
+import Layout from "@/components/Manager/Layout";
+import { sessionExpired, validSession } from "@/session/sessionUtils";
+import SessionExpired from "@/components/Session/SessionExpired";
 
 export default function Manager() {
   const [control, setControl] = useState(-1);
