@@ -1,6 +1,6 @@
 // import { Icon } from "@iconify/react";
 
-import { SideNavItem } from "@/components/Static/types";
+import { SideNavItem } from "src/components/Static/types";
 
 export const SIDENAV_ITEMS = [
   {

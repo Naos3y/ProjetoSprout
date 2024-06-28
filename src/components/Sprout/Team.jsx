@@ -5,7 +5,7 @@ import TextInput from "../TextInputUpdated";
 import { Toaster, toast } from "sonner";
 import cookies from "js-cookie";
 import { useEffect } from "react";
-import { decrypt } from "@/session/crypt";
+import { decrypt } from "src/session/crypt";
 import { GrClearOption } from "react-icons/gr";
 import TrainingModal from "../Manager/TrainingModal";
 

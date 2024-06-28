@@ -3,7 +3,7 @@ import React, { Component, useState, useEffect } from "react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import Dropdown from "../DropdownFilter";
 import { GrClearOption } from "react-icons/gr";
-import { decrypt } from "@/session/crypt";
+import { decrypt } from "src/session/crypt";
 import { Toaster, toast } from "sonner";
 import cookies from "js-cookie";
 const TrainingModal = ({ isOpen, onRequestClose, userid }) => {

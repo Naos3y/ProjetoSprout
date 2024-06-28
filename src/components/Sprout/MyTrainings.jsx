@@ -5,7 +5,7 @@ import { MdOutlineHelp } from "react-icons/md";
 import Dropdown from "../DropdownFilter";
 import { GrClearOption } from "react-icons/gr";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
+import { decrypt } from "src/session/crypt";
 import ColorHelp from "./ColorInfor";
 import { FiHelpCircle } from "react-icons/fi";
 
@@ -326,7 +326,6 @@ export default function MyTrainings() {
                         <IoMdInformationCircleOutline />
                       </button>
                     </div>
-                    s
                   </div>
                 </div>
               </div>

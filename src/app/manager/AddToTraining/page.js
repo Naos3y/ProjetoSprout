@@ -1,16 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
-import Layout from "@/components/Manager/Layout";
-import { sessionExpired, validSession } from "@/session/sessionUtils";
-import Navbar from "@/components/Navbar";
-import SessionExpired from "@/components/Session/SessionExpired";
-import Footer from "@/components/Footer";
-import TeamLayout from "@/components/Sprout/Team";
-import SideNav from "@/components/Static/sidenav";
+import { decrypt } from "src/session/crypt";
+import Layout from "src/components/Manager/Layout";
+import { sessionExpired, validSession } from "src/session/sessionUtils";
+import Navbar from "src/components/Navbar";
+import SessionExpired from "src/components/Session/SessionExpired";
+import Footer from "src/components/Footer";
+import TeamLayout from "src/components/Sprout/Team";
+import SideNav from "src/components/Static/sidenav";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
+import { decrypt } from "src/session/crypt";
 import "tailwindcss/tailwind.css";
 
 export default function Manager() {

@@ -1,13 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { sessionExpired, validSession } from "@/session/sessionUtils";
-import Navbar from "@/components/Navbar";
-import SessionExpired from "@/components/Session/SessionExpired";
-import Layout from "@/components/Sprout/Layout";
-import Footer from "@/components/Footer";
-import SideNav from "@/components/Static/sidenav";
+import { sessionExpired, validSession } from "src/session/sessionUtils";
+import Navbar from "src/components/Navbar";
+import SessionExpired from "src/components/Session/SessionExpired";
+import Layout from "src/components/Sprout/Layout";
+import Footer from "src/components/Footer";
+import SideNav from "src/components/Static/sidenav";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
+import { decrypt } from "src/session/crypt";
 import "tailwindcss/tailwind.css";
 
 export default function Sprout() {

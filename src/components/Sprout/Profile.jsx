@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect } from "react";
 import Link from "next/link";
 import { Toaster, toast } from "sonner";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
+import { decrypt } from "src/session/crypt";
 import { SlPeople } from "react-icons/sl";
 import { RiTeamFill } from "react-icons/ri";
 import { FaLayerGroup } from "react-icons/fa";

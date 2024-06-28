@@ -4,7 +4,7 @@ import Link from "next/link";
 import TextInput from "../TextInputUpdated";
 import { Toaster, toast } from "sonner";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
+import { decrypt } from "src/session/crypt";
 export default function EditPassword() {
   const [email, setEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");

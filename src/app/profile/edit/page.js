@@ -1,13 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { sessionExpired, validSession } from "@/session/sessionUtils";
-import Navbar from "@/components/Navbar";
-import SessionExpired from "@/components/Session/SessionExpired";
-import EditProfile from "@/components/Sprout/EditProfile";
-import Footer from "@/components/Footer";
+import { sessionExpired, validSession } from "src/session/sessionUtils";
+import Navbar from "src/components/Navbar";
+import SessionExpired from "src/components/Session/SessionExpired";
+import EditProfile from "src/components/Sprout/EditProfile";
+import Footer from "src/components/Footer";
 import cookies from "js-cookie";
-import { decrypt } from "@/session/crypt";
-import SideNav from "@/components/Static/sidenav";
+import { decrypt } from "src/session/crypt";
+import SideNav from "src/components/Static/sidenav";
 
 export default function Sprout() {
   const [control, setControl] = useState(-1);
