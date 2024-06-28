@@ -157,11 +157,11 @@ export const SIDENAV_ITEMS_0 = [
         //   <Icon icon="healthicons:magnifying-glass" width="17" height="17" />
         // ),
       },
-      {
-        title: "Calendar",
-        path: "/sprout/calendar",
-        // icon: <Icon icon="mdi:pencil-outline" width="17" height="17" />,
-      },
+      // {
+      //   title: "Calendar",
+      //   path: "/sprout/calendar",
+      //   // icon: <Icon icon="mdi:pencil-outline" width="17" height="17" />,
+      // },
       {
         title: "My team",
         path: "/sprout/myteam",
