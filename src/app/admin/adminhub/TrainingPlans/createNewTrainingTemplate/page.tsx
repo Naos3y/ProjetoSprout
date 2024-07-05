@@ -1,16 +1,18 @@
 "use client";
 
-import cookies from "js-cookie";
-import { decrypt } from "/src/app/session/crypt";
-import { sessionExpired, validSession } from "/src/session/sessionUtils";
-import SideNav from "/src/components/Static/sidenav";
+import { decrypt } from "../../../../../../src/session/crypt";
+import {
+  sessionExpired,
+  validSession,
+} from "../../../../../../src/session/sessionUtils";
+import SideNav from "../../../../../../src/components/Static/sidenav";
 import "tailwindcss/tailwind.css";
 
 import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { Toaster, toast } from "sonner";
-import CompleteName from "/src/components/CompleteName";
-import Counter from "/src/components/CounterRodrigo";
+import CompleteName from "../../../../../../src/components/CompleteName";
+import Counter from "../../../../../../src/components/CounterRodrigo";
 
 interface Training {
   itid: number;
