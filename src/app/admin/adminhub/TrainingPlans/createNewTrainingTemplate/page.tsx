@@ -1,12 +1,8 @@
 "use client";
 
 import cookies from "js-cookie";
-import { decrypt } from "/src/session/crypt";
-import {
-  getPermission,
-  sessionExpired,
-  validSession,
-} from "/src/session/sessionUtils";
+import { decrypt } from "/src/app/session/crypt";
+import { sessionExpired, validSession } from "/src/session/sessionUtils";
 import SideNav from "/src/components/Static/sidenav";
 import "tailwindcss/tailwind.css";
 
