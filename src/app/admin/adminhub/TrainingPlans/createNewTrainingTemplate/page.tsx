@@ -1,5 +1,6 @@
 "use client";
 
+import cookies from "js-cookie";
 import { decrypt } from "../../../../../../src/session/crypt";
 import {
   sessionExpired,
