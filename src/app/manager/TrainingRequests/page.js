@@ -8,8 +8,7 @@ import Navbar from "src/components/Navbar";
 import SessionExpired from "src/components/Session/SessionExpired";
 import Footer from "src/components/Footer";
 import SideNav from "src/components/Static/sidenav";
-import cookies from "js-cookie";
-import { decrypt } from "src/session/crypt";
+
 import "tailwindcss/tailwind.css";
 
 export default function Manager() {

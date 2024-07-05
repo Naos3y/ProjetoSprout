@@ -1,12 +1,7 @@
 import React from "react";
-import Navbar from "@/components/Navbar";
 
 const mytrainings = () => {
-  return (
-    <div>
-      <Navbar activeRoute="/admin/mytrainings" />
-    </div>
-  );
+  return <div></div>;
 };
 
 export default mytrainings;
