@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { sessionExpired, validSession } from "src/session/sessionUtils";
 import Navbar from "src/components/Navbar";
 import SessionExpired from "src/components/Session/SessionExpired";
-import CalendarSprout from "src/components/Sprout/Calendar";
 import Footer from "src/components/Footer";
 import cookies from "js-cookie";
 import { decrypt } from "src/session/crypt";
