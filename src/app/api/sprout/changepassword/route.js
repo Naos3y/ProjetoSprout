@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { decrypt } from "@/session/crypt";
-
+import { decrypt } from "../../../../session/crypt";
 const prisma = new PrismaClient();
 
 export async function PATCH(request) {
