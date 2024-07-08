@@ -40,7 +40,7 @@ export default function Sprout() {
           setShowExpired(true);
         }
       } else if (flag) {
-        sessionStatus = await validSession(4);
+        sessionStatus = await validSession(4, 3, 0);
         setControl(sessionStatus);
         flag = !flag;
       }

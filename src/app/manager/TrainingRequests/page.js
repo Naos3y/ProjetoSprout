@@ -35,7 +35,7 @@ export default function Manager() {
           setShowExpired(true);
         }
       } else if (flag) {
-        sessionStatus = await validSession(3);
+        sessionStatus = await validSession(3, 0);
         setControl(sessionStatus);
         flag = !flag;
       }
@@ -72,7 +72,7 @@ export default function Manager() {
           />
           <div className="flex-1">
             <main className="ml-14">
-              <Layout condition={false} />
+              <Layout condition={true} />
             </main>
           </div>
         </div>
