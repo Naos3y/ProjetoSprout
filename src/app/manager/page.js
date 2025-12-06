@@ -35,7 +35,7 @@ export default function Manager() {
           setShowExpired(true);
         }
       } else if (flag) {
-        sessionStatus = await validSession(3, 4);
+        sessionStatus = await validSession(3, 0);
         setControl(sessionStatus);
         flag = !flag;
       }
